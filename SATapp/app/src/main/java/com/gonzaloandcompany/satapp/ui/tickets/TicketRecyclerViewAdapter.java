@@ -1,5 +1,6 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,24 +41,25 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
         String aux;
         if (tickets != null) {
             holder.ticket = tickets.get(position);
-            Glide.with(MyApp.getContext()).load("").into(holder.img);
-            holder.title.setText(holder.ticket.getTitulo());
-            aux=holder.ticket.getDescripcion().toUpperCase();
-            holder.description.setText(aux);
-            if(aux.contains(Types.IMPRESORA.getDescription())){
+
+            aux = holder.ticket.getTitulo().toUpperCase();
+            holder.title.setText(aux);
+
+            holder.description.setText(holder.ticket.getDescripcion());
+            if (aux.contains(Types.IMPRESORA.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_printer);
-            }else if(aux.contains(Types.FOTOCOPIADORA.getDescription())){
+            } else if (aux.contains(Types.FOTOCOPIADORA.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_copier);
-            }else if(aux.contains(Types.RATON.getDescription())){
+            } else if (aux.contains(Types.RATON.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_mouse);
-            }else if(aux.contains(Types.TECLADO.getDescription())){
+            } else if (aux.contains(Types.TECLADO.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_keyboard);
-            }else if(aux.contains(Types.PROYECTOR.getDescription())){
+            } else if (aux.contains(Types.PROYECTOR.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_projector);
-            }else if(aux.contains(Types.ORDENADOR.getDescription())|| aux.contains(Types.PC.getDescription())){
+            } else if (aux.contains(Types.ORDENADOR.getDescription()) || aux.contains(Types.PC.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_computer);
             }
-            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion());
+            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion().substring(0, 9));
             holder.date.setText(date.toString("dd/MM/yyyy"));
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,9 +80,17 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
     }
 
     public void setData(List<Ticket> list) {
+        Log.d("SET DATA","TRUE");
         this.tickets = list;
         notifyDataSetChanged();
 
+    }
+
+    public void addAll(List<Ticket> list) {
+        Log.d("ADD ALL","TRUE");
+        int lastIndex = tickets.size() - 1;
+        tickets.addAll(list);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

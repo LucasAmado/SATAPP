@@ -1,19 +1,30 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class TicketsViewModel extends ViewModel {
+import com.gonzaloandcompany.satapp.data.repository.EspeRepository;
+import com.gonzaloandcompany.satapp.mymodels.Ticket;
 
-    private MutableLiveData<String> mText;
+import java.util.List;
 
-    public TicketsViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+import lombok.NonNull;
+
+public class TicketsViewModel extends AndroidViewModel {
+    private EspeRepository repository;
+    private LiveData<List<Ticket>> tickets;
+    private static int ticketSelected;
+
+    public TicketsViewModel(@NonNull Application application){
+        super(application);
+        repository = new EspeRepository();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<Ticket>> getTickets(int page){
+        return repository.getTickets(page);
     }
 }

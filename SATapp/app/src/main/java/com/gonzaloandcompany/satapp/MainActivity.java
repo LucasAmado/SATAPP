@@ -2,6 +2,7 @@ package com.gonzaloandcompany.satapp;
 
 import android.os.Bundle;
 
+import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TicketListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +28,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
+    @Override
+    public void onTicketClick(String id) {
+
+    }
 }
