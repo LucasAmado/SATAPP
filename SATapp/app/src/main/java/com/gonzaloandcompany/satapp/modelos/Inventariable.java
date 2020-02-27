@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp;
+package com.gonzaloandcompany.satapp.modelos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

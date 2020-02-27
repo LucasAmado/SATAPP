@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui;
+package com.gonzaloandcompany.satapp.ui.inventariables;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,10 +23,11 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
-import com.gonzaloandcompany.satapp.Inventariable;
 import com.gonzaloandcompany.satapp.R;
-
-import org.w3c.dom.Text;
+import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.common.MySharedPreferences;
+import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
+import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,9 +38,6 @@ import java.io.InputStream;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class NewInventariableDialogFragment extends DialogFragment {
 
@@ -48,10 +46,12 @@ public class NewInventariableDialogFragment extends DialogFragment {
     TextView tvImage;
     Spinner spTipo, spUbicacion;
     String typeSelect, ubicationSelect, name, code, description, fileName;
-    ImageView ivFoto, ivIcono;
-    String [] tipos, ubicaciones;
+    ImageView ivIcono;
+    String [] tipos, ubicaciones={"1"};
     private static final int READ_REQUEST_CODE = 42;
     Uri uriSelected;
+    ServicePeticiones service;
+    String token = Constants.TOKEN_PROVISIONAL;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
         builder.setTitle("Nuevo dispositivo");
         builder.setMessage("Introduzca los datos del dispositivo nuevo");
 
-        builder.setCancelable(true);
+       builder.setCancelable(true);
 
         v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_inventariable, null);
         builder.setView(v);
@@ -72,16 +72,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
         etDescripcion = v.findViewById(R.id.editTextDescripcion);
         spTipo = v.findViewById(R.id.spinnerTipo);
         spUbicacion = v.findViewById(R.id.spinnerUbicacion);
-        ivFoto = v.findViewById(R.id.spinnerUbicacion);
-
-        ivFoto.setVisibility(View.INVISIBLE);
-
-        ivIcono.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                performFileSearch();
-            }
-        });
+        ivIcono = v.findViewById(R.id.imageViewIcon);
 
         ArrayAdapter<String> adapterTipos = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, tipos);
@@ -94,7 +85,31 @@ public class NewInventariableDialogFragment extends DialogFragment {
         spUbicacion.setAdapter(adapterUbicaciones);
 
 
-        //TODO onClick item spinner --> seleccionar tipo y ubicacion
+
+        spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                typeSelect = (String) parent.getItemAtPosition(position);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spUbicacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ubicationSelect = (String) parent.getItemAtPosition(position);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+
+
+        ivIcono.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                performFileSearch();
+            }
+        });
 
 
         builder.setNegativeButton(R.string.button_cancelar, new DialogInterface.OnClickListener() {
@@ -103,6 +118,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
                 dialog.dismiss();
             }
         });
+
 
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
@@ -113,9 +129,8 @@ public class NewInventariableDialogFragment extends DialogFragment {
                 description = etDescripcion.getText().toString();
 
 
-                //TODO crear servicio y descomentar
                 if (uriSelected != null && !name.isEmpty() && !code.isEmpty() && !description.isEmpty()) {
-                    //service = ServiceGenerator.createService(NodeService.class);
+                    service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
                     try {
                         InputStream inputStream = getActivity().getContentResolver().openInputStream(uriSelected);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -141,7 +156,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
                         RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubicationSelect);
 
                         //TODO ViewModel y repository --> meter allí la llamada a la api para crear dispositivo
-                        /*Call<Inventariable> call = service.createInventariable(tipo, nombre, descripcion, ubicacion, imagen);
+                        /*Call<Inventariable> call = service.createInventariable(imagen, tipo, nombre, descripcion, ubicacion);
 
                         call.enqueue(new Callback<Inventariable>() {
                             @Override
@@ -225,12 +240,6 @@ public class NewInventariableDialogFragment extends DialogFragment {
                 fileName = cursor.getString(nameIndex);
                 tvImage.setText(fileName);
 
-                Glide
-                        .with(getActivity())
-                        .load(fileName)
-                        .centerCrop()
-                        .into(ivFoto);
-                ivFoto.setVisibility(View.VISIBLE);
             }
         }
     }
