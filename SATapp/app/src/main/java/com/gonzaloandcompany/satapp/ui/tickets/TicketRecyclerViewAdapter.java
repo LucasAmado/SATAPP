@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.MyApp;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.mymodels.Types;
 
 import org.joda.time.LocalDate;
 
@@ -36,11 +37,26 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        String aux;
         if (tickets != null) {
             holder.ticket = tickets.get(position);
             Glide.with(MyApp.getContext()).load("").into(holder.img);
             holder.title.setText(holder.ticket.getTitulo());
-            holder.description.setText(holder.ticket.getDescripcion());
+            aux=holder.ticket.getDescripcion().toUpperCase();
+            holder.description.setText(aux);
+            if(aux.contains(Types.IMPRESORA.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_printer);
+            }else if(aux.contains(Types.FOTOCOPIADORA.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_copier);
+            }else if(aux.contains(Types.RATON.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_mouse);
+            }else if(aux.contains(Types.TECLADO.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_keyboard);
+            }else if(aux.contains(Types.PROYECTOR.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_projector);
+            }else if(aux.contains(Types.ORDENADOR.getDescription())|| aux.contains(Types.PC.getDescription())){
+                holder.img.setImageResource(R.drawable.ic_computer);
+            }
             LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion());
             holder.date.setText(date.toString("dd/MM/yyyy"));
             holder.mView.setOnClickListener(new View.OnClickListener() {
