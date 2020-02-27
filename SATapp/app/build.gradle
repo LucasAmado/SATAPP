@@ -41,8 +41,15 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     //LoginInterceptor
+    implementation 'com.squareup.okhttp3:okhttp:4.3.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
     //Butter Knife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    //Text Justify
+    implementation 'com.codesgood:justifiedtextview:1.1.0'
+    //JodaTime
+    implementation 'joda-time:joda-time:2.10.5'
+
+
 }
