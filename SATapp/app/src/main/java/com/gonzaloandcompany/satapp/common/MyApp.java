@@ -16,7 +16,7 @@ public class MyApp extends Application {
 
     @Override
     public void onCreate() {
-        instance = this;
         super.onCreate();
+        instance = this;
     }
 }

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.gonzaloandcompany.satapp"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -17,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -51,6 +55,8 @@ dependencies {
     implementation 'com.codesgood:justifiedtextview:1.1.0'
     //JodaTime
     implementation 'joda-time:joda-time:2.10.5'
+    //material ripple
+    implementation 'com.balysv:material-ripple:1.0.2'
 
 
 }
