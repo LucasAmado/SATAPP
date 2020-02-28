@@ -16,6 +16,7 @@ public class Ticket {
     private String estado;
     private String titulo;
     private String descripcion;
+    private List<Anotacion> anotaciones;
     private List<Asignacion> asignaciones;
     private List<String> fotos;
     private String createdAt;

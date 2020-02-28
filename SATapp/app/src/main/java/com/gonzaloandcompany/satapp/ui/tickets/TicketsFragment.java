@@ -122,6 +122,7 @@ public class TicketsFragment extends Fragment {
                 if (data != null) {
                     tickets.setResults(data);
                 }else{
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
                 }
 
