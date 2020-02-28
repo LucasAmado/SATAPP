@@ -137,6 +137,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
 
                 //TODO añadir campo ubicación
                 if (uriSelected != null && !name.isEmpty() && !code.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty()) {
+                    service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
                     try {
                         InputStream inputStream = getActivity().getContentResolver().openInputStream(uriSelected);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -161,8 +162,6 @@ public class NewInventariableDialogFragment extends DialogFragment {
                         RequestBody codigo = RequestBody.create(MultipartBody.FORM, description);
                         //TODO cambia por ubicationselect
                         RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, "AULA07");
-
-                        service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
 
                         Call<Inventariable> call = service.createInventariable(imagen, codigo, tipo, nombre, descripcion, ubicacion);
 
