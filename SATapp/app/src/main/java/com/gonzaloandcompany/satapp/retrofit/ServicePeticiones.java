@@ -21,12 +21,13 @@ public interface ServicePeticiones {
                                             @Part("codigo") RequestBody codigo,
                                             @Part("tipo") RequestBody tipo,
                                             @Part("nombre") RequestBody nombre,
-                                            @Part("descripcion") RequestBody descripcion);
+                                            @Part("descripcion") RequestBody descripcion,
+                                            @Part("ubicaion") RequestBody ubicacion);
 
     @GET("/inventariable/tipos")
     Call<List<String>> getTiposInventariable();
 
-    //TODO habalr con luismi. Error 500
-    /*@GET("/inventariable/tipos")
-    Call<List<String>> getUbicaciones();*/
+    //TODO hablar con luismi
+    @GET("/inventariable/tipos")
+    Call<List<String>> getUbicaciones();
 }

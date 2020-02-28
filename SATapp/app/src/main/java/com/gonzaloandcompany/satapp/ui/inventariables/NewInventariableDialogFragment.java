@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,11 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.common.MySharedPreferences;
+import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
+import com.gonzaloandcompany.satapp.modelos.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
@@ -34,10 +35,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewInventariableDialogFragment extends DialogFragment {
 
@@ -47,11 +53,13 @@ public class NewInventariableDialogFragment extends DialogFragment {
     Spinner spTipo, spUbicacion;
     String typeSelect, ubicationSelect, name, code, description, fileName;
     ImageView ivIcono;
-    String [] tipos, ubicaciones={"1"};
+    ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
     Uri uriSelected;
     ServicePeticiones service;
     String token = Constants.TOKEN_PROVISIONAL;
+    LucasViewModel viewModel;
+    ArrayAdapter<String> adapterTipos, adapterUbicaciones;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -61,7 +69,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
         builder.setTitle("Nuevo dispositivo");
         builder.setMessage("Introduzca los datos del dispositivo nuevo");
 
-       builder.setCancelable(true);
+        builder.setCancelable(true);
 
         v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_inventariable, null);
         builder.setView(v);
@@ -74,22 +82,20 @@ public class NewInventariableDialogFragment extends DialogFragment {
         spUbicacion = v.findViewById(R.id.spinnerUbicacion);
         ivIcono = v.findViewById(R.id.imageViewIcon);
 
-        ArrayAdapter<String> adapterTipos = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, tipos);
-        adapterTipos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spTipo.setAdapter(adapterTipos);
 
-        ArrayAdapter<String> adapterUbicaciones = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, ubicaciones);
-        adapterUbicaciones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spUbicacion.setAdapter(adapterUbicaciones);
+        viewModel = new ViewModelProvider(getActivity()).get(LucasViewModel.class);
 
+        loadTipos();
+
+        //TODO descomentar
+        //loadUbicaciones();
 
 
         spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 typeSelect = (String) parent.getItemAtPosition(position);
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
@@ -98,10 +104,10 @@ public class NewInventariableDialogFragment extends DialogFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ubicationSelect = (String) parent.getItemAtPosition(position);
             }
+
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
 
 
         ivIcono.setOnClickListener(new View.OnClickListener() {
@@ -129,8 +135,8 @@ public class NewInventariableDialogFragment extends DialogFragment {
                 description = etDescripcion.getText().toString();
 
 
-                if (uriSelected != null && !name.isEmpty() && !code.isEmpty() && !description.isEmpty()) {
-                    service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
+                //TODO añadir campo ubicación
+                if (uriSelected != null && !name.isEmpty() && !code.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty()) {
                     try {
                         InputStream inputStream = getActivity().getContentResolver().openInputStream(uriSelected);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -153,27 +159,28 @@ public class NewInventariableDialogFragment extends DialogFragment {
                         RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
                         RequestBody descripcion = RequestBody.create(MultipartBody.FORM, description);
                         RequestBody codigo = RequestBody.create(MultipartBody.FORM, description);
-                        RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubicationSelect);
+                        //TODO cambia por ubicationselect
+                        RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, "AULA07");
 
-                        //TODO ViewModel y repository --> meter allí la llamada a la api para crear dispositivo
-                        /*Call<Inventariable> call = service.createInventariable(imagen, tipo, nombre, descripcion, ubicacion);
+                        service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
+
+                        Call<Inventariable> call = service.createInventariable(imagen, codigo, tipo, nombre, descripcion, ubicacion);
 
                         call.enqueue(new Callback<Inventariable>() {
                             @Override
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                                if (response.isSuccessful()) {
-                                    Toast.makeText(getActivity(), "Dispositivo creado correctamente", Toast.LENGTH_LONG).show();
-                                    getDialog().dismiss();
-                                } else {
-                                    Toast.makeText(getActivity(), "Error inesperado", Toast.LENGTH_LONG).show();
+                                if(response.isSuccessful()){
+                                    Toast.makeText(getActivity(), "Dispositivo creado correctamente", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getActivity(), "Algo ha salido mal", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<Inventariable> call, Throwable t) {
-                                Toast.makeText(getActivity(), "Error de upload", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
                             }
-                        });*/
+                        });
 
 
                     } catch (FileNotFoundException e) {
@@ -183,25 +190,25 @@ public class NewInventariableDialogFragment extends DialogFragment {
                     }
 
 
-                }else{
+                } else {
 
-                    if(name.isEmpty()){
+                    if (name.isEmpty()) {
                         etNombre.setError("Introduzca un nombre");
                     }
 
-                    if(description.isEmpty()){
+                    if (description.isEmpty()) {
                         etDescripcion.setError("Introduzca una descripción");
                     }
 
-                    if(code.isEmpty()){
+                    if (code.isEmpty()) {
                         etCodigo.setError("Introduzca un código");
                     }
 
-                    if(uriSelected==null){
+                    if (uriSelected == null) {
                         tvImage.setError("Seleccione una foto");
                     }
 
-                    if(typeSelect.isEmpty() || ubicationSelect.isEmpty()){
+                    if (typeSelect.isEmpty() || ubicationSelect.isEmpty()) {
                         Toast.makeText(getActivity(), "No olvide elegir un tipo y la ubicación", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -211,6 +218,40 @@ public class NewInventariableDialogFragment extends DialogFragment {
         });
 
         return builder.create();
+    }
+
+    public void loadTipos() {
+        viewModel.getAllTipos().observe(getActivity(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> tipos) {
+
+                for (int i = 0; i < tipos.size(); i++) {
+                    arrayTipos.add(tipos.get(i));
+                }
+
+                adapterTipos = new ArrayAdapter<String>(NewInventariableDialogFragment.this.getActivity(),
+                        android.R.layout.simple_spinner_item, arrayTipos);
+                adapterTipos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spTipo.setAdapter(adapterTipos);
+            }
+        });
+    }
+
+    public void loadUbicaciones() {
+        viewModel.getAllUbicaciones().observe(getActivity(), new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> ubicaciones) {
+
+                for (int i = 0; i < ubicaciones.size(); i++) {
+                    arrayUbicaciones.add(ubicaciones.get(i));
+                }
+
+                adapterUbicaciones = new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_spinner_item, arrayUbicaciones);
+                adapterUbicaciones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spUbicacion.setAdapter(adapterUbicaciones);
+            }
+        });
     }
 
 

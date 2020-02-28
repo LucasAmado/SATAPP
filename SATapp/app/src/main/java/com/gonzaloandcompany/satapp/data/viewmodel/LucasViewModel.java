@@ -21,12 +21,12 @@ public class LucasViewModel extends AndroidViewModel{
     }
 
     public LiveData<List<String>> getAllTipos(){
-        stringList = repository.getAllSeries();
+        stringList = repository.getTipos();
         return stringList;
     }
 
     public LiveData<List<String>> getAllUbicaciones(){
-        stringList = repository.getAllSeries();
+        stringList = repository.getUbicaciones();
         return stringList;
     }
 }

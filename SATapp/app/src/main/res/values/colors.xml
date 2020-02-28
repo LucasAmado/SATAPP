@@ -3,7 +3,5 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="background_grey">#fafafa</color>
-    <color name="background_grey2">#f7f7f7</color>
-    <color name="background_img">#cccccc</color>
+    <color name="background_grey">#f8f7f7</color>
 </resources>
