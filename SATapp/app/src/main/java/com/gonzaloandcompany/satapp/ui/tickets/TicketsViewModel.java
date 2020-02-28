@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.gonzaloandcompany.satapp.data.repository.EspeRepository;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.requests.TicketCreateRequest;
 
 import java.util.List;
 
@@ -30,5 +31,8 @@ public class TicketsViewModel extends AndroidViewModel {
         return repository.getTicket(id);
     }
 
+    public LiveData<Ticket> createTicket(TicketCreateRequest request){
+        return repository.createTicket(request);
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.mymodels.PagedList;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.ui.ticketCreate.TicketCreateActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -60,7 +62,13 @@ public class TicketsFragment extends Fragment {
         progressBar = view.findViewById(R.id.ticketListProgressBar);
         add = view.findViewById(R.id.ticketListAdd);
 
-
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToCreate = new Intent(context, TicketCreateActivity.class);
+                startActivity(goToCreate);
+            }
+        });
 
         tickets = new PagedList<>();
 

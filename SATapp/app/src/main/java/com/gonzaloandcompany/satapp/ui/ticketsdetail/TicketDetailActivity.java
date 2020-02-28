@@ -68,7 +68,7 @@ public class TicketDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
 
-        //SI EL ROL ES ADMINISTRADOR
+        //TODO: ESCONDER SEGÚN EL ROL DEL USUARIO
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +114,7 @@ public class TicketDetailActivity extends AppCompatActivity {
                     description.setText(ticket.getDescripcion());
                     description.setVisibility(View.VISIBLE);
 
+                    //TODO: PEDIR A LUISMI QUE LA API RETORNE EL NOMBRE DEL USUARIO QUE CREÓ EL TICKET.
                     createdBy.setText(ticket.getCreado_por().getName());
                     createdBy.setVisibility(View.VISIBLE);
 

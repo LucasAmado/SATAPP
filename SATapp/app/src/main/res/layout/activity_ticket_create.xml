@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.ticketCreate.TicketCreateActivity">
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/createTicket"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/ticketCreateAddImg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/grey_90"
+        android:scaleType="center"
+        android:text="@string/load"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ticketCreatePreview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateAddImg"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateAddImg"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateAddImg" />
+
+    <EditText
+        android:id="@+id/ticketCreateTItle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="@string/title"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateAddImg"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateAddImg"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreatePreview" />
+
+    <EditText
+        android:id="@+id/ticketCreateDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/Description"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateTItle"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateTItle"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateTItle" />
+
+    <EditText
+        android:id="@+id/ticketCreateDevice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/selectDevice"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDescription"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateDescription"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDescription" />
+
+    <EditText
+        android:id="@+id/ticketCreateTech"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/selectTech"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDevice"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateDevice"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDevice" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

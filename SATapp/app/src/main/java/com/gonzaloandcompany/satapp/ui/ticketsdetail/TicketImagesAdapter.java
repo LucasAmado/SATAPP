@@ -57,6 +57,7 @@ public class TicketImagesAdapter extends PagerAdapter {
 
         ImageView image = v.findViewById(R.id.image);
 
+        //TODO:CAMBIAR EL TOKEN DEL HEADER DE GLIDEURL CUANDO GONZALO TERMINE CON EL LOGIN
         GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + o,
                 new LazyHeaders.Builder()
                         .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)

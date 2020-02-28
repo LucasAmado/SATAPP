@@ -18,4 +18,9 @@
     <string name="CreatedBy">Creado por:</string>
     <string name="state">Estado de la incidencia</string>
     <string name="assign">Asignar técnico</string>
+    <string name="createTicket">Nuevo Ticket</string>
+    <string name="load">Subir imágenes</string>
+    <string name="title">Título</string>
+    <string name="selectDevice">Selecciona el dispositivo</string>
+    <string name="selectTech">Selecciona un técnico</string>
 </resources>

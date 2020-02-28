@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.requests.TicketCreateRequest;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.TicketService;
 
@@ -48,6 +49,25 @@ public class EspeRepository {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {
                 if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Ticket> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Ticket> createTicket(TicketCreateRequest request){
+        final MutableLiveData<Ticket> data = new MutableLiveData<>();
+        Call<Ticket> call = service.createTicket(request.getTitulo(),request.getDescripcion(),request.getInventariable(),request.getTecnico(),request.getFotos());
+        call.enqueue(new Callback<Ticket>() {
+            @Override
+            public void onResponse(Call<Ticket> call, Response<Ticket> response) {
+                if(response.isSuccessful()){
                     data.setValue(response.body());
                 }
             }
