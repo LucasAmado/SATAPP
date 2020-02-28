@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.home;
+package com.gonzaloandcompany.satapp.ui.inventariables;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

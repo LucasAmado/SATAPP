@@ -17,4 +17,8 @@
     <dimen name="spacing_xxlarge">50dp</dimen>
     <dimen name="spacing_xxxlarge">55dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+
+    <dimen name="margin_left_form">10dp</dimen>
+    <dimen name="margin_top_form">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
