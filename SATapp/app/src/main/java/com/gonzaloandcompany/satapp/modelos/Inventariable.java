@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Inventariable {
 
-    private Integer id;
+    private String id, codigo, tipo, nombre, descripcion, ubicacion, createdAt, updatedAt, imagen;
 
-    private String codigo, tipo, nombre, descripcion, createdAt, ubicacion, updatedAt, imagen;
 }

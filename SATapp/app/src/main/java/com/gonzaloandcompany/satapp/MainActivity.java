@@ -1,19 +1,19 @@
 package com.gonzaloandcompany.satapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
-import com.gonzaloandcompany.satapp.ui.inventariables.NewInventariableDialogFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.gonzaloandcompany.satapp.ui.inventariables.InventariableDetailActivity;
+import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements TicketListener {
 
@@ -21,7 +21,8 @@ public class MainActivity extends AppCompatActivity implements TicketListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FloatingActionButton create_inventariable = findViewById(R.id.floatingActionButton);
+        //TODO borrar boton y onclick
+        FloatingActionButton button = findViewById(R.id.floatingActionButton);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -32,11 +33,11 @@ public class MainActivity extends AppCompatActivity implements TicketListener {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        create_inventariable.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dialog = new NewInventariableDialogFragment();
-                dialog.show(getSupportFragmentManager(), "NewInventariableDialogFragment");
+                Intent i = new Intent(MainActivity.this, InventariableDetailActivity.class);
+                startActivity(i);
             }
         });
     }

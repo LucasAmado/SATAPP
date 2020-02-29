@@ -12,6 +12,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ServicePeticiones {
@@ -33,4 +34,7 @@ public interface ServicePeticiones {
     //TODO hablar con luismi
     @GET("/inventariable/tipos")
     Call<List<String>> getUbicaciones();
+
+    @GET("/inventariable/{id}")
+    Call<Inventariable> getInventariableById(@Path("id") String id);
 }
