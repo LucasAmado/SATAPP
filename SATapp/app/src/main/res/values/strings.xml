@@ -5,7 +5,8 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="save">Guardar</string>
-    <string name="button_cancelar">Cancelar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Borrar</string>
     <string name="hint_name">Nombre</string>
     <string name="hint_descripcion">Descripción</string>
     <string name="title_activity_inventariable_detail">InventariableDetailActivity</string>

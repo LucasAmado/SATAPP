@@ -1,6 +1,8 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
-import com.gonzaloandcompany.satapp.modelos.Inventariable;
+import android.net.Uri;
+
+import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -26,7 +29,7 @@ public interface ServicePeticiones {
                                             @Part("tipo") RequestBody tipo,
                                             @Part("nombre") RequestBody nombre,
                                             @Part("descripcion") RequestBody descripcion,
-                                            @Part("ubicaion") RequestBody ubicacion);
+                                            @Part("ubicacion") RequestBody ubicacion);
 
     @GET("/inventariable/tipos")
     Call<List<String>> getTiposInventariable();
@@ -35,6 +38,13 @@ public interface ServicePeticiones {
     @GET("/inventariable/tipos")
     Call<List<String>> getUbicaciones();
 
-    @GET("/inventariable/{id}")
-    Call<Inventariable> getInventariableById(@Path("id") String id);
+    @GET("/inventariable/{id_inventariable}")
+    Call<Inventariable> getInventariableById(@Path("id_inventariable") String id_inventariable);
+
+    //TODO averiguar que devuelve
+    @GET("/inventariable/img/{id_inventariable}")
+    Call<Uri> getImageInventariable(@Path("id_inventariable") String id_inventariable);
+
+    @DELETE("/inventariable/{id}")
+    Call<Inventariable> deleteInventariable(@Path("id") String id);
 }

@@ -26,7 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
-import com.gonzaloandcompany.satapp.modelos.Inventariable;
+import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
@@ -118,7 +118,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
         });
 
 
-        builder.setNegativeButton(R.string.button_cancelar, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
