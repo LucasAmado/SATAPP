@@ -2,10 +2,8 @@ package com.gonzaloandcompany.satapp.ui.inventariables;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.bumptech.glide.Glide;
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
@@ -15,8 +13,8 @@ import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +28,6 @@ import org.joda.time.LocalDate;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -145,8 +142,8 @@ public class InventariableDetailActivity extends AppCompatActivity {
         icon_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                tvCodigo.setEnabled(true);
+                DialogFragment dialog = new InventariableDialogFragment(idInventariable);
+                dialog.show(getSupportFragmentManager(), "InventariableDialogFragment");
             }
         });
 

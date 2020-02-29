@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -29,6 +30,7 @@ import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,13 +47,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewInventariableDialogFragment extends DialogFragment {
+public class InventariableDialogFragment extends DialogFragment {
 
     private View v;
     EditText etNombre, etCodigo, etDescripcion;
-    TextView tvImage;
+    TextView tvImage, tvNombreImagen;
     Spinner spTipo, spUbicacion;
-    String typeSelect, ubicationSelect, name, code, description, fileName;
+    //TODO quitar valor ubicacion
+    String typeSelect, ubicationSelect = "AULA07", name, code, description, fileName;
     ImageView ivIcono;
     ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
@@ -60,6 +63,12 @@ public class NewInventariableDialogFragment extends DialogFragment {
     String token = Constants.TOKEN_PROVISIONAL;
     LucasViewModel viewModel;
     ArrayAdapter<String> adapterTipos, adapterUbicaciones;
+    String idInventariable;
+    Inventariable inventariable_edit;
+
+    public InventariableDialogFragment(String id) {
+        this.idInventariable = id;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -76,12 +85,12 @@ public class NewInventariableDialogFragment extends DialogFragment {
 
         etNombre = v.findViewById(R.id.editTextNombre);
         etCodigo = v.findViewById(R.id.editTextCodigo);
-        tvImage = v.findViewById(R.id.editTextImage);
+        tvNombreImagen = v.findViewById(R.id.textViewtImage);
+        tvImage = v.findViewById(R.id.textViewtImage);
         etDescripcion = v.findViewById(R.id.editTextDescripcion);
         spTipo = v.findViewById(R.id.spinnerTipo);
         spUbicacion = v.findViewById(R.id.spinnerUbicacion);
         ivIcono = v.findViewById(R.id.imageViewIcon);
-
 
         viewModel = new ViewModelProvider(getActivity()).get(LucasViewModel.class);
 
@@ -89,6 +98,36 @@ public class NewInventariableDialogFragment extends DialogFragment {
 
         //TODO descomentar
         //loadUbicaciones();
+
+        service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
+
+        if (idInventariable != null) {
+
+            builder.setTitle("Editar dispositivo");
+            builder.setMessage("Modifique los datos que desee del dispositivo");
+
+            Call<Inventariable> call = service.getInventariableById(idInventariable);
+            call.enqueue(new Callback<Inventariable>() {
+                @Override
+                public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
+                    if (response.isSuccessful()) {
+                        inventariable_edit = response.body();
+                        etNombre.setText(inventariable_edit.getNombre());
+                        etCodigo.setText(inventariable_edit.getCodigo());
+                        etDescripcion.setText(inventariable_edit.getDescripcion());
+                        typeSelect = inventariable_edit.getTipo();
+                        ubicationSelect = inventariable_edit.getUbicacion();
+                        ivIcono.setVisibility(View.INVISIBLE);
+                        tvNombreImagen.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Inventariable> call, Throwable t) {
+
+                }
+            });
+        }
 
 
         spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -128,67 +167,82 @@ public class NewInventariableDialogFragment extends DialogFragment {
 
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(final DialogInterface dialog, int which) {
 
                 name = etNombre.getText().toString();
                 code = etCodigo.getText().toString();
                 description = etDescripcion.getText().toString();
 
+                if (!name.isEmpty() && !code.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty() && !ubicationSelect.isEmpty()) {
+                    //crear
+                    if (idInventariable == null) {
+                        if (uriSelected == null) {
+                            tvImage.setError("Seleccione una foto");
+                        } else {
+                            try {
+                                InputStream inputStream = getActivity().getContentResolver().openInputStream(uriSelected);
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+                                int cantBytes;
+                                byte[] buffer = new byte[1024 * 4];
 
-                //TODO añadir campo ubicación
-                if (uriSelected != null && !name.isEmpty() && !code.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty()) {
-                    service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
-                    try {
-                        InputStream inputStream = getActivity().getContentResolver().openInputStream(uriSelected);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-                        int cantBytes;
-                        byte[] buffer = new byte[1024 * 4];
+                                while ((cantBytes = bufferedInputStream.read(buffer, 0, 1024 * 4)) != -1) {
+                                    baos.write(buffer, 0, cantBytes);
+                                }
 
-                        while ((cantBytes = bufferedInputStream.read(buffer, 0, 1024 * 4)) != -1) {
-                            baos.write(buffer, 0, cantBytes);
+                                final RequestBody requestFile =
+                                        RequestBody.create(
+                                                MediaType.parse(getActivity().getContentResolver().getType(uriSelected)), baos.toByteArray());
+
+                                MultipartBody.Part imagen =
+                                        MultipartBody.Part.createFormData("avatar", fileName, requestFile);
+
+                                RequestBody tipo = RequestBody.create(MultipartBody.FORM, typeSelect);
+                                RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
+                                RequestBody descripcion = RequestBody.create(MultipartBody.FORM, description);
+                                RequestBody codigo = RequestBody.create(MultipartBody.FORM, description);
+                                RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubicationSelect);
+
+                                Call<Inventariable> create = service.createInventariable(imagen, codigo, tipo, nombre, descripcion, ubicacion);
+
+                                create.enqueue(new Callback<Inventariable>() {
+                                    @Override
+                                    public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
+                                        //TODO arreglar el mostrar mensaje
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Inventariable> call, Throwable t) {
+                                        Toast.makeText(getActivity(), "Error de conexión al intentar crear", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        final RequestBody requestFile =
-                                RequestBody.create(
-                                        MediaType.parse(getActivity().getContentResolver().getType(uriSelected)), baos.toByteArray());
-
-                        MultipartBody.Part imagen =
-                                MultipartBody.Part.createFormData("avatar", fileName, requestFile);
-
-                        RequestBody tipo = RequestBody.create(MultipartBody.FORM, typeSelect);
-                        RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
-                        RequestBody descripcion = RequestBody.create(MultipartBody.FORM, description);
-                        RequestBody codigo = RequestBody.create(MultipartBody.FORM, description);
-                        //TODO cambia por ubicationselect
-                        RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, "AULA07");
-
-                        Call<Inventariable> call = service.createInventariable(imagen, codigo, tipo, nombre, descripcion, ubicacion);
-
-                        call.enqueue(new Callback<Inventariable>() {
+                        //Editar
+                    } else {
+                        inventariable_edit = new Inventariable(code, typeSelect, name, description, ubicationSelect);
+                        Call<Inventariable> update = service.updateInventariable(idInventariable, inventariable_edit);
+                        update.enqueue(new Callback<Inventariable>() {
                             @Override
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                                if(response.isSuccessful()){
-                                    Toast.makeText(getActivity(), "Dispositivo creado correctamente", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    Toast.makeText(getActivity(), "Algo ha salido mal", Toast.LENGTH_SHORT).show();
-                                }
+                                Log.d("RESPONSE EDITAR", ""+response.body());
+                                dialog.dismiss();
                             }
 
                             @Override
                             public void onFailure(Call<Inventariable> call, Throwable t) {
-                                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Error de conexión al editar", Toast.LENGTH_SHORT).show();
+
                             }
                         });
-
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
-
-
                 } else {
 
                     if (name.isEmpty()) {
@@ -201,10 +255,6 @@ public class NewInventariableDialogFragment extends DialogFragment {
 
                     if (code.isEmpty()) {
                         etCodigo.setError("Introduzca un código");
-                    }
-
-                    if (uriSelected == null) {
-                        tvImage.setError("Seleccione una foto");
                     }
 
                     if (typeSelect.isEmpty() || ubicationSelect.isEmpty()) {
@@ -228,7 +278,7 @@ public class NewInventariableDialogFragment extends DialogFragment {
                     arrayTipos.add(tipos.get(i));
                 }
 
-                adapterTipos = new ArrayAdapter<String>(NewInventariableDialogFragment.this.getActivity(),
+                adapterTipos = new ArrayAdapter<String>(InventariableDialogFragment.this.getActivity(),
                         android.R.layout.simple_spinner_item, arrayTipos);
                 adapterTipos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spTipo.setAdapter(adapterTipos);
