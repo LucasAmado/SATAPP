@@ -17,4 +17,5 @@
         <item name="mrl_rippleHover">true</item>
         <item name="mrl_rippleAlpha">0.2</item>
     </style>
+    <string name="button_cancelar">Cancelar</string>
 </resources>
