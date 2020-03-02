@@ -15,8 +15,6 @@ import lombok.NonNull;
 
 public class TicketsViewModel extends AndroidViewModel {
     private EspeRepository repository;
-    private LiveData<List<Ticket>> tickets;
-    private static int ticketSelected;
 
     public TicketsViewModel(@NonNull Application application) {
         super(application);

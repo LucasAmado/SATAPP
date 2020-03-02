@@ -14,28 +14,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.requests.TicketCreateRequest;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
-import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
-import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketImagesAdapter;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -45,7 +39,6 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.MultipartBody.Part;
 import okhttp3.RequestBody;
 
@@ -67,6 +60,10 @@ public class TicketCreateActivity extends AppCompatActivity {
     private List<Part> photos;
     private TicketsViewModel viewModel;
     private static final int RESULT_LOAD_IMAGE = 1;
+    private UserViewModel userViewModel;
+    private List<UsuarioDummy> techs;
+    private String techId="";
+    private String deviceId="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,51 +72,112 @@ public class TicketCreateActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         viewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         preview.setLayoutManager(layoutManager);
+        devices = new ArrayList<>();
+        techs = new ArrayList<>();
+
+        title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (title.getText().toString().isEmpty()) {
+                    title.setError("Debes escribir un título");
+                } else {
+                    title.setError(null);
+                }
+            }
+        });
+
+        description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (description.getText().toString().isEmpty()) {
+                    description.setError("Debes describir qué problema ocurre");
+                } else {
+                    description.setError(null);
+                }
+            }
+        });
 
 
-        //TODO: COMPLETAR LOS SIGUIENTES MÉTODOS: getDevices(), getTechs()
+        //TODO: COMPLETAR LOS SIGUIENTES MÉTODOS: getDevices()
         getDevices();
         getTechs();
 
-        device.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!devices.isEmpty()){
+            device.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
-                dialog.setTitle("Selecciona un dispositivo");
-                String [] namesDevices= new String[devices.size()];
-                for(int i =0;i<namesDevices.length ;i++){
-                    namesDevices[i]=devices.get(i).getNombre();
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
+                    dialog.setTitle("Selecciona un dispositivo");
+                    String[] namesDevices = new String[devices.size()];
+                    for (int i = 0; i < namesDevices.length; i++) {
+                        namesDevices[i] = devices.get(i).getNombre();
+                    }
+                    dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            device.setText(namesDevices[which]);
+                            deviceId = devices.get(which).getId();
+                        }
+                    });
+
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = dialog.create();
+                    alert.show();
                 }
-                dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        device.setText(namesDevices[which]);
-                    }
-                });
+            });
+        }else{
+            device.setText("No hay ningún dispositivo dado de alta");
+            device.setEnabled(false);
+        }
 
-                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alert = dialog.create();
-                alert.show();
-            }
-        });
         //TODO: ESCONDER ESTE BOTÓN SEGÚN SEA EL ROL DEL USUARIO
-        tech.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!techs.isEmpty()){
+            tech.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
+                    dialog.setTitle("Seleccione un técnico");
+                    String[] namesTechs = new String[techs.size()];
+                    for (int i = 0; i < namesTechs.length; i++) {
+                        namesTechs[i] = techs.get(i).getName();
+                    }
+                    dialog.setItems(namesTechs, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            tech.setText(namesTechs[which]);
+                            techId = techs.get(which).getId();
+                        }
+                    });
 
-            }
-        });
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = dialog.create();
+                    alert.show();
+                }
+            });
+        }else{
+            tech.setText("No hay ningún técnico dado de alta");
+            tech.setEnabled(false);
+        }
+
 
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,12 +241,13 @@ public class TicketCreateActivity extends AppCompatActivity {
     }
 
     public void save() {
+
         TicketCreateRequest request =
                 new TicketCreateRequest(
                         title.getText().toString(),
                         description.getText().toString(),
-                        device.getText().toString(),
-                        tech.getText().toString(),
+                        deviceId,
+                        techId,
                         photos);
 
         viewModel.createTicket(request).observe(this, new Observer<Ticket>() {
@@ -201,13 +260,25 @@ public class TicketCreateActivity extends AppCompatActivity {
                 }
             }
         });
-    }
 
-    public void getDevices(){
 
     }
 
-    public void getTechs(){
+    public void getDevices() {
 
+    }
+
+    public void getTechs() {
+        userViewModel.getUsers().observe(this, new Observer<List<UsuarioDummy>>() {
+            @Override
+            public void onChanged(List<UsuarioDummy> usuarios) {
+                if (usuarios != null || !usuarios.isEmpty()) {
+                    techs = usuarios.stream().filter(x -> x.getRole().equals("tecnico")).collect(Collectors.toList());
+                    Log.d("TECNICOS", techs.toString());
+                } else {
+                    Toast.makeText(TicketCreateActivity.this, "No hay ningún técnico dado de alta", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

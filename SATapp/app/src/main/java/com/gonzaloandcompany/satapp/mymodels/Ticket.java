@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Ticket {
     private String id;
+    //TODO:CAMBIAR USUARIODUMMY POR USUARIO
     private UsuarioDummy creado_por;
     private String fecha_creacion;
     private String estado;
