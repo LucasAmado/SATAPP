@@ -24,4 +24,6 @@
     <string name="selectDevice">Selecciona el dispositivo</string>
     <string name="selectTech">Selecciona un técnico</string>
     <string name="save">Guardar</string>
+    <string name="device">Dispositivo</string>
+    <string name="tech">Técnico</string>
 </resources>

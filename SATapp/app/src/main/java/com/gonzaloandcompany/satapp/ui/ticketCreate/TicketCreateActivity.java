@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esafirm.imagepicker.features.ImagePicker;
@@ -51,13 +52,13 @@ public class TicketCreateActivity extends AppCompatActivity {
     @BindView(R.id.ticketCreatePreview)
     RecyclerView preview;
     @BindView(R.id.ticketCreateTech)
-    EditText tech;
+    TextView tech;
     @BindView(R.id.ticketCreateTItle)
     EditText title;
     @BindView(R.id.ticketCreateDescription)
     EditText description;
     @BindView(R.id.ticketCreateDevice)
-    EditText device;
+    TextView device;
     @BindView(R.id.ticketCreateSave)
     Button save;
 
@@ -112,78 +113,6 @@ public class TicketCreateActivity extends AppCompatActivity {
         getDevices();
         getTechs();
 
-        if(!devices.isEmpty()){
-            device.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
-                    dialog.setTitle("Selecciona un dispositivo");
-                    String[] namesDevices = new String[devices.size()];
-                    for (int i = 0; i < namesDevices.length; i++) {
-                        namesDevices[i] = devices.get(i).getNombre();
-                    }
-                    dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            device.setText(namesDevices[which]);
-                            deviceId = devices.get(which).getId();
-                        }
-                    });
-
-                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alert = dialog.create();
-                    alert.show();
-                }
-            });
-        }else{
-            device.setText("No hay ningún dispositivo dado de alta");
-            device.setEnabled(false);
-        }
-
-
-        //TODO: ESCONDER ESTE BOTÓN SEGÚN SEA EL ROL DEL USUARIO
-        if(!techs.isEmpty()){
-            tech.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
-                    dialog.setTitle("Seleccione un técnico");
-                    String[] namesTechs = new String[techs.size()];
-                    for (int i = 0; i < namesTechs.length; i++) {
-                        namesTechs[i] = techs.get(i).getName();
-                    }
-                    dialog.setItems(namesTechs, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            tech.setText(namesTechs[which]);
-                            techId = techs.get(which).getId();
-                        }
-                    });
-
-                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alert = dialog.create();
-                    alert.show();
-                }
-            });
-        }else{
-            tech.setText("No hay ningún técnico dado de alta");
-            tech.setEnabled(false);
-        }
-
-
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +125,7 @@ public class TicketCreateActivity extends AppCompatActivity {
 
             }
         });
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -279,7 +209,40 @@ public class TicketCreateActivity extends AppCompatActivity {
     }
 
     public void getDevices() {
+        if(!devices.isEmpty()){
+            device.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
+                    dialog.setTitle("Selecciona un dispositivo");
+                    String[] namesDevices = new String[devices.size()];
+                    for (int i = 0; i < namesDevices.length; i++) {
+                        namesDevices[i] = devices.get(i).getNombre();
+                    }
+                    dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            device.setText(namesDevices[which]);
+                            deviceId = devices.get(which).getId();
+                        }
+                    });
+
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = dialog.create();
+                    alert.show();
+                }
+            });
+        }else{
+            device.setText("No hay ningún dispositivo dado de alta");
+            device.setEnabled(false);
+        }
     }
 
     public void getTechs() {
@@ -289,10 +252,47 @@ public class TicketCreateActivity extends AppCompatActivity {
                 if (usuarios != null || !usuarios.isEmpty()) {
                     techs = usuarios.stream().filter(x -> x.getRole().equals("tecnico")).collect(Collectors.toList());
                     Log.d("TECNICOS", techs.toString());
+
+                    //TODO: ESCONDER ESTE BOTÓN SEGÚN SEA EL ROL DEL USUARIO
+                    if(!techs.isEmpty()){
+                        tech.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
+                                dialog.setTitle("Seleccione un técnico");
+                                String[] namesTechs = new String[techs.size()];
+                                for (int i = 0; i < namesTechs.length; i++) {
+                                    namesTechs[i] = techs.get(i).getName();
+                                }
+                                dialog.setItems(namesTechs, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        tech.setText(namesTechs[which]);
+                                        techId = techs.get(which).getId();
+                                    }
+                                });
+
+                                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog alert = dialog.create();
+                                alert.show();
+                            }
+                        });
+                    }else{
+                        tech.setText("No hay ningún técnico dado de alta");
+                        tech.setEnabled(false);
+                    }
                 } else {
                     Toast.makeText(TicketCreateActivity.this, "No hay ningún técnico dado de alta", Toast.LENGTH_LONG).show();
                 }
             }
         });
+
+
     }
 }

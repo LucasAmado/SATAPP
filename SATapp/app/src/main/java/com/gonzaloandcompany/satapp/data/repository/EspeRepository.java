@@ -67,31 +67,29 @@ public class EspeRepository {
 
     public LiveData<Ticket> createTicket(TicketCreateRequest request){
         final MutableLiveData<Ticket> data = new MutableLiveData<>();
-
+        Log.d("REQUEST",request.toString());
         RequestBody title = RequestBody.create(request.getTitulo(), MultipartBody.FORM);
         RequestBody description = RequestBody.create(request.getDescripcion(),MultipartBody.FORM);
         RequestBody inventariable = RequestBody.create(request.getInventariable(),MultipartBody.FORM);
         RequestBody tech = RequestBody.create(request.getTecnico(), MultipartBody.FORM);
 
-        Call<Ticket> call = service.createTicket(title,description, inventariable, tech,request.getFotos());
+        Call<Ticket> call=null;
 
         if(request.getInventariable().isEmpty()&& request.getTecnico().isEmpty()){
             call = service.createTicket(title,description, null,null,request.getFotos());
         }else if(request.getInventariable().isEmpty()&&!request.getTecnico().isEmpty()){
-
+          //TODO: DA 500 SI LE DOY UN TECNICO
             call = service.createTicket(title,description, null,tech,request.getFotos());
         }else if(!request.getInventariable().isEmpty()&&request.getTecnico().isEmpty()){
-
             call = service.createTicket(title,description, inventariable,null,request.getFotos());
         }else if(!request.getInventariable().isEmpty()&&!request.getTecnico().isEmpty()){
-
             call = service.createTicket(title,description, inventariable, tech,request.getFotos());
         }
 
         call.enqueue(new Callback<Ticket>() {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {
-
+                Log.d("RESPONSE",response.message().toString());
                 if(response.isSuccessful()){
                     data.setValue(response.body());
                 }

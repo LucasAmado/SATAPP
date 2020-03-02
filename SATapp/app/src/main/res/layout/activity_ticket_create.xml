@@ -67,41 +67,65 @@
         app:layout_constraintStart_toStartOf="@+id/ticketCreateTItle"
         app:layout_constraintTop_toBottomOf="@+id/ticketCreateTItle" />
 
-    <EditText
+    <TextView
         android:id="@+id/ticketCreateDevice"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:ems="10"
         android:hint="@string/selectDevice"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDescription"
-        app:layout_constraintStart_toStartOf="@+id/ticketCreateDescription"
-        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDescription" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView6"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <EditText
+    <TextView
         android:id="@+id/ticketCreateTech"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:ems="10"
         android:hint="@string/selectTech"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDevice"
-        app:layout_constraintStart_toStartOf="@+id/ticketCreateDevice"
-        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDevice" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView7"
+        app:layout_constraintStart_toStartOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <Button
         android:id="@+id/ticketCreateSave"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:background="@color/colorPrimaryDark"
         android:text="@string/save"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="@+id/ticketCreateTech"
-        app:layout_constraintStart_toStartOf="@+id/ticketCreateTech"
-        app:layout_constraintTop_toBottomOf="@+id/ticketCreateTech" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/device"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDescription"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateDescription"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDescription" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/tech"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/ticketCreateDevice"
+        app:layout_constraintStart_toStartOf="@+id/ticketCreateDevice"
+        app:layout_constraintTop_toBottomOf="@+id/ticketCreateDevice" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
