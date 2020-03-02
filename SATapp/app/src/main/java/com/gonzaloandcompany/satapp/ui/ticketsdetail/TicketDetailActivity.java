@@ -2,6 +2,7 @@ package com.gonzaloandcompany.satapp.ui.ticketsdetail;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -67,6 +68,7 @@ public class TicketDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ticket_detail);
         ButterKnife.bind(this);
         ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
+        getTicket();
 
         //TODO: ESCONDER SEGÚN EL ROL DEL USUARIO
         add.setOnClickListener(new View.OnClickListener() {
@@ -86,11 +88,12 @@ public class TicketDetailActivity extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                ticketsViewModel.deleteTicket(ticket.getId());
+                finish();
             }
         });
 
-        getTicket();
+
     }
 
     public void getTicket() {
@@ -101,6 +104,7 @@ public class TicketDetailActivity extends AppCompatActivity {
             public void onChanged(Ticket data) {
                 if (data != null) {
                     ticket = data;
+                    Log.d("TICKET",ticket.toString());
 
                     if (Estado.PENDIENTE_ASIGNACION.toString().equals(ticket.getEstado()))
                         state.setText(Estado.PENDIENTE_ASIGNACION.getDescription());
@@ -118,7 +122,7 @@ public class TicketDetailActivity extends AppCompatActivity {
                     createdBy.setText(ticket.getCreado_por().getName());
                     createdBy.setVisibility(View.VISIBLE);
 
-                    LocalDate date = LocalDate.parse(ticket.getFecha_creacion().substring(0, 9));
+                    LocalDate date = LocalDate.parse(ticket.getFecha_creacion().substring(0, 10));
                     createdAt.setText(date.toString("dd/MM/yyyy"));
                     createdAt.setVisibility(View.VISIBLE);
 

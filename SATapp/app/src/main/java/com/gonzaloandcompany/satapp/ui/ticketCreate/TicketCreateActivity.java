@@ -3,11 +3,13 @@ package com.gonzaloandcompany.satapp.ui.ticketCreate;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -30,6 +32,7 @@ import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,6 +58,8 @@ public class TicketCreateActivity extends AppCompatActivity {
     EditText description;
     @BindView(R.id.ticketCreateDevice)
     EditText device;
+    @BindView(R.id.ticketCreateSave)
+    Button save;
 
     private List<Inventariable> devices;
     private List<Part> photos;
@@ -191,6 +196,12 @@ public class TicketCreateActivity extends AppCompatActivity {
 
             }
         });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save();
+            }
+        });
     }
 
     @Override
@@ -214,10 +225,11 @@ public class TicketCreateActivity extends AppCompatActivity {
 
     private Part createMultipart(Image image) {
         Part img = null;
+        Uri uri=Uri.fromFile(new File(image.getPath()));
 
         try {
 
-            InputStream inputStream = getContentResolver().openInputStream(Uri.parse(image.getPath()));
+            InputStream inputStream = getContentResolver().openInputStream(uri);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
             int cantBytes;
@@ -226,12 +238,15 @@ public class TicketCreateActivity extends AppCompatActivity {
             while ((cantBytes = bufferedInputStream.read(buffer, 0, 1024 * 4)) != -1) {
                 baos.write(buffer, 0, cantBytes);
             }
-            RequestBody filePart =
-                    RequestBody.create(
-                            MediaType.parse(getContentResolver().getType(Uri.parse(image.getPath()))), baos.toByteArray());
+            if(uri!=null) {
 
+                ContentResolver contentResolver = getContentResolver();
 
-            img = Part.createFormData("fotos", image.getName(), filePart);
+                RequestBody filePart =
+                        RequestBody.create(
+                                MediaType.parse("multipart/form-data"), baos.toByteArray());
+                img = Part.createFormData("fotos", image.getName(), filePart);
+            }
 
         } catch (IOException exception) {
             Log.d("EXCEPTION UPLOAD", exception.getMessage());
@@ -241,7 +256,6 @@ public class TicketCreateActivity extends AppCompatActivity {
     }
 
     public void save() {
-
         TicketCreateRequest request =
                 new TicketCreateRequest(
                         title.getText().toString(),

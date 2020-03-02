@@ -35,5 +35,6 @@ public class MainActivity extends AppCompatActivity implements TicketListener {
         Intent goToDetail = new Intent(this, TicketDetailActivity.class);
         goToDetail.putExtra("ticketID",id);
         startActivity(goToDetail);
+
     }
 }

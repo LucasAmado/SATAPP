@@ -1,5 +1,7 @@
 package com.gonzaloandcompany.satapp.data.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -11,6 +13,8 @@ import com.gonzaloandcompany.satapp.retrofit.TicketService;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,10 +67,31 @@ public class EspeRepository {
 
     public LiveData<Ticket> createTicket(TicketCreateRequest request){
         final MutableLiveData<Ticket> data = new MutableLiveData<>();
-        Call<Ticket> call = service.createTicket(request.getTitulo(),request.getDescripcion(),request.getInventariable(),request.getTecnico(),request.getFotos());
+
+        RequestBody title = RequestBody.create(request.getTitulo(), MultipartBody.FORM);
+        RequestBody description = RequestBody.create(request.getDescripcion(),MultipartBody.FORM);
+        RequestBody inventariable = RequestBody.create(request.getInventariable(),MultipartBody.FORM);
+        RequestBody tech = RequestBody.create(request.getTecnico(), MultipartBody.FORM);
+
+        Call<Ticket> call = service.createTicket(title,description, inventariable, tech,request.getFotos());
+
+        if(request.getInventariable().isEmpty()&& request.getTecnico().isEmpty()){
+            call = service.createTicket(title,description, null,null,request.getFotos());
+        }else if(request.getInventariable().isEmpty()&&!request.getTecnico().isEmpty()){
+
+            call = service.createTicket(title,description, null,tech,request.getFotos());
+        }else if(!request.getInventariable().isEmpty()&&request.getTecnico().isEmpty()){
+
+            call = service.createTicket(title,description, inventariable,null,request.getFotos());
+        }else if(!request.getInventariable().isEmpty()&&!request.getTecnico().isEmpty()){
+
+            call = service.createTicket(title,description, inventariable, tech,request.getFotos());
+        }
+
         call.enqueue(new Callback<Ticket>() {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {
+
                 if(response.isSuccessful()){
                     data.setValue(response.body());
                 }
@@ -74,10 +99,29 @@ public class EspeRepository {
 
             @Override
             public void onFailure(Call<Ticket> call, Throwable t) {
-
+                Log.d("CREATE TICKET","FAILURE: "+t.getMessage());
             }
         });
         return data;
+    }
+
+    public void deleteTicket(String id){
+        Call<Void> call = service.deleteTicket(id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("DELETE TICKET",id+" SUCCESSFUL");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("DELETE TICKET",id+" FAILURE");
+            }
+
+        });
+
     }
 
 }

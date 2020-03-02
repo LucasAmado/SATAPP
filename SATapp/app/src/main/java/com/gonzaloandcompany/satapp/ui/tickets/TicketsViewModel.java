@@ -1,6 +1,7 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -33,4 +34,5 @@ public class TicketsViewModel extends AndroidViewModel {
         return repository.createTicket(request);
     }
 
+    public void deleteTicket(String id){repository.deleteTicket(id);}
 }

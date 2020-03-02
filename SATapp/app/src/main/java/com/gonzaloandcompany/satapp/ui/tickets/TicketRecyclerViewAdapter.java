@@ -56,7 +56,7 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
             } else if (aux.contains(Types.ORDENADOR.getDescription()) || aux.contains(Types.PC.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_computer);
             }
-            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion().substring(0, 9));
+            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion().substring(0, 10));
             holder.date.setText(date.toString("dd/MM/yyyy"));
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
