@@ -4,6 +4,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+<<<<<<< HEAD
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -15,4 +16,26 @@
     <string name="login_failed">"Login failed"</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+=======
+    <string name="long_lorem_ipsum">
+        Duis tellus metus, elementum a lectus id, aliquet interdum mauris. Nam bibendum efficitur sollicitudin. Proin eleifend libero velit, nec fringilla dolor finibus quis. nMorbi eu libero pellentesque, rutrum metus quis, blandit est. Fusce bibendum accumsan nisi vulputate feugiat. In fermentum laoreet euismod. Praesent sem nisl, facilisis eget odio at, rhoncus scelerisque ipsum. Nulla orci dui, dignissim a risus ut, lobortis porttitor velit.
+        \n\nNulla id lectus metus. Maecenas a lorem in odio auctor facilisis non vitae nunc. Sed malesuada volutpat massa. Praesent sit amet lacinia augue, mollis tempor dolor.
+    </string>
+    <string name="edit">Editar</string>
+    <string name="add">Añadir</string>
+    <string name="delete">Eliminar</string>
+    <string name="Description">Descripción</string>
+    <string name="Info">Información</string>
+    <string name="technicAssigned">Técnico asignado:</string>
+    <string name="CreatedAt">Fecha:</string>
+    <string name="CreatedBy">Creado por:</string>
+    <string name="state">Estado de la incidencia</string>
+    <string name="assign">Asignar técnico</string>
+    <string name="createTicket">Nuevo Ticket</string>
+    <string name="load">Subir imágenes</string>
+    <string name="title">Título</string>
+    <string name="selectDevice">Selecciona el dispositivo</string>
+    <string name="selectTech">Selecciona un técnico</string>
+    <string name="save">Guardar</string>
+>>>>>>> c30c71b937157f41c6f13bb420c18101fedd6d01
 </resources>

@@ -12,11 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+<<<<<<< HEAD
         <activity android:name=".RegisterActivity"></activity>
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:label="@string/title_activity_login" />
+=======
+        <activity android:name=".ui.ticketCreate.TicketCreateActivity"></activity>
+        <activity android:name=".ui.FullSizeImageActivity" />
+        <activity android:name=".ui.ticketsdetail.TicketDetailActivity" />
+>>>>>>> c30c71b937157f41c6f13bb420c18101fedd6d01
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

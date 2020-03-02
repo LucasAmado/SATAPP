@@ -5,10 +5,11 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.gonzaloandcompany.satapp"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -16,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 
@@ -51,7 +56,17 @@ dependencies {
     implementation 'com.codesgood:justifiedtextview:1.1.0'
     //JodaTime
     implementation 'joda-time:joda-time:2.10.5'
+<<<<<<< HEAD
     implementation 'org.jetbrains:annotations-java5:15.0'
 
+=======
+    //material ripple
+    implementation 'com.balysv:material-ripple:1.0.2'
+    //ImagePicker to upload images
+    implementation 'com.github.esafirm.android-image-picker:imagepicker:2.2.0'
+    implementation 'com.github.esafirm.android-image-picker:rximagepicker:2.2.0'
+    //dropdown list
+    implementation 'com.jaredrummler:material-spinner:1.3.1'
+>>>>>>> c30c71b937157f41c6f13bb420c18101fedd6d01
 
 }

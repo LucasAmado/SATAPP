@@ -1,8 +1,7 @@
 package com.gonzaloandcompany.satapp;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -10,7 +9,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity {
+import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
+import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+public class MainActivity extends AppCompatActivity implements TicketListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +30,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
+    @Override
+    public void onTicketClick(String id) {
+        Intent goToDetail = new Intent(this, TicketDetailActivity.class);
+        goToDetail.putExtra("ticketID",id);
+        startActivity(goToDetail);
+
+    }
 }
