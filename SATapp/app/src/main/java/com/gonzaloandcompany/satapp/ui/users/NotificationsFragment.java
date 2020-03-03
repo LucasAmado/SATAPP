@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.notifications;
+package com.gonzaloandcompany.satapp.ui.users;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

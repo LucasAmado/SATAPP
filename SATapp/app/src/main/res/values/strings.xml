@@ -26,4 +26,7 @@
     <string name="save">Guardar</string>
     <string name="device">Dispositivo</string>
     <string name="tech">Técnico</string>
+    <string name="devices">Dispositivos</string>
+    <string name="tickets">Incidencias</string>
+    <string name="users">Usuarios</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.notifications;
+package com.gonzaloandcompany.satapp.ui.users;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
