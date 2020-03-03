@@ -6,8 +6,26 @@
     <string name="title_notifications">Notifications</string>
     <string name="save">Guardar</string>
     <string name="cancel">Cancelar</string>
-    <string name="delete">Borrar</string>
+    <string name="delete">Eliminar</string>
     <string name="hint_name">Nombre</string>
     <string name="hint_descripcion">Descripción</string>
     <string name="title_activity_inventariable_detail">InventariableDetailActivity</string>
+    <string name="long_lorem_ipsum">
+        Duis tellus metus, elementum a lectus id, aliquet interdum mauris. Nam bibendum efficitur sollicitudin. Proin eleifend libero velit, nec fringilla dolor finibus quis. nMorbi eu libero pellentesque, rutrum metus quis, blandit est. Fusce bibendum accumsan nisi vulputate feugiat. In fermentum laoreet euismod. Praesent sem nisl, facilisis eget odio at, rhoncus scelerisque ipsum. Nulla orci dui, dignissim a risus ut, lobortis porttitor velit.
+        \n\nNulla id lectus metus. Maecenas a lorem in odio auctor facilisis non vitae nunc. Sed malesuada volutpat massa. Praesent sit amet lacinia augue, mollis tempor dolor.
+    </string>
+    <string name="edit">Editar</string>
+    <string name="add">Añadir</string>
+    <string name="Description">Descripción</string>
+    <string name="Info">Información</string>
+    <string name="technicAssigned">Técnico asignado:</string>
+    <string name="CreatedAt">Fecha:</string>
+    <string name="CreatedBy">Creado por:</string>
+    <string name="state">Estado de la incidencia</string>
+    <string name="assign">Asignar técnico</string>
+    <string name="createTicket">Nuevo Ticket</string>
+    <string name="load">Subir imágenes</string>
+    <string name="title">Título</string>
+    <string name="selectDevice">Selecciona el dispositivo</string>
+    <string name="selectTech">Selecciona un técnico</string>
 </resources>

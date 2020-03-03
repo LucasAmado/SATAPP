@@ -1,30 +1,27 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.mymodels.PagedList;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.ui.ticketCreate.TicketCreateActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TicketsFragment extends Fragment {
@@ -65,7 +62,13 @@ public class TicketsFragment extends Fragment {
         progressBar = view.findViewById(R.id.ticketListProgressBar);
         add = view.findViewById(R.id.ticketListAdd);
 
-
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToCreate = new Intent(context, TicketCreateActivity.class);
+                startActivity(goToCreate);
+            }
+        });
 
         tickets = new PagedList<>();
 
@@ -75,6 +78,7 @@ public class TicketsFragment extends Fragment {
         adapter = new TicketRecyclerViewAdapter(tickets.getResults(), listener);
         recyclerView.setAdapter(adapter);
 
+        //TODO: LISTAR SEGÚN ROL
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {

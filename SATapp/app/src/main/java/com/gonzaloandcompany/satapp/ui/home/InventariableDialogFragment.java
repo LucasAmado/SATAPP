@@ -27,8 +27,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
+import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -51,8 +53,7 @@ public class InventariableDialogFragment extends DialogFragment {
     EditText etNombre, etCodigo, etDescripcion;
     TextView tvImage, tvNombreImagen;
     Spinner spTipo, spUbicacion;
-    //TODO quitar valor ubicacion
-    String typeSelect, ubicationSelect = "AULA07", name, code, description, fileName;
+    String typeSelect, ubicationSelect, name, code, description, fileName;
     ImageView ivIcono;
     ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
@@ -94,8 +95,7 @@ public class InventariableDialogFragment extends DialogFragment {
 
         loadTipos();
 
-        //TODO descomentar
-        //loadUbicaciones();
+        loadUbicaciones();
 
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
 

@@ -1,6 +1,5 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.gonzaloandcompany.satapp.R;
-import com.gonzaloandcompany.satapp.common.MyApp;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.mymodels.Types;
 
@@ -59,7 +56,7 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
             } else if (aux.contains(Types.ORDENADOR.getDescription()) || aux.contains(Types.PC.getDescription())) {
                 holder.img.setImageResource(R.drawable.ic_computer);
             }
-            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion().substring(0, 9));
+            LocalDate date = LocalDate.parse(holder.ticket.getFecha_creacion().substring(0, 10));
             holder.date.setText(date.toString("dd/MM/yyyy"));
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,14 +77,12 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
     }
 
     public void setData(List<Ticket> list) {
-        Log.d("SET DATA","TRUE");
         this.tickets = list;
         notifyDataSetChanged();
 
     }
 
     public void addAll(List<Ticket> list) {
-        Log.d("ADD ALL","TRUE");
         int lastIndex = tickets.size() - 1;
         tickets.addAll(list);
         notifyDataSetChanged();

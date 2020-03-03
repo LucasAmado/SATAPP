@@ -58,28 +58,15 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="235dp" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/edit_image_inventariable"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline2">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Información" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem_tickets"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tickets" />
-
-        </com.google.android.material.tabs.TabLayout>
-
+            app:srcCompat="@drawable/ic_edit_white_24dp" />
 
         <ScrollView
             android:layout_width="0dp"
@@ -87,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabLayout"><![CDATA[>
+            app:layout_constraintTop_toTopOf="@+id/guideline2"><![CDATA[>
 
             ]]>
 
@@ -98,7 +85,7 @@
                 android:padding="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tabLayout">
+                app:layout_constraintTop_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/imageViewEdit"
@@ -275,6 +262,35 @@
                     app:layout_constraintEnd_toEndOf="@+id/textView6"
                     app:layout_constraintStart_toStartOf="@+id/textView5"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+                <ImageView
+                    android:id="@+id/imageViewIconTickets"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintStart_toStartOf="@+id/imageViewIconescription"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDescription"
+                    app:srcCompat="@drawable/ic_ticket" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tickets"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageViewIconTickets"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewIconescription"
+                    app:layout_constraintStart_toStartOf="@+id/textView5"
+                    app:layout_constraintTop_toTopOf="@+id/imageViewIconTickets" />
+
+                <ListView
+                    android:id="@+id/lvTicketsInventariable"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/textViewDescription"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewIconTickets" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

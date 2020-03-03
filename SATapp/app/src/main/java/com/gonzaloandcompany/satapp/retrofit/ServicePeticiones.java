@@ -1,7 +1,7 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
-import android.net.Uri;
 
+import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 
 import java.util.List;
@@ -36,15 +36,12 @@ public interface ServicePeticiones {
     Call<List<String>> getTiposInventariable();
 
     //TODO hablar con luismi
-    @GET("/inventariable/tipos")
+    @GET("/inventariable/ubicaciones")
     Call<List<String>> getUbicaciones();
 
     @GET("/inventariable/{id_inventariable}")
     Call<Inventariable> getInventariableById(@Path("id_inventariable") String id_inventariable);
 
-    //TODO averiguar que devuelve
-    @GET("/inventariable/img/{id_inventariable}")
-    Call<Uri> getImageInventariable(@Path("id_inventariable") String id_inventariable);
 
     @PUT("/inventariable/{id}")
     Call<Inventariable> updateInventariable(@Path("id") String id, @Body Inventariable inventariable);

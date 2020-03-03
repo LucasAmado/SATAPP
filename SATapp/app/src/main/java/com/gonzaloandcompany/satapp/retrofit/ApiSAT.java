@@ -19,7 +19,6 @@ public class ApiSAT {
     private static OkHttpClient.Builder httpClient =
             new OkHttpClient.Builder();
 
-
     public static <S> S createServicePeticiones (Class<S> serviceClass, final String authToken) {
 
         if (retrofit==null) {
@@ -27,8 +26,8 @@ public class ApiSAT {
             if(authToken!=null){
                 httpClient.addInterceptor(new InterceptorToken(authToken));
             }
-
             builder.client(httpClient.build());
+
             retrofit = builder.build();
         }
 
