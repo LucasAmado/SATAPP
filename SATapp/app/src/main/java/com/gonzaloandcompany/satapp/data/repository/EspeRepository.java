@@ -27,9 +27,9 @@ public class EspeRepository {
     }
 
 
-    public LiveData<List<Ticket>> getTickets(int page) {
+    public LiveData<List<Ticket>> getTickets(int page, int limit) {
         final MutableLiveData<List<Ticket>> data = new MutableLiveData<>();
-        Call<List<Ticket>> call = service.getTickets(page);
+        Call<List<Ticket>> call = service.getTickets(page,limit);
         call.enqueue(new Callback<List<Ticket>>() {
             @Override
             public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
