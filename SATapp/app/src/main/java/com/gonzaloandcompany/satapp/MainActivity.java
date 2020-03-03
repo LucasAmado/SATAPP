@@ -10,7 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.gonzaloandcompany.satapp.ui.inventariables.InventariableDetailActivity;
+import com.gonzaloandcompany.satapp.ui.home.InventariableDetailActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

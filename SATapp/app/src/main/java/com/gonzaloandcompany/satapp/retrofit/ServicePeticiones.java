@@ -2,7 +2,6 @@ package com.gonzaloandcompany.satapp.retrofit;
 
 import android.net.Uri;
 
-import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 
 import java.util.List;

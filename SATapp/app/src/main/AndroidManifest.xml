@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.inventariables.InventariableDetailActivity"
+            android:name=".ui.home.InventariableDetailActivity"
             android:label="@string/title_activity_inventariable_detail"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

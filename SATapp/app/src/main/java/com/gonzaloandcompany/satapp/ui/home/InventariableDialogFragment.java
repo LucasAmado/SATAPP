@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.inventariables;
+package com.gonzaloandcompany.satapp.ui.home;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,10 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
-import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.inventariables;
+package com.gonzaloandcompany.satapp.ui.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

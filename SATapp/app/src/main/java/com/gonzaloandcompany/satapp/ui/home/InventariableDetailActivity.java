@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.inventariables;
+package com.gonzaloandcompany.satapp.ui.home;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
