@@ -11,9 +11,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
+import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity implements TicketListener {
+public class MainActivity extends AppCompatActivity implements TicketListener, UserListener {
+    @Override
+    public void OnUserClick(String id) {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

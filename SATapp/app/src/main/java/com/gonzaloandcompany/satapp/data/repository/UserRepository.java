@@ -39,4 +39,25 @@ public class UserRepository {
         });
         return data;
     }
+
+    public LiveData<List<UsuarioDummy>> getUsersPaginable(int page, int limit) {
+        final MutableLiveData<List<UsuarioDummy>> data = new MutableLiveData<>();
+        Call<List<UsuarioDummy>> call = service.getUsersPaginable(page, limit);
+        call.enqueue(new Callback<List<UsuarioDummy>>() {
+            @Override
+            public void onResponse(Call<List<UsuarioDummy>> call, Response<List<UsuarioDummy>> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UsuarioDummy>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+
 }

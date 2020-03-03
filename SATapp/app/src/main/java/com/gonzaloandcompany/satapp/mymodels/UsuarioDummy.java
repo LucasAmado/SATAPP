@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioDummy {
-    //BORRAR CUANDO GONZALO SUBA SU MODELO USUARIO
-    //CAMBIAR EN CLASE TICKET
+    //TODO: BORRAR CUANDO GONZALO SUBA SU MODELO USUARIO
+    //TODO: CAMBIAR EN CLASE TICKET
     private String id;
     private String name;
     private String email;
@@ -17,4 +17,5 @@ public class UsuarioDummy {
     private String picture;
     private String createdAt;
     private String updatedAt;
+    private boolean validated;
 }

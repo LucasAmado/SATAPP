@@ -29,4 +29,6 @@
     <string name="devices">Dispositivos</string>
     <string name="tickets">Incidencias</string>
     <string name="users">Usuarios</string>
+    <string name="validated">Validado:</string>
+    <string name="rol">Rol:</string>
 </resources>
