@@ -1,6 +1,7 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -18,7 +19,6 @@ public class ApiSAT {
     private static OkHttpClient.Builder httpClient =
             new OkHttpClient.Builder();
 
-
     public static <S> S createServicePeticiones (Class<S> serviceClass, final String authToken) {
 
         if (retrofit==null) {
@@ -26,8 +26,8 @@ public class ApiSAT {
             if(authToken!=null){
                 httpClient.addInterceptor(new InterceptorToken(authToken));
             }
-
             builder.client(httpClient.build());
+
             retrofit = builder.build();
         }
 
