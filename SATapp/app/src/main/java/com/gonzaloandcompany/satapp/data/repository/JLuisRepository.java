@@ -64,4 +64,23 @@ public class JLuisRepository {
         });
         return data;
     }
+
+    public MutableLiveData<Void> getImagenInventariable() {
+        final MutableLiveData<Void> data = new MutableLiveData<>();
+        Call<Void> call = service.getImagenIventariable();
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
 }

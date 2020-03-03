@@ -9,7 +9,7 @@
         <menu>
             <item
                 android:id="@+id/action_ubicacion"
-                android:title="Tipo" />
+                android:title="Ubicación" />
         </menu>
     </item>
 

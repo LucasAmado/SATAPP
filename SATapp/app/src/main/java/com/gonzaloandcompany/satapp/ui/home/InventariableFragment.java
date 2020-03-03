@@ -45,10 +45,11 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     @Override
     public void filterByUbicacion(String ubicacion) {
         byInventariable = new ArrayList<>();
-        Log.d("UBICAION",inventariableList.size()+"");
         for (Inventariable i : inventariableList) {
-            if(i.getUbicación().equals(ubicacion)){
-                byInventariable.add(i);
+            if(i.getUbicacion()!=null) {
+                if (i.getUbicacion().equals(ubicacion)) {
+                    byInventariable.add(i);
+                }
             }
         }
         myInventariableRecyclerViewAdapter = new MyInventariableRecyclerViewAdapter(context, byInventariable, jLuisViewModel);
@@ -121,7 +122,6 @@ public class InventariableFragment extends Fragment implements DialogPassData {
 
     private void loadUbicaciones() {
         jLuisViewModel.getAllUbicaciones().observe(getActivity(), strings -> ubicaciones = strings);
-        Log.d("UBICACION",ubicaciones.size()+"");
     }
 
     @Override

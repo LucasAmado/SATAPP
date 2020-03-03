@@ -2,6 +2,7 @@ package com.gonzaloandcompany.satapp.ui.home;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 
@@ -40,16 +44,25 @@ public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyI
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if(mValues != null) {
             holder.mItem = mValues.get(position);
-            /*Glide.with(ctx)
-                    .load(holder.mItem.getImagen())
+
+
+            GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + holder.mItem.getImagen(),
+                new LazyHeaders.Builder()
+                        .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
+                        .build());
+
+            Glide.with(ctx)
+                    .load(glideUrl)
+                    .centerCrop()
                     .into(holder.ivImage);
-*/
+
+
             holder.tvNombre.setText(String.valueOf(holder.mItem.getNombre()));
             holder.tvTipo.setText(String.valueOf(holder.mItem.getTipo()));
             holder.tvDescripcion.setText(String.valueOf(holder.mItem.getDescripcion()));
             holder.mView.setOnClickListener(v -> {
                 if (null != jLuisViewModel) {
-                    //ir a detalle
+
                 }
             });
         }

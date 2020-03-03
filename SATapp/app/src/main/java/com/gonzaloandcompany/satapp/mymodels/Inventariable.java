@@ -13,7 +13,7 @@ public class Inventariable {
     private String tipo;
     private String nombre;
     private String descripcion;
-    private String ubicación;
+    private String ubicacion;
     private String createdAt;
     private String updatedAt;
     private String imagen;

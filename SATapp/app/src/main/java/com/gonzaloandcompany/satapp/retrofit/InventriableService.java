@@ -15,4 +15,7 @@ public interface InventriableService {
 
     @GET("/inventariable/ubicaciones")
     Call <List<String>> getAllUbicaciones();
+
+    @GET()
+    Call <Void> getImagenIventariable();
 }
