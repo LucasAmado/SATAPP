@@ -18,6 +18,10 @@ public class Inventariable {
     private String updatedAt;
     private String imagen;
 
+    public Inventariable(String imagen) {
+        this.imagen = imagen;
+    }
+
     public Inventariable(String codigo, String tipo, String nombre, String descripcion, String ubicacion) {
         this.codigo = codigo;
         this.tipo = tipo;

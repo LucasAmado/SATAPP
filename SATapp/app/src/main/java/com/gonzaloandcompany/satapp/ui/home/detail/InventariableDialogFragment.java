@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.home;
+package com.gonzaloandcompany.satapp.ui.home.detail;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,7 +30,6 @@ import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -79,7 +78,7 @@ public class InventariableDialogFragment extends DialogFragment {
 
         builder.setCancelable(true);
 
-        v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_new_inventariable, null);
+        v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_inventariable, null);
         builder.setView(v);
 
         etNombre = v.findViewById(R.id.editTextNombre);
@@ -206,7 +205,7 @@ public class InventariableDialogFragment extends DialogFragment {
                                 create.enqueue(new Callback<Inventariable>() {
                                     @Override
                                     public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                                        //TODO arreglar el mostrar mensaje
+                                        Log.e("RESPONSE", ""+response);
                                     }
 
                                     @Override

@@ -1,8 +1,8 @@
-package com.gonzaloandcompany.satapp.ui.home;
+package com.gonzaloandcompany.satapp.ui.home.detail;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
@@ -11,25 +11,34 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gonzaloandcompany.satapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabItem;
 
 import org.joda.time.LocalDate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InventariableDetailActivity extends AppCompatActivity {
-    String idInventariable, fileName, urlImagen;
+    String idInventariable, urlImagen;
     ServicePeticiones service;
     @BindView(R.id.textViewName)
     TextView tvNombre;
@@ -59,11 +68,11 @@ public class InventariableDetailActivity extends AppCompatActivity {
     @BindView(R.id.imageViewDelete)
     ImageView icon_delete;
     Inventariable select;
-    @BindView(android.R.id.content)
-    View parent_view;
     @BindView(R.id.edit_image_inventariable)
     FloatingActionButton edit_image;
-    //TODO listview tickets
+    @BindView(R.id.lvTicketsInventariable)
+    ListView lvTickets;
+    List<Ticket> ticketList;
 
 
     @Override
@@ -80,15 +89,21 @@ public class InventariableDetailActivity extends AppCompatActivity {
 
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, Constants.TOKEN_PROVISIONAL);
 
-        Call<Inventariable> call = service.getInventariableById(idInventariable);
-        call.enqueue(new Callback<Inventariable>() {
+        ticketList = new ArrayList<>();
+
+        //TODO probar
+        //new LoadTickets().execute(idInventariable);
+
+
+        Call<Inventariable> getInventariable = service.getInventariableById(idInventariable);
+        getInventariable.enqueue(new Callback<Inventariable>() {
             @Override
             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                 if (response.isSuccessful()) {
                     select = response.body();
 
-                    LocalDate fechaCreacion = LocalDate.parse(select.getCreatedAt().substring(0, 9));
-                    LocalDate fechaCambio = LocalDate.parse(select.getUpdatedAt().substring(0, 9));
+                    LocalDate fechaCreacion = LocalDate.parse(select.getCreatedAt().substring(0, 10));
+                    LocalDate fechaCambio = LocalDate.parse(select.getUpdatedAt().substring(0, 10));
 
                     tvNombre.setText(select.getNombre());
                     tvCodigo.setText(select.getCodigo());
@@ -97,6 +112,7 @@ public class InventariableDetailActivity extends AppCompatActivity {
                     tvModificado.setText(fechaCambio.toString("dd/MM/yyyy"));
                     tvDescripcion.setText(select.getDescripcion());
                     urlImagen = select.getImagen();
+
                     GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + urlImagen,
                             new LazyHeaders.Builder()
                                     .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
@@ -135,9 +151,9 @@ public class InventariableDetailActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                 if (response.isSuccessful()) {
-                                    Snackbar.make(parent_view, "Dispositivo eliminado", Snackbar.LENGTH_SHORT).show();
+                                    Toast.makeText(InventariableDetailActivity.this, "Dispositivo eliminado", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Snackbar.make(parent_view, "Algo ha salido mal", Snackbar.LENGTH_SHORT).show();
+                                    Toast.makeText(InventariableDetailActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
                                 }
                                 Intent intent = new Intent(InventariableDetailActivity.this, MainActivity.class);
                                 startActivity(intent);
@@ -145,7 +161,7 @@ public class InventariableDetailActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<Inventariable> call, Throwable t) {
-                                Snackbar.make(parent_view, "Error de conexión", Snackbar.LENGTH_SHORT).show();
+                                Toast.makeText(InventariableDetailActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -160,13 +176,43 @@ public class InventariableDetailActivity extends AppCompatActivity {
             dialog.show(getSupportFragmentManager(), "InventariableDialogFragment");
         });
 
-        edit_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO nuevo activity con imagen a pantalla completa ocn iconos de guardar, cancerlar, cambiar la imagen o borrarla
-            }
+        edit_image.setOnClickListener(v -> {
+            Intent i = new Intent(InventariableDetailActivity.this, InventariableDetaileImageActivity.class);
+            i.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
+            startActivity(i);
         });
 
+    }
+
+    private class LoadTickets extends AsyncTask<String, Void, List<Ticket>> {
+
+        @Override
+        protected List<Ticket> doInBackground(String... strings) {
+            Call<List<Ticket>> callTickets = service.getTicketsInventariable(strings[0]);
+            Response<List<Ticket>> response = null;
+
+            try {
+                response = callTickets.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (response.isSuccessful()) {
+                ticketList = response.body();
+            }
+            return ticketList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Ticket> tickets) {
+            if (tickets != null) {
+                ArrayAdapter adapter = new ArrayAdapter(
+                        InventariableDetailActivity.this,
+                        android.R.layout.simple_list_item_2,
+                        tickets);
+                lvTickets.setAdapter(adapter);
+            }
+        }
     }
 
 }

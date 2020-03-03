@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FullSizeImageActivity extends AppCompatActivity {
-    @BindView(R.id.fullSizeImg)
+    @BindView(R.id.ivFotoInventariable)
     ImageView img;
 
     @Override

@@ -13,8 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
-import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
-import com.gonzaloandcompany.satapp.ui.home.InventariableDetailActivity;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

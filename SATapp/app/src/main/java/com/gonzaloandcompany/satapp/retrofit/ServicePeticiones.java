@@ -20,6 +20,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ServicePeticiones {
+
     @GET("/ticket")
     Call<List<Ticket>> getTickets(@Query("page") int page);
 
@@ -35,17 +36,25 @@ public interface ServicePeticiones {
     @GET("/inventariable/tipos")
     Call<List<String>> getTiposInventariable();
 
-    //TODO hablar con luismi
     @GET("/inventariable/ubicaciones")
     Call<List<String>> getUbicaciones();
 
     @GET("/inventariable/{id_inventariable}")
     Call<Inventariable> getInventariableById(@Path("id_inventariable") String id_inventariable);
 
+    @PUT("/inventariable/{id_inventariable}")
+    Call<Inventariable> updateInventariable(@Path("id_inventariable") String id_inventariable, @Body Inventariable inventariable);
 
-    @PUT("/inventariable/{id}")
-    Call<Inventariable> updateInventariable(@Path("id") String id, @Body Inventariable inventariable);
+    @DELETE("/inventariable/{id_inventariable}")
+    Call<Inventariable> deleteInventariable(@Path("id_inventariable") String id_inventariable);
 
-    @DELETE("/inventariable/{id}")
-    Call<Inventariable> deleteInventariable(@Path("id") String id);
+    @Multipart
+    @PUT("/inventariable/{id_inventariable}/img")
+    Call<Inventariable> updateImageInventariable(@Path("id_inventariable") String id_inventariable, @Part MultipartBody.Part imagen);
+
+    @GET("/ticket/inventariable/{id_inventariable}")
+    Call<List<Ticket>> getTicketsInventariable(@Path("id_inventariable") String id_inventariable);
+
+    @DELETE("/inventariable/{id_inventariable}/img")
+    Call<Void> deleteImageInventariable(@Path("id_inventariable") String id_inventariable);
 }
