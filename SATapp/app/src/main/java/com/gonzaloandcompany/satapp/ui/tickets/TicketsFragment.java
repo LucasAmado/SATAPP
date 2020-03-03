@@ -78,6 +78,7 @@ public class TicketsFragment extends Fragment {
         adapter = new TicketRecyclerViewAdapter(tickets.getResults(), listener);
         recyclerView.setAdapter(adapter);
 
+        //TODO: LISTAR SEGÚN ROL
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
