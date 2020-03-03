@@ -6,7 +6,6 @@ public class Usuario {
     private String email;
     private String role;
     private String picture;
-    private String password;
     private String createdAt;
     private String updatedAt;
 
@@ -64,13 +63,5 @@ public class Usuario {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getPassword() {
-        return updatedAt;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }
