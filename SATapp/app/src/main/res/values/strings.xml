@@ -31,4 +31,9 @@
     <string name="users">Usuarios</string>
     <string name="validated">Validado:</string>
     <string name="rol">Rol:</string>
+    <string name="Validate">Validar</string>
+    <string name="promote">Promocionar</string>
+    <string name="state_user">Estado:</string>
+    <string name="fullname">Nombre:</string>
+    <string name="email">Email:</string>
 </resources>

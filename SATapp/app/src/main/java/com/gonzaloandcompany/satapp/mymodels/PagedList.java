@@ -20,4 +20,6 @@ public class PagedList<T> {
         this.totalResults = totalResults;
         this.totalPages = totalPages;
     }
+
+
 }

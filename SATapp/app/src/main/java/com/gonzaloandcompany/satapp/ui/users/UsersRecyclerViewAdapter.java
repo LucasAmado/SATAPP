@@ -53,7 +53,9 @@ public class UsersRecyclerViewAdapter  extends RecyclerView.Adapter<UsersRecycle
                 holder.name.setText(holder.user.getName());
             else
                 holder.name.setText(holder.user.getEmail());
+
             String rol = holder.user.getRole();
+
             if(rol.equals("tecnico"))
                 holder.rol.setText("Técnico");
             else if (rol.equals("user"))
@@ -64,7 +66,6 @@ public class UsersRecyclerViewAdapter  extends RecyclerView.Adapter<UsersRecycle
             if(holder.user.isValidated()){
                 holder.check.setImageResource(R.drawable.ic_tick);
             }else{
-                Log.d("VALIDATED","FALSE");
                 holder.check.setImageResource(R.drawable.ic_close);
             }
             if(holder.user.getPicture()!=null){
