@@ -32,7 +32,7 @@ public class TicketsFragment extends Fragment {
     private PagedList<Ticket> tickets;
     private RecyclerView recyclerView;
     private TicketsViewModel ticketsViewModel;
-    private final int pageSize = 2;
+    private final int pageSize = 5;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int currentPage = 0;
