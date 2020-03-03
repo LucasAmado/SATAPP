@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
@@ -70,6 +71,7 @@ public class TicketCreateActivity extends AppCompatActivity {
     private List<UsuarioDummy> techs;
     private String techId="";
     private String deviceId="";
+    private JLuisViewModel jLuisViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class TicketCreateActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        jLuisViewModel = new ViewModelProvider(this).get(JLuisViewModel.class);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -108,8 +111,6 @@ public class TicketCreateActivity extends AppCompatActivity {
             }
         });
 
-
-        //TODO: COMPLETAR LOS SIGUIENTES MÉTODOS: getDevices()
         getDevices();
         getTechs();
 
@@ -209,40 +210,51 @@ public class TicketCreateActivity extends AppCompatActivity {
     }
 
     public void getDevices() {
-        if(!devices.isEmpty()){
-            device.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        jLuisViewModel.getAllInventariables().observe(this, new Observer<List<Inventariable>>() {
+            @Override
+            public void onChanged(List<Inventariable> inventariables) {
+                if(inventariables!=null||!inventariables.isEmpty()){
+                    devices=inventariables;
 
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
-                    dialog.setTitle("Selecciona un dispositivo");
-                    String[] namesDevices = new String[devices.size()];
-                    for (int i = 0; i < namesDevices.length; i++) {
-                        namesDevices[i] = devices.get(i).getNombre();
+                    if(!devices.isEmpty()){
+                        device.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(TicketCreateActivity.this);
+                                dialog.setTitle("Selecciona un dispositivo");
+                                String[] namesDevices = new String[devices.size()];
+                                for (int i = 0; i < namesDevices.length; i++) {
+                                    namesDevices[i] = devices.get(i).getNombre();
+                                }
+                                dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        device.setText(namesDevices[which]);
+                                        deviceId = devices.get(which).getId();
+                                    }
+                                });
+
+                                dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog alert = dialog.create();
+                                alert.show();
+                            }
+                        });
+                    }else{
+                        device.setText("No hay ningún dispositivo dado de alta");
+                        device.setEnabled(false);
                     }
-                    dialog.setItems(namesDevices, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            device.setText(namesDevices[which]);
-                            deviceId = devices.get(which).getId();
-                        }
-                    });
-
-                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alert = dialog.create();
-                    alert.show();
                 }
-            });
-        }else{
-            device.setText("No hay ningún dispositivo dado de alta");
-            device.setEnabled(false);
-        }
+            }
+        });
+
+
     }
 
     public void getTechs() {
