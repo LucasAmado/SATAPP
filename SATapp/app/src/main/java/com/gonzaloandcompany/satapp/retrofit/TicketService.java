@@ -1,6 +1,8 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
+import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 
 import java.util.List;
 
@@ -8,10 +10,12 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -39,5 +43,11 @@ public interface TicketService {
 
     @GET("/ticket/user/me")
     Call<List<Ticket>> getTicketsCreated(@Query("page")int page,@Query("limit") int limit);
+
+    @PUT("/ticket/{id}/asignar")
+    Call<Ticket> assignTech(@Path("id") String id, @Body TicketAssignRequest request);
+
+    @PUT("/ticket/{id}/estado")
+    Call<Ticket> updateState(@Path("id") String id, @Body TicketUpdateStateRequest request);
 
 }

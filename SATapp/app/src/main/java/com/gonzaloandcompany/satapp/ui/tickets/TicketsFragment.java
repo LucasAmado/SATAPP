@@ -51,7 +51,7 @@ public class TicketsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ticketsViewModel =new ViewModelProvider(this).get(TicketsViewModel.class);
+        ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         if (getArguments() != null) {
@@ -77,7 +77,6 @@ public class TicketsFragment extends Fragment {
                 startActivity(goToCreate);
             }
         });
-
 
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -127,17 +126,71 @@ public class TicketsFragment extends Fragment {
         isLoading = true;
         currentPage++;
 
-        Log.d("ROL USER",currentUser.getRole());
-        if(currentUser.getRole().equals("tecnico"))
-            ticketsViewModel.getTicketsAssigned(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+        Log.d("ROL USER", currentUser.getRole());
+
+        if (currentUser.getRole().equals("tecnico")) {
+            ticketsViewModel.getTicketsAssigned(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
                 @Override
                 public void onChanged(List<Ticket> data) {
                     if (data != null) {
                         tickets.setResults(data);
-                        Log.d("TICKETS DE USER",tickets.toString());
-                    }else{
+                    } else {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "No hay más tickets que cargar", Toast.LENGTH_LONG).show();
+                    }
+
+                    if (tickets.getResults().isEmpty())
+                        Toast.makeText(getContext(), "No tienes ningún ticket asignado", Toast.LENGTH_LONG).show();
+
+                    if (!isFirstPage) {
+                        adapter.addAll(tickets.getResults());
+                    } else {
+                        adapter.setData(tickets.getResults());
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
+                    isLoading = false;
+                    isLastPage = currentPage == tickets.getResults().size();
+                }
+            });
+        } else if (currentUser.getRole().equals("user")) {
+            ticketsViewModel.getTicketsCreated(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+                @Override
+                public void onChanged(List<Ticket> data) {
+                    if (data != null) {
+                        tickets.setResults(data);
+
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No hay más tickets que cargar", Toast.LENGTH_LONG).show();
+                    }
+
+                    if (tickets.getResults().isEmpty())
+                        Toast.makeText(getContext(), "No has creado ningún ticket", Toast.LENGTH_LONG).show();
+
+                    if (!isFirstPage) {
+                        adapter.addAll(tickets.getResults());
+                    } else {
+                        adapter.setData(tickets.getResults());
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
+                    isLoading = false;
+                    isLastPage = currentPage == tickets.getResults().size();
+                }
+            });
+        } else if (currentUser.getRole().equals("admin")) {
+            ticketsViewModel.getTickets(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+                @Override
+                public void onChanged(List<Ticket> data) {
+                    if (data != null) {
+                        tickets.setResults(data);
+                        Log.d("ENTRA EN TICKETS DE admin", "TRUE");
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "No hay más tickets que cargar", Toast.LENGTH_LONG).show();
                     }
 
                     if (!isFirstPage) {
@@ -152,70 +205,21 @@ public class TicketsFragment extends Fragment {
                     isLastPage = currentPage == tickets.getResults().size();
                 }
             });
-        else if (currentUser.getRole().equals("user"))
-            ticketsViewModel.getTicketsCreated(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
-                @Override
-                public void onChanged(List<Ticket> data) {
-                    if (data != null) {
-                        tickets.setResults(data);
-                        Log.d("ENTRA EN TICKETS DE USUARIO","TRUE");
-                    }else{
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
-                    }
-
-                    if(tickets.getResults().isEmpty())
-                        Toast.makeText(getContext(),"No has creado ningún ticket",Toast.LENGTH_LONG).show();
-
-                    if (!isFirstPage) {
-                        adapter.addAll(tickets.getResults());
-                    } else {
-                        adapter.setData(tickets.getResults());
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
-
-                    isLoading = false;
-                    isLastPage = currentPage == tickets.getResults().size();
-                }
-            });
-        else
-            ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
-            @Override
-            public void onChanged(List<Ticket> data) {
-                if (data != null) {
-                    tickets.setResults(data);
-                }else{
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
-                }
-
-                if (!isFirstPage) {
-                    adapter.addAll(tickets.getResults());
-                } else {
-                    adapter.setData(tickets.getResults());
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                }
-
-                isLoading = false;
-                isLastPage = currentPage == tickets.getResults().size();
-            }
-        });
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        currentPage=0;
+        currentPage = 0;
         getCurrentUser();
     }
 
-    public void getCurrentUser(){
+    public void getCurrentUser() {
         userViewModel.getCurrentUser().observe(getActivity(), new Observer<UsuarioDummy>() {
             @Override
             public void onChanged(UsuarioDummy usuario) {
-                currentUser=usuario;
+                currentUser = usuario;
                 loadTickets(true);
 
 

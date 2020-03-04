@@ -315,7 +315,7 @@ public class TicketCreateActivity extends AppCompatActivity {
             @Override
             public void onChanged(UsuarioDummy usuario) {
                 currentUser=usuario;
-                if(currentUser.getRole().equals("tecnico")||currentUser.getRole().equals("user")) {
+                if(currentUser.getRole().equals("user")) {
                     tech.setVisibility(View.GONE);
                     techTitle.setVisibility(View.GONE);
                 }else {

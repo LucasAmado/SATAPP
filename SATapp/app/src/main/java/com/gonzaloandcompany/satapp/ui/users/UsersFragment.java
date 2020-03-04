@@ -55,6 +55,7 @@ public class UsersFragment extends Fragment {
     private boolean validados;
     MenuItem itemFilter;
     MenuItem itemVolver;
+    private UsuarioDummy currentUser;
 
     public UsersFragment() {
     }
@@ -150,7 +151,7 @@ public class UsersFragment extends Fragment {
     public void onResume() {
         super.onResume();
         currentPage=0;
-        loadUsers(true);
+        getCurrentUser();
     }
     @Override
     public void onAttach(Context context) {
@@ -180,6 +181,7 @@ public class UsersFragment extends Fragment {
                     Log.d("DATA",data.toString());
                     if(allUsers) {
                         users.getResults().addAll(data);
+
                     }else{
                         for (UsuarioDummy u : data) {
                             if(u.isValidated()==validados) {
@@ -187,6 +189,7 @@ public class UsersFragment extends Fragment {
                             }
                         }
                     }
+                    users.getResults().remove(currentUser);
                     users.getResults().sort((UsuarioDummy o1, UsuarioDummy o2) -> {
                         if (o1.getName() != null && o2.getName() != null)
                             return o1.getName().compareTo(o2.getName());
@@ -207,6 +210,16 @@ public class UsersFragment extends Fragment {
             }
         });
     }
+    public void getCurrentUser(){
+        usersViewModel.getCurrentUser().observe(getActivity(), new Observer<UsuarioDummy>() {
+            @Override
+            public void onChanged(UsuarioDummy usuario) {
+                currentUser=usuario;
+                loadUsers(true);
 
+
+            }
+        });
+    }
 
 }

@@ -190,7 +190,7 @@ public class UserDetailActivity extends AppCompatActivity {
                             .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                             .build());
 
-            Glide.with(UserDetailActivity.this).load(glideUrl).into(photo);
+            Glide.with(UserDetailActivity.this).load(glideUrl).centerCrop().into(photo);
         }else{
             Glide.with(UserDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(photo);
         }
