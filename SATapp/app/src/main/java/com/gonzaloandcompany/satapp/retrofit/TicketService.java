@@ -18,7 +18,7 @@ import retrofit2.http.Query;
 
 public interface TicketService {
     @GET("/ticket")
-    Call<List<Ticket>> getTickets(@Query("page") int page);
+    Call<List<Ticket>> getTickets(@Query("page")int page,@Query("limit") int limit);
 
     @GET("/ticket/{id}")
     Call<Ticket> getTicket(@Path("id") String id);

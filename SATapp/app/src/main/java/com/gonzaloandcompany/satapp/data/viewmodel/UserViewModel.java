@@ -24,6 +24,20 @@ public class UserViewModel extends AndroidViewModel {
         return repository.getUsers();
     }
 
+    //TODO: CAMBIAR A MODELO USUARIO DE GONZALO
+    public LiveData<List<UsuarioDummy>> getUsersPaginable(int page, int limit) {
+        return repository.getUsersPaginable(page, limit);
+    }
+    public LiveData<UsuarioDummy> getUser(String id) {
+        return repository.getUser(id);
+    }
 
+    public void deleteUser(String id){repository.deleteUser(id);}
 
+    public LiveData<UsuarioDummy> promote(String id) {
+        return repository.promote(id);
+    }
+    public LiveData<UsuarioDummy>  validate(String id) {
+        return repository. validate(id);
+    }
 }

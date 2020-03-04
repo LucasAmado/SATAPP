@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.ui.ticketsdetail;
+package com.gonzaloandcompany.satapp.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,15 +17,15 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.ui.FullSizeImageActivity;
+
 
 import java.util.List;
 
-public class TicketImagesAdapter extends PagerAdapter {
+public class ImagesSliderAdapter extends PagerAdapter {
     private Activity act;
     private List<String> photos;
 
-    public TicketImagesAdapter(Activity act, List<String> photos) {
+    public ImagesSliderAdapter(Activity act, List<String> photos) {
         this.act = act;
         this.photos = photos;
     }

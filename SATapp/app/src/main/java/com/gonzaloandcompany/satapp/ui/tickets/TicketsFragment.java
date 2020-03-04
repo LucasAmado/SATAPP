@@ -3,6 +3,7 @@ package com.gonzaloandcompany.satapp.ui.tickets;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class TicketsFragment extends Fragment {
     private PagedList<Ticket> tickets;
     private RecyclerView recyclerView;
     private TicketsViewModel ticketsViewModel;
-    private final int pageSize = 20;
+    private final int pageSize = 5;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int currentPage = 0;
@@ -120,7 +121,7 @@ public class TicketsFragment extends Fragment {
     public void loadTickets(final boolean isFirstPage) {
         isLoading = true;
         currentPage++;
-        ticketsViewModel.getTickets(currentPage).observe(getActivity(), new Observer<List<Ticket>>() {
+        ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
             @Override
             public void onChanged(List<Ticket> data) {
                 if (data != null) {
@@ -142,5 +143,12 @@ public class TicketsFragment extends Fragment {
                 isLastPage = currentPage == tickets.getResults().size();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentPage=0;
+        loadTickets(true);
     }
 }

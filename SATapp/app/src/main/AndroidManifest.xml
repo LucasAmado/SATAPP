@@ -22,6 +22,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gonzaloandcompany.satapp.MainActivity" />
         </activity>
+        <activity android:name=".ui.userdetail.UserDetailActivity"></activity>
         <activity android:name=".ui.ticketCreate.TicketCreateActivity" />
         <activity android:name=".ui.FullSizeImageActivity" />
         <activity android:name=".ui.ticketsdetail.TicketDetailActivity" />

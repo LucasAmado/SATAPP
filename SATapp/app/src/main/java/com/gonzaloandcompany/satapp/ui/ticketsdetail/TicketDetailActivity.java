@@ -1,5 +1,6 @@
 package com.gonzaloandcompany.satapp.ui.ticketsdetail;
 
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
@@ -23,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.mymodels.Estado;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.ui.ImagesSliderAdapter;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -38,7 +41,7 @@ public class TicketDetailActivity extends AppCompatActivity {
     private String idTicket;
     private ViewPager viewPager;
     private LinearLayout layout_dots;
-    private TicketImagesAdapter adapter;
+    private ImagesSliderAdapter adapter;
     private TicketsViewModel ticketsViewModel;
     private int positionImg = 0;
 
@@ -74,22 +77,32 @@ public class TicketDetailActivity extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //TODO: GESTIONAR ANOTACIONES
             }
         });
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //TODO: GESTIONAR EDITAR CUANDO LUISMI ARREGLE EL ERROR 500
             }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ticketsViewModel.deleteTicket(ticket.getId());
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TicketDetailActivity.this);
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ticketsViewModel.deleteTicket(ticket.getId());
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                builder.setMessage("¿Estás seguro de que quieres eliminar el ticket "+ticket.getTitulo());
+                builder.setTitle(R.string.app_name);
+                builder.show();
+
             }
         });
 
@@ -118,8 +131,10 @@ public class TicketDetailActivity extends AppCompatActivity {
                     description.setText(ticket.getDescripcion());
                     description.setVisibility(View.VISIBLE);
 
-                    //TODO: PEDIR A LUISMI QUE LA API RETORNE EL NOMBRE DEL USUARIO QUE CREÓ EL TICKET.
-                    createdBy.setText(ticket.getCreado_por().getName());
+                    if(ticket.getCreado_por().getName()!=null)
+                        createdBy.setText(ticket.getCreado_por().getName());
+                    else
+                        createdBy.setText(ticket.getCreado_por().getEmail());
                     createdBy.setVisibility(View.VISIBLE);
 
                     LocalDate date = LocalDate.parse(ticket.getFecha_creacion().substring(0, 10));
@@ -170,7 +185,7 @@ public class TicketDetailActivity extends AppCompatActivity {
         layout_dots = (LinearLayout) findViewById(R.id.layout_dots);
         viewPager = (ViewPager) findViewById(R.id.pager);
 
-        adapter = new TicketImagesAdapter(this, ticket.getFotos());
+        adapter = new ImagesSliderAdapter(this, ticket.getFotos());
         viewPager.setAdapter(adapter);
 
         // displaying selected image first
