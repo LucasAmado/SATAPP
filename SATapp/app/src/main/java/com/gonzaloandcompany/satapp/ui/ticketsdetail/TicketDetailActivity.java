@@ -1,5 +1,6 @@
 package com.gonzaloandcompany.satapp.ui.ticketsdetail;
 
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
@@ -89,8 +91,18 @@ public class TicketDetailActivity extends AppCompatActivity {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ticketsViewModel.deleteTicket(ticket.getId());
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(TicketDetailActivity.this);
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ticketsViewModel.deleteTicket(ticket.getId());
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                builder.setMessage("¿Estás seguro de que quieres eliminar el ticket "+ticket.getTitulo());
+                builder.setTitle(R.string.app_name);
+                builder.show();
+
             }
         });
 
