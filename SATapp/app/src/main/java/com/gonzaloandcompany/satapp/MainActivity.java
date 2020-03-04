@@ -2,7 +2,10 @@ package com.gonzaloandcompany.satapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,6 +19,7 @@ import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
+import com.gonzaloandcompany.satapp.ui.userdetail.PerfilDetailActivity;
 import com.gonzaloandcompany.satapp.ui.userdetail.UserDetailActivity;
 import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,6 +34,20 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
         startActivity(goToDetail);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.perfilIcon) {
+            Intent perfil = new Intent(this, PerfilDetailActivity.class);
+            startActivity(perfil);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

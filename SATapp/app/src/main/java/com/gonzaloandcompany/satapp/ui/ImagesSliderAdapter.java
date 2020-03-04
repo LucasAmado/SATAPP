@@ -55,7 +55,7 @@ public class ImagesSliderAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.item_slider_image, container, false);
 
-        ImageView image = v.findViewById(R.id.image);
+        ImageView image = v.findViewById(R.id.imagePerfil);
 
         //TODO:CAMBIAR EL TOKEN DEL HEADER DE GLIDEURL CUANDO GONZALO TERMINE CON EL LOGIN
         GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + o,

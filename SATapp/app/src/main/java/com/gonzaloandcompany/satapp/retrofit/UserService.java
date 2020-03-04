@@ -29,4 +29,7 @@ public interface UserService {
 
     @PUT("/users/{id}/validate")
     Call<UsuarioDummy> validate(@Path("id") String id);
+
+    @GET("/users/me")
+    Call<UsuarioDummy> getMyUser();
 }

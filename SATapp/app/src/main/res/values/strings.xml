@@ -41,4 +41,5 @@
     <string name="state_user">Estado:</string>
     <string name="fullname">Nombre:</string>
     <string name="email">Email:</string>
+    <string name="perfil">Perfil</string>
 </resources>

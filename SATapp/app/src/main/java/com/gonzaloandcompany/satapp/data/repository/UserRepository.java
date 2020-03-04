@@ -82,6 +82,24 @@ public class UserRepository {
         return user;
     }
 
+    public LiveData<UsuarioDummy> getMyUser() {
+        Call<UsuarioDummy> call = service.getMyUser();
+        call.enqueue(new Callback<UsuarioDummy>() {
+            @Override
+            public void onResponse(Call<UsuarioDummy> call, Response<UsuarioDummy> response) {
+                if (response.isSuccessful()) {
+                    user.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDummy> call, Throwable t) {
+
+            }
+        });
+        return user;
+    }
+
     public void deleteUser(String id){
         Call<Void> call = service.deleteUser(id);
         call.enqueue(new Callback<Void>() {
