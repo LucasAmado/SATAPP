@@ -3,7 +3,6 @@ package com.gonzaloandcompany.satapp.ui.ticketCreate;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +61,8 @@ public class TicketCreateActivity extends AppCompatActivity {
     TextView device;
     @BindView(R.id.ticketCreateSave)
     Button save;
+    @BindView(R.id.textView7)
+    TextView techTitle;
 
     private List<Inventariable> devices;
     private List<Part> photos;
@@ -266,9 +267,7 @@ public class TicketCreateActivity extends AppCompatActivity {
             public void onChanged(List<UsuarioDummy> usuarios) {
                 if (usuarios != null || !usuarios.isEmpty()) {
                     techs = usuarios.stream().filter(x -> x.getRole().equals("tecnico")).collect(Collectors.toList());
-                    Log.d("TECNICOS", techs.toString());
 
-                    //TODO: ESCONDER ESTE BOTÓN SEGÚN SEA EL ROL DEL USUARIO
                     if(!techs.isEmpty()){
                         tech.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -316,10 +315,13 @@ public class TicketCreateActivity extends AppCompatActivity {
             @Override
             public void onChanged(UsuarioDummy usuario) {
                 currentUser=usuario;
-                if(currentUser.getRole().equals("tecnico")||currentUser.getRole().equals("user"))
-                  tech.setVisibility(View.GONE);
-                else
+                if(currentUser.getRole().equals("tecnico")||currentUser.getRole().equals("user")) {
+                    tech.setVisibility(View.GONE);
+                    techTitle.setVisibility(View.GONE);
+                }else {
                     tech.setVisibility(View.VISIBLE);
+                    techTitle.setVisibility(View.VISIBLE);
+                }
 
             }
         });

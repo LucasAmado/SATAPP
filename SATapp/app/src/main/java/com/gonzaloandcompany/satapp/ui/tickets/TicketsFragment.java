@@ -64,7 +64,7 @@ public class TicketsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tickets_list, container, false);
 
         Context context = view.getContext();
-        getCurrentUser();
+
         tickets = new PagedList<>();
         recyclerView = view.findViewById(R.id.ticketList);
         progressBar = view.findViewById(R.id.ticketListProgressBar);
@@ -103,8 +103,6 @@ public class TicketsFragment extends Fragment {
             }
         });
 
-
-
         return view;
     }
 
@@ -129,12 +127,14 @@ public class TicketsFragment extends Fragment {
         isLoading = true;
         currentPage++;
 
-        /*if(currentUser.getRole().equals("tecnico"))
+        Log.d("ROL USER",currentUser.getRole());
+        if(currentUser.getRole().equals("tecnico"))
             ticketsViewModel.getTicketsAssigned(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
                 @Override
                 public void onChanged(List<Ticket> data) {
                     if (data != null) {
                         tickets.setResults(data);
+                        Log.d("TICKETS DE USER",tickets.toString());
                     }else{
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
@@ -158,10 +158,14 @@ public class TicketsFragment extends Fragment {
                 public void onChanged(List<Ticket> data) {
                     if (data != null) {
                         tickets.setResults(data);
+                        Log.d("ENTRA EN TICKETS DE USUARIO","TRUE");
                     }else{
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
                     }
+
+                    if(tickets.getResults().isEmpty())
+                        Toast.makeText(getContext(),"No has creado ningún ticket",Toast.LENGTH_LONG).show();
 
                     if (!isFirstPage) {
                         adapter.addAll(tickets.getResults());
@@ -175,7 +179,7 @@ public class TicketsFragment extends Fragment {
                     isLastPage = currentPage == tickets.getResults().size();
                 }
             });
-        else*/
+        else
             ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
             @Override
             public void onChanged(List<Ticket> data) {
@@ -204,7 +208,7 @@ public class TicketsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         currentPage=0;
-        loadTickets(true);
+        getCurrentUser();
     }
 
     public void getCurrentUser(){
@@ -212,8 +216,8 @@ public class TicketsFragment extends Fragment {
             @Override
             public void onChanged(UsuarioDummy usuario) {
                 currentUser=usuario;
-                Log.d("USUARIO",usuario.toString());
                 loadTickets(true);
+
 
             }
         });
