@@ -8,6 +8,10 @@ public class Users {
     private String createdAt;
     private String updatedAt;
 
+    public Users(String email) {
+        this.email = email;
+    }
+
     public String getId() {
         return id;
     }
