@@ -110,7 +110,44 @@ public class TicketDetailActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: GESTIONAR EDITAR CUANDO LUISMI ARREGLE EL ERROR 500
+                if(!currentUser.getRole().equals("user")){
+                    List <String> statesNames = new ArrayList<>();
+                    for(Estado e: Estado.values()){
+                        statesNames.add(e.getDescription());
+                    }
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketDetailActivity.this);
+                    dialog.setTitle("Seleccione el estado de la incidencia");
+                    String[] namesStates = new String[statesNames.size()];
+                    for (int i = 0; i < namesStates.length; i++) {
+                        namesStates[i] = statesNames.get(i);
+                    }
+                    dialog.setItems(namesStates, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String currentState = statesNames.get(which);
+                            TicketUpdateStateRequest request = new TicketUpdateStateRequest(currentState);
+                            ticketsViewModel.updateState(ticket.getId(), request).observe(TicketDetailActivity.this, new Observer<Ticket>() {
+                                @Override
+                                public void onChanged(Ticket ticket2) {
+                                        getCurrentUser();
+                                }
+
+                            });
+                        }
+                    });
+
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = dialog.create();
+                    alert.show();
+
+
+                }
             }
         });
 
