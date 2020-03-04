@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/filter_icon"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:title="Filter"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/action_validados"
+                android:title="Validados" />
+            <item
+                android:id="@+id/action_noValidados"
+                android:title="No Validados" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/refresh_icon"
+        android:icon="@drawable/ic_undo_black_24dp"
+        android:title="Refrescar"
+        app:showAsAction="ifRoom" />
+
+</menu>
