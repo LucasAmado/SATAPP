@@ -27,7 +27,6 @@ public interface ServicePeticiones {
     @Multipart
     @POST("/inventariable")
     Call<Inventariable> createInventariable(@Part MultipartBody.Part imagen,
-                                            @Part("codigo") RequestBody codigo,
                                             @Part("tipo") RequestBody tipo,
                                             @Part("nombre") RequestBody nombre,
                                             @Part("descripcion") RequestBody descripcion,

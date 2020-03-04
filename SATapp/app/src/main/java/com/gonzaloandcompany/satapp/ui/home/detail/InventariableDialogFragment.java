@@ -24,12 +24,17 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
+
+import org.joda.time.LocalDate;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,10 +54,10 @@ import retrofit2.Response;
 public class InventariableDialogFragment extends DialogFragment {
 
     private View v;
-    EditText etNombre, etCodigo, etDescripcion;
+    EditText etNombre, etDescripcion;
     TextView tvImage, tvNombreImagen;
     Spinner spTipo, spUbicacion;
-    String typeSelect, ubicationSelect, name, code, description, fileName;
+    String typeSelect, ubicationSelect, name, description, fileName;
     ImageView ivIcono;
     ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
@@ -63,8 +68,10 @@ public class InventariableDialogFragment extends DialogFragment {
     ArrayAdapter<String> adapterTipos, adapterUbicaciones;
     String idInventariable;
     Inventariable inventariable_edit;
+    IInventariableListener inventariableListener;
 
-    public InventariableDialogFragment(String id) {
+    public InventariableDialogFragment(IInventariableListener inventariableListener, String id) {
+        this.inventariableListener = inventariableListener;
         this.idInventariable = id;
     }
 
@@ -82,7 +89,6 @@ public class InventariableDialogFragment extends DialogFragment {
         builder.setView(v);
 
         etNombre = v.findViewById(R.id.editTextNombre);
-        etCodigo = v.findViewById(R.id.editTextCodigo);
         tvNombreImagen = v.findViewById(R.id.textViewtImage);
         tvImage = v.findViewById(R.id.textViewtImage);
         etDescripcion = v.findViewById(R.id.editTextDescripcion);
@@ -92,39 +98,14 @@ public class InventariableDialogFragment extends DialogFragment {
 
         viewModel = new ViewModelProvider(getActivity()).get(LucasViewModel.class);
 
+        if (idInventariable != null)
+            loadDispositivo();
+
         loadTipos();
 
         loadUbicaciones();
 
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
-
-        if (idInventariable != null) {
-
-            builder.setTitle("Editar dispositivo");
-            builder.setMessage("Modifique los datos que desee del dispositivo");
-
-            Call<Inventariable> call = service.getInventariableById(idInventariable);
-            call.enqueue(new Callback<Inventariable>() {
-                @Override
-                public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                    if (response.isSuccessful()) {
-                        inventariable_edit = response.body();
-                        etNombre.setText(inventariable_edit.getNombre());
-                        etCodigo.setText(inventariable_edit.getCodigo());
-                        etDescripcion.setText(inventariable_edit.getDescripcion());
-                        typeSelect = inventariable_edit.getTipo();
-                        ubicationSelect = inventariable_edit.getUbicacion();
-                        ivIcono.setVisibility(View.INVISIBLE);
-                        tvNombreImagen.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Inventariable> call, Throwable t) {
-
-                }
-            });
-        }
 
 
         spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -167,10 +148,9 @@ public class InventariableDialogFragment extends DialogFragment {
             public void onClick(final DialogInterface dialog, int which) {
 
                 name = etNombre.getText().toString();
-                code = etCodigo.getText().toString();
                 description = etDescripcion.getText().toString();
 
-                if (!name.isEmpty() && !code.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty() && !ubicationSelect.isEmpty()) {
+                if (!name.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty() && !ubicationSelect.isEmpty()) {
                     //crear
                     if (idInventariable == null) {
                         if (uriSelected == null) {
@@ -197,15 +177,14 @@ public class InventariableDialogFragment extends DialogFragment {
                                 RequestBody tipo = RequestBody.create(MultipartBody.FORM, typeSelect);
                                 RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
                                 RequestBody descripcion = RequestBody.create(MultipartBody.FORM, description);
-                                RequestBody codigo = RequestBody.create(MultipartBody.FORM, description);
                                 RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubicationSelect);
 
-                                Call<Inventariable> create = service.createInventariable(imagen, codigo, tipo, nombre, descripcion, ubicacion);
+                                Call<Inventariable> create = service.createInventariable(imagen, tipo, nombre, descripcion, ubicacion);
 
                                 create.enqueue(new Callback<Inventariable>() {
                                     @Override
                                     public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                                        Log.e("RESPONSE", ""+response);
+                                        Log.e("RESPONSE", "" + response);
                                     }
 
                                     @Override
@@ -224,13 +203,18 @@ public class InventariableDialogFragment extends DialogFragment {
 
                         //Editar
                     } else {
-                        inventariable_edit = new Inventariable(code, typeSelect, name, description, ubicationSelect);
+                        inventariable_edit = new Inventariable(typeSelect, name, description, ubicationSelect);
                         Call<Inventariable> update = service.updateInventariable(idInventariable, inventariable_edit);
                         update.enqueue(new Callback<Inventariable>() {
                             @Override
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                                Log.d("RESPONSE EDITAR", ""+response.body());
-                                dialog.dismiss();
+                                if (response.isSuccessful()) {
+                                    Log.d("RESPONSE EDITAR", "" + response.body());
+                                    //TODO arreglar
+                                    inventariableListener = (IInventariableListener) getTargetFragment();
+                                    inventariableListener.sendId(idInventariable);
+                                    dialog.dismiss();
+                                }
                             }
 
                             @Override
@@ -250,9 +234,6 @@ public class InventariableDialogFragment extends DialogFragment {
                         etDescripcion.setError("Introduzca una descripción");
                     }
 
-                    if (code.isEmpty()) {
-                        etCodigo.setError("Introduzca un código");
-                    }
 
                     if (typeSelect.isEmpty() || ubicationSelect.isEmpty()) {
                         Toast.makeText(getActivity(), "No olvide elegir un tipo y la ubicación", Toast.LENGTH_SHORT).show();
@@ -329,6 +310,22 @@ public class InventariableDialogFragment extends DialogFragment {
 
             }
         }
+    }
+
+
+    public void loadDispositivo() {
+        viewModel.getInventariable(idInventariable).observe(getActivity(), new Observer<Inventariable>() {
+            @Override
+            public void onChanged(Inventariable inventariable) {
+                inventariable_edit = inventariable;
+                etNombre.setText(inventariable_edit.getNombre());
+                etDescripcion.setText(inventariable_edit.getDescripcion());
+                typeSelect = inventariable_edit.getTipo();
+                ubicationSelect = inventariable_edit.getUbicacion();
+                ivIcono.setVisibility(View.INVISIBLE);
+                tvNombreImagen.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
 }

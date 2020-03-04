@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -25,18 +26,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editTextCodigo"
-            android:layout_width="140dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/background_grey"
-            android:hint="Código"
-            android:inputType="textPersonName"
-            android:paddingLeft="@dimen/margin_left_form"
-            app:layout_constraintStart_toStartOf="@+id/editTextNombre"
-            app:layout_constraintTop_toBottomOf="@+id/editTextNombre" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
@@ -48,18 +37,17 @@
             android:id="@+id/spinnerTipo"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/editTextCodigo"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/editTextCodigo" />
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextNombre" />
 
         <Spinner
             android:id="@+id/spinnerUbicacion"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@+id/editTextCodigo"
-            app:layout_constraintTop_toBottomOf="@+id/editTextCodigo" />
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/spinnerTipo"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTipo" />
 
         <TextView
             android:id="@+id/textViewtImage"
@@ -79,11 +67,11 @@
         <ImageView
             android:id="@+id/imageViewIcon"
             android:layout_width="40dp"
-            android:layout_height="0dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
             android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/spinnerUbicacion"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/spinnerUbicacion"
+            app:layout_constraintStart_toStartOf="@+id/editTextDescripcion"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDescripcion"
             app:srcCompat="@drawable/ic_image2" />
 
         <EditText

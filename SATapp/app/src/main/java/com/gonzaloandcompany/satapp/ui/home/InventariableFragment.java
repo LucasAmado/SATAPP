@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.ui.home.detail.IInventariableListener;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -39,6 +40,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     private DialogPassData dialogPassData;
     private List<String> ubicaciones = new ArrayList<>();
     private FloatingActionButton add;
+    private IInventariableListener inventariableListener;
 
     public InventariableFragment() {
     }
@@ -96,7 +98,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
         add = view.findViewById(R.id.add_inventariable);
 
         add.setOnClickListener(v -> {
-            DialogFragment dialog = new InventariableDialogFragment(null);
+            DialogFragment dialog = new InventariableDialogFragment(inventariableListener,null);
             dialog.show(getFragmentManager(), "InventariableDialogFragment");
         });
 

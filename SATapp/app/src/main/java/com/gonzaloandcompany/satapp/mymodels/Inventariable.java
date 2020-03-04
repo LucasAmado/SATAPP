@@ -22,8 +22,7 @@ public class Inventariable {
         this.imagen = imagen;
     }
 
-    public Inventariable(String codigo, String tipo, String nombre, String descripcion, String ubicacion) {
-        this.codigo = codigo;
+    public Inventariable(String tipo, String nombre, String descripcion, String ubicacion) {
         this.tipo = tipo;
         this.nombre = nombre;
         this.descripcion = descripcion;

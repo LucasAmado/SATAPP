@@ -10,6 +10,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.View;
@@ -46,7 +49,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InventariableDetailActivity extends AppCompatActivity {
+public class InventariableDetailActivity extends AppCompatActivity implements IInventariableListener{
     String idInventariable, urlImagen;
     ServicePeticiones service;
     @BindView(R.id.textViewName)
@@ -67,12 +70,13 @@ public class InventariableDetailActivity extends AppCompatActivity {
     ImageView icon_edit;
     @BindView(R.id.imageViewDelete)
     ImageView icon_delete;
-    Inventariable select;
     @BindView(R.id.edit_image_inventariable)
     FloatingActionButton edit_image;
     @BindView(R.id.lvTicketsInventariable)
     ListView lvTickets;
     List<Ticket> ticketList;
+    LucasViewModel viewModel;
+    IInventariableListener inventariableListener;
 
 
     @Override
@@ -87,53 +91,16 @@ public class InventariableDetailActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         idInventariable = extras.getString(Constants.ID_INVENTARIABLE);
 
+        viewModel = new ViewModelProvider(InventariableDetailActivity.this).get(LucasViewModel.class);
+
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, Constants.TOKEN_PROVISIONAL);
 
         ticketList = new ArrayList<>();
 
-        //TODO probar
-        //new LoadTickets().execute(idInventariable);
+        loadDispositivo();
 
-
-        Call<Inventariable> getInventariable = service.getInventariableById(idInventariable);
-        getInventariable.enqueue(new Callback<Inventariable>() {
-            @Override
-            public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
-                if (response.isSuccessful()) {
-                    select = response.body();
-
-                    LocalDate fechaCreacion = LocalDate.parse(select.getCreatedAt().substring(0, 10));
-                    LocalDate fechaCambio = LocalDate.parse(select.getUpdatedAt().substring(0, 10));
-
-                    tvNombre.setText(select.getNombre());
-                    tvCodigo.setText(select.getCodigo());
-                    tvTipo.setText(select.getTipo());
-                    tvCreado.setText(fechaCreacion.toString("dd/MM/yyyy"));
-                    tvModificado.setText(fechaCambio.toString("dd/MM/yyyy"));
-                    tvDescripcion.setText(select.getDescripcion());
-                    urlImagen = select.getImagen();
-
-                    GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + urlImagen,
-                            new LazyHeaders.Builder()
-                                    .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
-                                    .build());
-
-                    Glide.with(InventariableDetailActivity.this)
-                            .load(glideUrl)
-                            .centerCrop()
-                            .into(ivFoto);
-
-
-                } else {
-                    Toast.makeText(InventariableDetailActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Inventariable> call, Throwable t) {
-                Toast.makeText(InventariableDetailActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
-            }
-        });
+        //TODO descomentar
+        //loadTickets();
 
 
         icon_delete.setOnClickListener(new View.OnClickListener() {
@@ -172,7 +139,7 @@ public class InventariableDetailActivity extends AppCompatActivity {
         });
 
         icon_edit.setOnClickListener(v -> {
-            DialogFragment dialog = new InventariableDialogFragment(idInventariable);
+            DialogFragment dialog = new InventariableDialogFragment(inventariableListener, idInventariable);
             dialog.show(getSupportFragmentManager(), "InventariableDialogFragment");
         });
 
@@ -184,35 +151,46 @@ public class InventariableDetailActivity extends AppCompatActivity {
 
     }
 
-    private class LoadTickets extends AsyncTask<String, Void, List<Ticket>> {
+    public void loadDispositivo(){
+        viewModel.getInventariable(idInventariable).observe(InventariableDetailActivity.this, new Observer<Inventariable>() {
+            @Override
+            public void onChanged(Inventariable select) {
+                LocalDate fechaCreacion = LocalDate.parse(select.getCreatedAt().substring(0, 10));
+                LocalDate fechaCambio = LocalDate.parse(select.getUpdatedAt().substring(0, 10));
 
-        @Override
-        protected List<Ticket> doInBackground(String... strings) {
-            Call<List<Ticket>> callTickets = service.getTicketsInventariable(strings[0]);
-            Response<List<Ticket>> response = null;
+                tvNombre.setText(select.getNombre());
+                tvCodigo.setText(select.getCodigo());
+                tvTipo.setText(select.getTipo());
+                tvCreado.setText(fechaCreacion.toString("dd/MM/yyyy"));
+                tvModificado.setText(fechaCambio.toString("dd/MM/yyyy"));
+                tvDescripcion.setText(select.getDescripcion());
+                urlImagen = select.getImagen();
 
-            try {
-                response = callTickets.execute();
-            } catch (IOException e) {
-                e.printStackTrace();
+                GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + urlImagen,
+                        new LazyHeaders.Builder()
+                                .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
+                                .build());
+
+                Glide.with(InventariableDetailActivity.this)
+                        .load(glideUrl)
+                        .centerCrop()
+                        .into(ivFoto);
             }
-
-            if (response.isSuccessful()) {
-                ticketList = response.body();
-            }
-            return ticketList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Ticket> tickets) {
-            if (tickets != null) {
-                ArrayAdapter adapter = new ArrayAdapter(
-                        InventariableDetailActivity.this,
-                        android.R.layout.simple_list_item_2,
-                        tickets);
-                lvTickets.setAdapter(adapter);
-            }
-        }
+        });
     }
 
+    public void loadTickets(){
+        viewModel.getTicketsInventariable(idInventariable).observe(InventariableDetailActivity.this, new Observer<List<Ticket>>() {
+            @Override
+            public void onChanged(List<Ticket> tickets) {
+                ticketList = tickets;
+                //TODO adapter
+            }
+        });
+    }
+
+    @Override
+    public void sendId(String id) {
+        idInventariable = id;
+    }
 }
