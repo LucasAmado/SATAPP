@@ -172,7 +172,7 @@ public class InventariableDialogFragment extends DialogFragment {
                                                 MediaType.parse(getActivity().getContentResolver().getType(uriSelected)), baos.toByteArray());
 
                                 MultipartBody.Part imagen =
-                                        MultipartBody.Part.createFormData("avatar", fileName, requestFile);
+                                        MultipartBody.Part.createFormData("imagen", fileName, requestFile);
 
                                 RequestBody tipo = RequestBody.create(MultipartBody.FORM, typeSelect);
                                 RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
@@ -185,11 +185,12 @@ public class InventariableDialogFragment extends DialogFragment {
                                     @Override
                                     public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                         Log.e("RESPONSE", "" + response);
+                                        dialog.dismiss();
                                     }
 
                                     @Override
                                     public void onFailure(Call<Inventariable> call, Throwable t) {
-                                        Toast.makeText(getActivity(), "Error de conexión al intentar crear", Toast.LENGTH_SHORT).show();
+                                        Log.e("RESPONSE ERROR", "ERROR DE CONEXIÓN AL INTENTAR CREAR");
                                     }
                                 });
 
@@ -211,8 +212,8 @@ public class InventariableDialogFragment extends DialogFragment {
                                 if (response.isSuccessful()) {
                                     Log.d("RESPONSE EDITAR", "" + response.body());
                                     //TODO arreglar
-                                    inventariableListener = (IInventariableListener) getTargetFragment();
-                                    inventariableListener.sendId(idInventariable);
+                                    //inventariableListener = (IInventariableListener) getActivity();
+                                    //inventariableListener.sendId(idInventariable);
                                     dialog.dismiss();
                                 }
                             }

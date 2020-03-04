@@ -9,6 +9,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,6 +46,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
 
     public InventariableFragment() {
     }
+
 
     @Override
     public void filterByUbicacion(String ubicacion) {
@@ -98,7 +101,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
         add = view.findViewById(R.id.add_inventariable);
 
         add.setOnClickListener(v -> {
-            DialogFragment dialog = new InventariableDialogFragment(inventariableListener,null);
+            DialogFragment dialog = new InventariableDialogFragment(inventariableListener, null);
             dialog.show(getFragmentManager(), "InventariableDialogFragment");
         });
 
@@ -137,6 +140,4 @@ public class InventariableFragment extends Fragment implements DialogPassData {
         super.onDetach();
         dialogPassData = null;
     }
-
-
 }

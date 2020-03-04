@@ -177,7 +177,7 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
                         final String fileName = cursor.getString(nameIndex);
 
                         MultipartBody.Part imagen =
-                                MultipartBody.Part.createFormData("avatar", fileName, requestFile);
+                                MultipartBody.Part.createFormData("imagen", fileName, requestFile);
 
                         Call<Inventariable> updateImage = service.updateImageInventariable(idInventariable, imagen);
 
