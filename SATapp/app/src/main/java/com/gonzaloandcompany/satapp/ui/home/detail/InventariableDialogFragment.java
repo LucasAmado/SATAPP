@@ -24,17 +24,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
-
-import org.joda.time.LocalDate;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,10 +49,10 @@ import retrofit2.Response;
 public class InventariableDialogFragment extends DialogFragment {
 
     private View v;
-    EditText etNombre, etDescripcion;
+    EditText etNombre, etDescripcion, etUbicacion;
     TextView tvImage, tvNombreImagen;
-    Spinner spTipo, spUbicacion;
-    String typeSelect, ubicationSelect, name, description, fileName;
+    Spinner spTipo;
+    String typeSelect, ubication, name, description, fileName;
     ImageView ivIcono;
     ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
@@ -92,8 +87,8 @@ public class InventariableDialogFragment extends DialogFragment {
         tvNombreImagen = v.findViewById(R.id.textViewtImage);
         tvImage = v.findViewById(R.id.textViewtImage);
         etDescripcion = v.findViewById(R.id.editTextDescripcion);
+        etUbicacion = v.findViewById(R.id.editTextUbicacion);
         spTipo = v.findViewById(R.id.spinnerTipo);
-        spUbicacion = v.findViewById(R.id.spinnerUbicacion);
         ivIcono = v.findViewById(R.id.imageViewIcon);
 
         viewModel = new ViewModelProvider(getActivity()).get(LucasViewModel.class);
@@ -103,23 +98,12 @@ public class InventariableDialogFragment extends DialogFragment {
 
         loadTipos();
 
-        loadUbicaciones();
-
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, token);
 
 
         spTipo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 typeSelect = (String) parent.getItemAtPosition(position);
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        spUbicacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ubicationSelect = (String) parent.getItemAtPosition(position);
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -149,8 +133,9 @@ public class InventariableDialogFragment extends DialogFragment {
 
                 name = etNombre.getText().toString();
                 description = etDescripcion.getText().toString();
+                ubication = etUbicacion.getText().toString();
 
-                if (!name.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty() && !ubicationSelect.isEmpty()) {
+                if (!name.isEmpty() && !description.isEmpty() && !typeSelect.isEmpty() && !ubication.isEmpty()) {
                     //crear
                     if (idInventariable == null) {
                         if (uriSelected == null) {
@@ -177,7 +162,7 @@ public class InventariableDialogFragment extends DialogFragment {
                                 RequestBody tipo = RequestBody.create(MultipartBody.FORM, typeSelect);
                                 RequestBody nombre = RequestBody.create(MultipartBody.FORM, name);
                                 RequestBody descripcion = RequestBody.create(MultipartBody.FORM, description);
-                                RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubicationSelect);
+                                RequestBody ubicacion = RequestBody.create(MultipartBody.FORM, ubication);
 
                                 Call<Inventariable> create = service.createInventariable(imagen, tipo, nombre, descripcion, ubicacion);
 
@@ -204,7 +189,7 @@ public class InventariableDialogFragment extends DialogFragment {
 
                         //Editar
                     } else {
-                        inventariable_edit = new Inventariable(typeSelect, name, description, ubicationSelect);
+                        inventariable_edit = new Inventariable(typeSelect, name, description, ubication);
                         Call<Inventariable> update = service.updateInventariable(idInventariable, inventariable_edit);
                         update.enqueue(new Callback<Inventariable>() {
                             @Override
@@ -236,7 +221,7 @@ public class InventariableDialogFragment extends DialogFragment {
                     }
 
 
-                    if (typeSelect.isEmpty() || ubicationSelect.isEmpty()) {
+                    if (typeSelect.isEmpty() || ubication.isEmpty()) {
                         Toast.makeText(getActivity(), "No olvide elegir un tipo y la ubicación", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -261,23 +246,6 @@ public class InventariableDialogFragment extends DialogFragment {
                         android.R.layout.simple_spinner_item, arrayTipos);
                 adapterTipos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spTipo.setAdapter(adapterTipos);
-            }
-        });
-    }
-
-    public void loadUbicaciones() {
-        viewModel.getAllUbicaciones().observe(getActivity(), new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> ubicaciones) {
-
-                for (int i = 0; i < ubicaciones.size(); i++) {
-                    arrayUbicaciones.add(ubicaciones.get(i));
-                }
-
-                adapterUbicaciones = new ArrayAdapter<String>(getActivity(),
-                        android.R.layout.simple_spinner_item, arrayUbicaciones);
-                adapterUbicaciones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spUbicacion.setAdapter(adapterUbicaciones);
             }
         });
     }
@@ -322,7 +290,7 @@ public class InventariableDialogFragment extends DialogFragment {
                 etNombre.setText(inventariable_edit.getNombre());
                 etDescripcion.setText(inventariable_edit.getDescripcion());
                 typeSelect = inventariable_edit.getTipo();
-                ubicationSelect = inventariable_edit.getUbicacion();
+                ubication = inventariable_edit.getUbicacion();
                 ivIcono.setVisibility(View.INVISIBLE);
                 tvNombreImagen.setVisibility(View.INVISIBLE);
             }
