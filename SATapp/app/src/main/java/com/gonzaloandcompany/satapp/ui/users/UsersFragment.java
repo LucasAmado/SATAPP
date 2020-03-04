@@ -1,7 +1,6 @@
-package com.gonzaloandcompany.satapp.ui.tickets;
+package com.gonzaloandcompany.satapp.ui.users;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,41 +11,40 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.mymodels.PagedList;
-import com.gonzaloandcompany.satapp.mymodels.Ticket;
-import com.gonzaloandcompany.satapp.ui.ticketCreate.TicketCreateActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 
 import java.util.List;
 
-public class TicketsFragment extends Fragment {
+public class UsersFragment extends Fragment {
+
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
-    private TicketListener listener;
-    private TicketRecyclerViewAdapter adapter;
-    private PagedList<Ticket> tickets;
+    private UserListener listener;
+    private UsersRecyclerViewAdapter adapter;
+    private PagedList<UsuarioDummy> users;
     private RecyclerView recyclerView;
-    private TicketsViewModel ticketsViewModel;
+    private UsersViewModel usersViewModel;
     private final int pageSize = 5;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int currentPage = 0;
     private ProgressBar progressBar;
-    private FloatingActionButton add;
+    
 
-    public TicketsFragment() {
+    public UsersFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ticketsViewModel =
-                ViewModelProviders.of(this).get(TicketsViewModel.class);
+        usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
+                
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -54,31 +52,22 @@ public class TicketsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tickets_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_users_list, container, false);
 
         Context context = view.getContext();
 
-        recyclerView = view.findViewById(R.id.ticketList);
-        progressBar = view.findViewById(R.id.ticketListProgressBar);
-        add = view.findViewById(R.id.ticketListAdd);
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent goToCreate = new Intent(context, TicketCreateActivity.class);
-                startActivity(goToCreate);
-            }
-        });
-
-        tickets = new PagedList<>();
+        recyclerView = view.findViewById(R.id.userList);
+        progressBar = view.findViewById(R.id.userListProgressBar);
+        
+        users = new PagedList<>();
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new TicketRecyclerViewAdapter(tickets.getResults(), listener);
+        adapter = new UsersRecyclerViewAdapter(users.getResults(),getContext(), listener);
         recyclerView.setAdapter(adapter);
 
-        //TODO: LISTAR SEGÚN ROL
+
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -90,11 +79,11 @@ public class TicketsFragment extends Fragment {
                 boolean totalIsMoreThanVisible = totalItems >= pageSize;
                 boolean shouldLoadMore = isValidFirstItem && isLastItem && totalIsMoreThanVisible;
 
-                if (shouldLoadMore) loadTickets(false);
+                if (shouldLoadMore) loadUsers(false);
 
             }
         });
-        loadTickets(true);
+        loadUsers(true);
 
 
         return view;
@@ -103,11 +92,11 @@ public class TicketsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof TicketListener) {
-            listener = (TicketListener) context;
+        if (context instanceof UserListener) {
+            listener = (UserListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement TicketListener");
+                    + " must implement UserListener");
         }
     }
 
@@ -117,29 +106,36 @@ public class TicketsFragment extends Fragment {
         listener = null;
     }
 
-    public void loadTickets(final boolean isFirstPage) {
+    public void loadUsers(final boolean isFirstPage) {
         isLoading = true;
         currentPage++;
-        ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+        usersViewModel.getUsersPaginable(currentPage,pageSize).observe(getActivity(), new Observer<List<UsuarioDummy>>() {
             @Override
-            public void onChanged(List<Ticket> data) {
+            public void onChanged(List<UsuarioDummy> data) {
                 if (data != null) {
-                    tickets.setResults(data);
+                    users.setResults(data);
+                    users.getResults().sort((UsuarioDummy o1, UsuarioDummy o2)->{
+                        if(o1.getName()!=null&&o2.getName()!=null)
+                            return o1.getName().compareTo(o2.getName());
+                        else
+                            return o1.getEmail().compareTo(o2.getEmail());
+                    });
+
                 }else{
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"No hay más usuarios que cargar",Toast.LENGTH_LONG).show();
                 }
 
                 if (!isFirstPage) {
-                    adapter.addAll(tickets.getResults());
+                    adapter.addAll(users.getResults());
                 } else {
-                    adapter.setData(tickets.getResults());
+                    adapter.setData(users.getResults());
                     progressBar.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
 
                 isLoading = false;
-                isLastPage = currentPage == tickets.getResults().size();
+                isLastPage = currentPage == users.getResults().size();
             }
         });
     }

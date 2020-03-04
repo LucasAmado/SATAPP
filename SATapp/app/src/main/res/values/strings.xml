@@ -25,4 +25,11 @@
     <string name="selectTech">Selecciona un técnico</string>
     <string name="save">Guardar</string>
     <string name="action_search">search</string>
+    <string name="device">Dispositivo</string>
+    <string name="tech">Técnico</string>
+    <string name="devices">Dispositivos</string>
+    <string name="tickets">Incidencias</string>
+    <string name="users">Usuarios</string>
+    <string name="validated">Validado:</string>
+    <string name="rol">Rol:</string>
 </resources>

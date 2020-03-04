@@ -22,8 +22,8 @@ public class TicketsViewModel extends AndroidViewModel {
         repository = new EspeRepository();
     }
 
-    public LiveData<List<Ticket>> getTickets(int page) {
-        return repository.getTickets(page);
+    public LiveData<List<Ticket>> getTickets(int page, int limit) {
+        return repository.getTickets(page, limit);
     }
 
     public LiveData<Ticket> getTicket(String id) {
