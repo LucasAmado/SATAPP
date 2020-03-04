@@ -2,45 +2,37 @@ package com.gonzaloandcompany.satapp.ui.home.detail;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.MainActivity;
+import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.gonzaloandcompany.satapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.joda.time.LocalDate;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -98,10 +90,7 @@ public class InventariableDetailActivity extends AppCompatActivity implements II
         ticketList = new ArrayList<>();
 
         loadDispositivo();
-
-        //TODO descomentar
-        //loadTickets();
-
+        loadTicketsDispositivo();
 
         icon_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,11 +168,12 @@ public class InventariableDetailActivity extends AppCompatActivity implements II
         });
     }
 
-    public void loadTickets(){
+    public void loadTicketsDispositivo(){
         viewModel.getTicketsInventariable(idInventariable).observe(InventariableDetailActivity.this, new Observer<List<Ticket>>() {
             @Override
             public void onChanged(List<Ticket> tickets) {
                 ticketList = tickets;
+                Log.d("TICKETS",ticketList.toString());
                 //TODO adapter
             }
         });

@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
@@ -60,6 +61,7 @@ public class InventariableDialogFragment extends DialogFragment {
     ServicePeticiones service;
     String token = Constants.TOKEN_PROVISIONAL;
     LucasViewModel viewModel;
+    JLuisViewModel jLuisViewModel;
     ArrayAdapter<String> adapterTipos, adapterUbicaciones;
     String idInventariable;
     Inventariable inventariable_edit;
@@ -92,6 +94,7 @@ public class InventariableDialogFragment extends DialogFragment {
         ivIcono = v.findViewById(R.id.imageViewIcon);
 
         viewModel = new ViewModelProvider(getActivity()).get(LucasViewModel.class);
+        jLuisViewModel = new ViewModelProvider(getActivity()).get(JLuisViewModel.class);
 
         if (idInventariable != null)
             loadDispositivo();
@@ -170,6 +173,8 @@ public class InventariableDialogFragment extends DialogFragment {
                                     @Override
                                     public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                         Log.e("RESPONSE", "" + response);
+                                        //TODO set id dispositivo con view model tanto al editar como al crear
+                                        //ya está declarado el view model de jose luis
                                         dialog.dismiss();
                                     }
 
@@ -290,7 +295,7 @@ public class InventariableDialogFragment extends DialogFragment {
                 etNombre.setText(inventariable_edit.getNombre());
                 etDescripcion.setText(inventariable_edit.getDescripcion());
                 typeSelect = inventariable_edit.getTipo();
-                ubication = inventariable_edit.getUbicacion();
+                etUbicacion.setText(inventariable_edit.getUbicacion());
                 ivIcono.setVisibility(View.INVISIBLE);
                 tvNombreImagen.setVisibility(View.INVISIBLE);
             }
