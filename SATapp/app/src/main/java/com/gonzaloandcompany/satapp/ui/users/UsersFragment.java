@@ -51,7 +51,7 @@ public class UsersFragment extends Fragment {
     private int currentPage = 0;
     private ProgressBar progressBar;
     private Parcelable recylerState;
-    private boolean allUsers;
+    private boolean allUsers = true;
     private boolean validados;
     MenuItem itemFilter;
     MenuItem itemVolver;
@@ -79,32 +79,26 @@ public class UsersFragment extends Fragment {
             case R.id.action_validados:
                 validados = true;
                 allUsers = false;
-                loadUsers(true);
+                onResume();
                 itemFilter.setVisible(false);
                 itemVolver.setVisible(true);
                 break;
             case R.id.action_noValidados:
                 validados = false;
                 allUsers = false;
-                loadUsers(true);
+                onResume();
                 itemFilter.setVisible(false);
                 itemVolver.setVisible(true);
                 break;
             case R.id.refresh_icon:
                 allUsers = true;
-                loadUsers(true);
+                onResume();
                 itemFilter.setVisible(true);
                 itemVolver.setVisible(false);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        currentPage=0;
-        loadUsers(true);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,10 +143,15 @@ public class UsersFragment extends Fragment {
 
             }
         });
-        loadUsers(true);
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentPage=0;
+        loadUsers(true);
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -174,13 +173,12 @@ public class UsersFragment extends Fragment {
         isLoading = true;
         currentPage++;
         users.getResults().clear();
-        Log.d("BOOLEAN",allUsers+"");
         usersViewModel.getUsersPaginable(currentPage, pageSize).observe(getActivity(), new Observer<List<UsuarioDummy>>() {
             @Override
             public void onChanged(List<UsuarioDummy> data) {
                 if (data != null) {
                     Log.d("DATA",data.toString());
-                    if(allUsers==true||isFirstPage==true) {
+                    if(allUsers) {
                         users.getResults().addAll(data);
                     }else{
                         for (UsuarioDummy u : data) {
