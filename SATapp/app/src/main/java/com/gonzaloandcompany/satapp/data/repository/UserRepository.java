@@ -53,7 +53,6 @@ public class UserRepository {
             public void onResponse(Call<List<UsuarioDummy>> call, Response<List<UsuarioDummy>> response) {
                 if (response.isSuccessful()) {
                     paginables.setValue(response.body());
-                    Log.d("PAGINABLES",paginables.getValue().toString());
                 }
             }
 

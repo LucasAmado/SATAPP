@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
 import com.gonzaloandcompany.satapp.ui.userdetail.UserDetailActivity;
@@ -16,6 +21,8 @@ import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements TicketListener, UserListener {
+    JLuisViewModel jLuisViewModel;
+
     @Override
     public void OnUserClick(String id) {
         Intent goToDetail = new Intent(this, UserDetailActivity.class);
@@ -37,6 +44,20 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        jLuisViewModel = new ViewModelProvider(this).get(JLuisViewModel.class);
+
+        jLuisViewModel.getIdInventariable().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String idInventariable) {
+                if (idInventariable != null) {
+                    Intent i = new Intent(MainActivity.this, InventariableDetailActivity.class);
+                    i.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
+                    startActivity(i);
+                }
+            }
+        });
+
     }
 
     @Override

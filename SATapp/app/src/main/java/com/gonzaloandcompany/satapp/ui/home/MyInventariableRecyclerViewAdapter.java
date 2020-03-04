@@ -3,9 +3,12 @@ package com.gonzaloandcompany.satapp.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,14 +20,18 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
+import com.gonzaloandcompany.satapp.data.viewmodel.LucasViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyInventariableRecyclerViewAdapter.ViewHolder> {
+public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyInventariableRecyclerViewAdapter.ViewHolder> implements Filterable {
 
     private Context ctx;
     private List<Inventariable> mValues;
+    private List<Inventariable> exampleListFull;
     private JLuisViewModel jLuisViewModel;
 
     public MyInventariableRecyclerViewAdapter(Context ctx, List<Inventariable> mValues, JLuisViewModel jLuisViewModel) {
@@ -62,7 +69,7 @@ public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyI
             holder.tvDescripcion.setText(String.valueOf(holder.mItem.getDescripcion()));
             holder.mView.setOnClickListener(v -> {
                 if (null != jLuisViewModel) {
-
+                    jLuisViewModel.setIdInventariable(holder.mItem.getId());
                 }
             });
         }
@@ -70,6 +77,7 @@ public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyI
 
     public void setData(List<Inventariable> inventariableList){
         this.mValues = inventariableList;
+        exampleListFull = new ArrayList<>(inventariableList);
         notifyDataSetChanged();
     }
 
@@ -79,6 +87,41 @@ public class MyInventariableRecyclerViewAdapter extends RecyclerView.Adapter<MyI
             return mValues.size();
         }else return 0;
     }
+
+    @Override
+    public Filter getFilter() {
+        return listaFiltrada;
+    }
+
+    private Filter listaFiltrada = new Filter() {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Inventariable> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length()== 0){
+                filteredList.addAll(exampleListFull);
+            }else{
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Inventariable i : exampleListFull){
+                    if(i.getNombre().toLowerCase().contains(filterPattern)){
+                        filteredList.add(i);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            if(mValues!=null){
+            mValues.clear();
+            mValues.addAll((Collection<? extends Inventariable>) results.values);
+            notifyDataSetChanged();
+        }}
+    };
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;

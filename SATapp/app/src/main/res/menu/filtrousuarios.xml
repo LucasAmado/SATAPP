@@ -8,16 +8,17 @@
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/action_ubicacion"
-                android:title="Ubicación" />
+                android:id="@+id/action_validados"
+                android:title="Validados" />
+            <item
+                android:id="@+id/action_noValidados"
+                android:title="No Validados" />
         </menu>
     </item>
     <item
-        android:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/action_search"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
-
+        android:id="@+id/refresh_icon"
+        android:icon="@drawable/ic_undo_black_24dp"
+        android:title="Refrescar"
+        app:showAsAction="ifRoom" />
 
 </menu>
