@@ -13,23 +13,20 @@ import com.gonzaloandcompany.satapp.mymodels.Ticket;
 
 import java.util.List;
 
-public class LucasViewModel extends AndroidViewModel{
+public class InventariableDetailViewModel extends AndroidViewModel {
     private LucasRepository repository;
-    private MutableLiveData<List<String>> stringList;
-    private MutableLiveData<Inventariable> inventariable;
+    private MutableLiveData<List<Ticket>> ticketList;
 
-    public LucasViewModel(@NonNull Application application) {
+    public InventariableDetailViewModel(@NonNull Application application) {
         super(application);
         repository = new LucasRepository();
     }
 
-    public LiveData<Inventariable> getInventariable(String id){
-        inventariable = repository.getInventariableById(id);
-        return inventariable;
+    public void deleteInventariable(String id){
+        repository.deleteInventariable(id);
     }
 
-    public LiveData<List<String>> getAllTipos(){
-        stringList = repository.getTipos();
-        return stringList;
+    public LiveData<List<Ticket>> getTicketsInventariable(String id) {
+        return repository.getTicketsInventariable(id);
     }
 }

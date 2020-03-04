@@ -107,7 +107,7 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
             }
         });
 
-        //TODO hacer pruebas
+        //TODO borra el dispositivo, no solo la imagen
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,13 +120,15 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Void> call1, Response<Void> response) {
                             if (response.isSuccessful()) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString(Constants.ID_INVENTARIABLE,idInventariable);
+                                Intent intent = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
                                 Toast.makeText(InventariableDetaileImageActivity.this, "Imagen eliminada", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(InventariableDetaileImageActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
                             }
-                            Intent intent = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
-                            intent.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
-                            startActivity(intent);
                         }
 
                         @Override
@@ -147,7 +149,7 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
             }
         });
 
-        //TODO arreglar error
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,8 +188,11 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                 if (response.isSuccessful()) {
                                     Toast.makeText(InventariableDetaileImageActivity.this, "Imagen modificada", Toast.LENGTH_LONG).show();
-                                    Intent i = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
-                                    startActivity(i);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(Constants.ID_INVENTARIABLE,idInventariable);
+                                    Intent intent = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(InventariableDetaileImageActivity.this, "Error al modificar la imagen", Toast.LENGTH_LONG).show();
                                 }

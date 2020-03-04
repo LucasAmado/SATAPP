@@ -9,13 +9,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
-import com.gonzaloandcompany.satapp.ui.home.detail.IInventariableListener;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -44,7 +40,6 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     private DialogPassData dialogPassData;
     private List<String> ubicaciones = new ArrayList<>();
     private FloatingActionButton add;
-    private IInventariableListener inventariableListener;
 
     public InventariableFragment() {
     }
@@ -119,7 +114,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
         add = view.findViewById(R.id.add_inventariable);
 
         add.setOnClickListener(v -> {
-            DialogFragment dialog = new InventariableDialogFragment(inventariableListener, null);
+            DialogFragment dialog = new InventariableDialogFragment(null);
             dialog.show(getFragmentManager(), "InventariableDialogFragment");
         });
 

@@ -55,20 +55,18 @@ public class InventariableDialogFragment extends DialogFragment {
     Spinner spTipo;
     String typeSelect, ubication, name, description, fileName;
     ImageView ivIcono;
-    ArrayList<String> arrayTipos = new ArrayList<>(), arrayUbicaciones = new ArrayList<>();
+    ArrayList<String> arrayTipos = new ArrayList<>();
     private static final int READ_REQUEST_CODE = 42;
     Uri uriSelected;
     ServicePeticiones service;
     String token = Constants.TOKEN_PROVISIONAL;
     LucasViewModel viewModel;
     JLuisViewModel jLuisViewModel;
-    ArrayAdapter<String> adapterTipos, adapterUbicaciones;
+    ArrayAdapter<String> adapterTipos;
     String idInventariable;
     Inventariable inventariable_edit;
-    IInventariableListener inventariableListener;
 
-    public InventariableDialogFragment(IInventariableListener inventariableListener, String id) {
-        this.inventariableListener = inventariableListener;
+    public InventariableDialogFragment(String id) {
         this.idInventariable = id;
     }
 
@@ -110,6 +108,7 @@ public class InventariableDialogFragment extends DialogFragment {
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
+                //typeSelect = (String) parent.getItemAtPosition(position);
             }
         });
 
@@ -173,8 +172,6 @@ public class InventariableDialogFragment extends DialogFragment {
                                     @Override
                                     public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                         Log.e("RESPONSE", "" + response);
-                                        //TODO set id dispositivo con view model tanto al editar como al crear
-                                        //ya está declarado el view model de jose luis
                                         dialog.dismiss();
                                     }
 
@@ -201,9 +198,7 @@ public class InventariableDialogFragment extends DialogFragment {
                             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
                                 if (response.isSuccessful()) {
                                     Log.d("RESPONSE EDITAR", "" + response.body());
-                                    //TODO arreglar
-                                    //inventariableListener = (IInventariableListener) getActivity();
-                                    //inventariableListener.sendId(idInventariable);
+
                                     dialog.dismiss();
                                 }
                             }
