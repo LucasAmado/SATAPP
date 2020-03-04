@@ -72,6 +72,7 @@ public class TicketCreateActivity extends AppCompatActivity {
     private String techId="";
     private String deviceId="";
     private JLuisViewModel jLuisViewModel;
+    private UsuarioDummy currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,8 @@ public class TicketCreateActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         jLuisViewModel = new ViewModelProvider(this).get(JLuisViewModel.class);
+
+        getCurrentUser();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -306,5 +309,19 @@ public class TicketCreateActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void getCurrentUser(){
+        userViewModel.getCurrentUser().observe(this, new Observer<UsuarioDummy>() {
+            @Override
+            public void onChanged(UsuarioDummy usuario) {
+                currentUser=usuario;
+                if(currentUser.getRole().equals("tecnico")||currentUser.getRole().equals("user"))
+                  tech.setVisibility(View.GONE);
+                else
+                    tech.setVisibility(View.VISIBLE);
+
+            }
+        });
     }
 }

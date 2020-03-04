@@ -33,4 +33,11 @@ public interface TicketService {
 
     @DELETE("/ticket/{id}")
     Call<Void> deleteTicket(@Path("id") String id);
+
+    @GET("/ticket/asignados/me")
+    Call<List<Ticket>> getTicketsAssigned(@Query("page")int page,@Query("limit") int limit);
+
+    @GET("/ticket/user/me")
+    Call<List<Ticket>> getTicketsCreated(@Query("page")int page,@Query("limit") int limit);
+
 }

@@ -13,13 +13,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
 import com.gonzaloandcompany.satapp.mymodels.PagedList;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.ui.ticketCreate.TicketCreateActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,12 +36,14 @@ public class TicketsFragment extends Fragment {
     private PagedList<Ticket> tickets;
     private RecyclerView recyclerView;
     private TicketsViewModel ticketsViewModel;
-    private final int pageSize = 5;
+    private final int pageSize = 10;
     private boolean isLastPage = false;
     private boolean isLoading = false;
     private int currentPage = 0;
     private ProgressBar progressBar;
     private FloatingActionButton add;
+    private UserViewModel userViewModel;
+    private UsuarioDummy currentUser;
 
     public TicketsFragment() {
     }
@@ -46,8 +51,9 @@ public class TicketsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ticketsViewModel =
-                ViewModelProviders.of(this).get(TicketsViewModel.class);
+        ticketsViewModel =new ViewModelProvider(this).get(TicketsViewModel.class);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -58,7 +64,8 @@ public class TicketsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tickets_list, container, false);
 
         Context context = view.getContext();
-
+        getCurrentUser();
+        tickets = new PagedList<>();
         recyclerView = view.findViewById(R.id.ticketList);
         progressBar = view.findViewById(R.id.ticketListProgressBar);
         add = view.findViewById(R.id.ticketListAdd);
@@ -71,7 +78,7 @@ public class TicketsFragment extends Fragment {
             }
         });
 
-        tickets = new PagedList<>();
+
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
@@ -79,7 +86,7 @@ public class TicketsFragment extends Fragment {
         adapter = new TicketRecyclerViewAdapter(tickets.getResults(), listener);
         recyclerView.setAdapter(adapter);
 
-        //TODO: LISTAR SEGÚN ROL
+
         recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -95,7 +102,7 @@ public class TicketsFragment extends Fragment {
 
             }
         });
-        loadTickets(true);
+
 
 
         return view;
@@ -121,7 +128,55 @@ public class TicketsFragment extends Fragment {
     public void loadTickets(final boolean isFirstPage) {
         isLoading = true;
         currentPage++;
-        ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+
+        /*if(currentUser.getRole().equals("tecnico"))
+            ticketsViewModel.getTicketsAssigned(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+                @Override
+                public void onChanged(List<Ticket> data) {
+                    if (data != null) {
+                        tickets.setResults(data);
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
+                    }
+
+                    if (!isFirstPage) {
+                        adapter.addAll(tickets.getResults());
+                    } else {
+                        adapter.setData(tickets.getResults());
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
+                    isLoading = false;
+                    isLastPage = currentPage == tickets.getResults().size();
+                }
+            });
+        else if (currentUser.getRole().equals("user"))
+            ticketsViewModel.getTicketsCreated(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+                @Override
+                public void onChanged(List<Ticket> data) {
+                    if (data != null) {
+                        tickets.setResults(data);
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(),"No hay más tickets que cargar",Toast.LENGTH_LONG).show();
+                    }
+
+                    if (!isFirstPage) {
+                        adapter.addAll(tickets.getResults());
+                    } else {
+                        adapter.setData(tickets.getResults());
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
+
+                    isLoading = false;
+                    isLastPage = currentPage == tickets.getResults().size();
+                }
+            });
+        else*/
+            ticketsViewModel.getTickets(currentPage,pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
             @Override
             public void onChanged(List<Ticket> data) {
                 if (data != null) {
@@ -150,5 +205,17 @@ public class TicketsFragment extends Fragment {
         super.onResume();
         currentPage=0;
         loadTickets(true);
+    }
+
+    public void getCurrentUser(){
+        userViewModel.getCurrentUser().observe(getActivity(), new Observer<UsuarioDummy>() {
+            @Override
+            public void onChanged(UsuarioDummy usuario) {
+                currentUser=usuario;
+                Log.d("USUARIO",usuario.toString());
+                loadTickets(true);
+
+            }
+        });
     }
 }

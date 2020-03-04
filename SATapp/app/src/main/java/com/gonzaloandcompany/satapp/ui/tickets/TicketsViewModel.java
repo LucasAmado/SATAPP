@@ -35,4 +35,11 @@ public class TicketsViewModel extends AndroidViewModel {
     }
 
     public void deleteTicket(String id){repository.deleteTicket(id);}
+
+    public LiveData<List<Ticket>> getTicketsAssigned(int page, int limit) {
+        return repository.getTicketsAssigned(page, limit);
+    }
+    public LiveData<List<Ticket>> getTicketsCreated(int page, int limit) {
+        return repository.getTicketsCreated(page, limit);
+    }
 }

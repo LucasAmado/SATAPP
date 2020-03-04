@@ -122,4 +122,42 @@ public class EspeRepository {
 
     }
 
+    public LiveData<List<Ticket>> getTicketsAssigned(int page, int limit) {
+        final MutableLiveData<List<Ticket>> data = new MutableLiveData<>();
+        Call<List<Ticket>> call = service.getTicketsAssigned(page,limit);
+        call.enqueue(new Callback<List<Ticket>>() {
+            @Override
+            public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Ticket>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<List<Ticket>> getTicketsCreated(int page, int limit) {
+        final MutableLiveData<List<Ticket>> data = new MutableLiveData<>();
+        Call<List<Ticket>> call = service.getTicketsCreated(page,limit);
+        call.enqueue(new Callback<List<Ticket>>() {
+            @Override
+            public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Ticket>> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
 }
