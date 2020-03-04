@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.home.detail.InventariableDetaileImageActivity"></activity>
+        <activity android:name=".ui.userdetail.PerfilDetailActivity"></activity>
+        <activity android:name=".ui.home.detail.InventariableDetaileImageActivity" />
         <activity
             android:name=".ui.home.detail.InventariableDetailActivity"
             android:label="@string/title_activity_inventariable_detail"
@@ -22,7 +23,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gonzaloandcompany.satapp.MainActivity" />
         </activity>
-        <activity android:name=".ui.userdetail.UserDetailActivity"></activity>
+        <activity android:name=".ui.userdetail.UserDetailActivity" />
         <activity android:name=".ui.ticketCreate.TicketCreateActivity" />
         <activity android:name=".ui.FullSizeImageActivity" />
         <activity android:name=".ui.ticketsdetail.TicketDetailActivity" />
