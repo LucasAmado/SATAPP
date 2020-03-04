@@ -7,10 +7,7 @@ public class Users {
     private String picture;
     private String createdAt;
     private String updatedAt;
-
-    public Users(String email) {
-        this.email = email;
-    }
+    private Boolean Validated;
 
     public String getId() {
         return id;
@@ -58,5 +55,13 @@ public class Users {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Boolean getValidated() {
+        return Validated;
+    }
+
+    public void setValidated(Boolean validated) {
+        Validated = validated;
     }
 }

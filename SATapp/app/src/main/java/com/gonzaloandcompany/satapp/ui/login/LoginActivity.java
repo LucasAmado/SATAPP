@@ -12,6 +12,8 @@ import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.mymodels.Login;
 import com.gonzaloandcompany.satapp.mymodels.Users;
 
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,4 +53,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
+
+    public void onLoginCorrect(JSONObject json, String msg) {
+        Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+        LoginActivity.this.startActivity(i);
+    }
+
 }
