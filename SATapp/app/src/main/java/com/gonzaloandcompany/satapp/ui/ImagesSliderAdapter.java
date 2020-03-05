@@ -3,6 +3,7 @@ package com.gonzaloandcompany.satapp.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,7 @@ public class ImagesSliderAdapter extends PagerAdapter {
                 new LazyHeaders.Builder()
                         .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                         .build());
-
+        Log.d("GLIDEURL",glideUrl.toString());
         Glide.with(v.getContext()).load(glideUrl).into(image);
 
         ((ViewPager) container).addView(v);

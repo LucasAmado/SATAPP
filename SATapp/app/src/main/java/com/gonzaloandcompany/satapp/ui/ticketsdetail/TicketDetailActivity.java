@@ -1,5 +1,6 @@
 package com.gonzaloandcompany.satapp.ui.ticketsdetail;
 
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
@@ -32,7 +34,6 @@ import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
 import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 import com.gonzaloandcompany.satapp.ui.ImagesSliderAdapter;
-import com.gonzaloandcompany.satapp.ui.ticketCreate.TicketCreateActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -59,6 +60,8 @@ public class TicketDetailActivity extends AppCompatActivity {
     private String techId = "";
     private List<UsuarioDummy> allTechs;
 
+    @BindView(R.id.ticket_detail_edit_title)
+    TextView editTitle;
     @BindView(R.id.ticketDetailAdd)
     FloatingActionButton add;
     @BindView(R.id.ticketDetailDelete)
@@ -77,7 +80,6 @@ public class TicketDetailActivity extends AppCompatActivity {
     TextView state;
     @BindView(R.id.ticketDetailDescription)
     TextView description;
-
     @BindView(R.id.ticketDetailTech)
     ListView techAssigned;
 
@@ -93,82 +95,67 @@ public class TicketDetailActivity extends AppCompatActivity {
 
     }
 
-    public void setButtons() {
-        if (currentUser.getRole().equals("user")) {
-            techLayout.setVisibility(View.GONE);
-        } else {
-            techLayout.setVisibility(View.VISIBLE);
-        }
-
-        add.setOnClickListener(new View.OnClickListener() {
+    public void getCurrentUser() {
+        userViewModel.getCurrentUser().observe(this, new Observer<UsuarioDummy>() {
             @Override
-            public void onClick(View v) {
-                //TODO: GESTIONAR ANOTACIONES
+            public void onChanged(UsuarioDummy usuario) {
+                currentUser = usuario;
+                getTicket();
+                setButtons();
             }
         });
+    }
 
-        edit.setOnClickListener(new View.OnClickListener() {
+    public void getTicket() {
+        idTicket = getIntent().getStringExtra("ticketID");
+
+        ticketsViewModel.getTicket(idTicket).observe(this, new Observer<Ticket>() {
             @Override
-            public void onClick(View v) {
-                if(!currentUser.getRole().equals("user")){
-                    List <String> statesNames = new ArrayList<>();
-                    for(Estado e: Estado.values()){
-                        statesNames.add(e.getDescription());
-                    }
-                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketDetailActivity.this);
-                    dialog.setTitle("Seleccione el estado de la incidencia");
-                    String[] namesStates = new String[statesNames.size()];
-                    for (int i = 0; i < namesStates.length; i++) {
-                        namesStates[i] = statesNames.get(i);
-                    }
-                    dialog.setItems(namesStates, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String currentState = statesNames.get(which);
-                            TicketUpdateStateRequest request = new TicketUpdateStateRequest(currentState);
-                            ticketsViewModel.updateState(ticket.getId(), request).observe(TicketDetailActivity.this, new Observer<Ticket>() {
-                                @Override
-                                public void onChanged(Ticket ticket2) {
-                                        getCurrentUser();
-                                }
+            public void onChanged(Ticket data) {
+                if (data != null) {
+                    ticket = data;
+                    initComponent();
+                    getTechs();
 
-                            });
-                        }
-                    });
+                    if (Estado.PENDIENTE_ASIGNACION.toString().equals(ticket.getEstado()))
+                        state.setText(Estado.PENDIENTE_ASIGNACION.getDescription());
+                    else if (Estado.ASIGNADA.toString().equals(ticket.getEstado()))
+                        state.setText(Estado.ASIGNADA.getDescription());
+                    else if (Estado.EN_PROCESO.toString().equals(ticket.getEstado()))
+                        state.setText(Estado.EN_PROCESO.getDescription());
+                    else if (Estado.SOLUCIONADA.toString().equals(ticket.getEstado()))
+                        state.setText(Estado.SOLUCIONADA.getDescription());
 
-                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    state.setVisibility(View.VISIBLE);
+                    description.setText(ticket.getDescripcion());
+                    description.setVisibility(View.VISIBLE);
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alert = dialog.create();
-                    alert.show();
+                    if (ticket.getCreado_por().getName() != null)
+                        createdBy.setText(ticket.getCreado_por().getName());
+                    else
+                        createdBy.setText(ticket.getCreado_por().getEmail());
+                    createdBy.setVisibility(View.VISIBLE);
 
+                    LocalDate date = LocalDate.parse(ticket.getFecha_creacion().substring(0, 10));
+                    createdAt.setText(date.toString("dd/MM/yyyy"));
+                    createdAt.setVisibility(View.VISIBLE);
 
                 }
             }
         });
+    }
 
-        delete.setOnClickListener(new View.OnClickListener() {
+    public void getTechs() {
+        userViewModel.getUsers().observe(this, new Observer<List<UsuarioDummy>>() {
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(TicketDetailActivity.this);
-                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ticketsViewModel.deleteTicket(ticket.getId());
-                        finish();
-                    }
-                });
-                builder.setNegativeButton("No", null);
-                builder.setMessage("¿Estás seguro de que quieres eliminar el ticket " + ticket.getTitulo());
-                builder.setTitle(R.string.app_name);
-                builder.show();
-
+            public void onChanged(List<UsuarioDummy> usuarios) {
+                if (usuarios != null || !usuarios.isEmpty()) {
+                    listTechs(usuarios);
+                    setAssigns();
+                    setTechButton();
+                }
             }
         });
-
     }
 
     public void listTechs(List<UsuarioDummy> usuarios) {
@@ -264,7 +251,7 @@ public class TicketDetailActivity extends AppCompatActivity {
                                         ticketsViewModel.updateState(ticket2.getId(), request1).observe(TicketDetailActivity.this, new Observer<Ticket>() {
                                             @Override
                                             public void onChanged(Ticket ticket) {
-                                               getCurrentUser();
+                                                getCurrentUser();
                                             }
                                         });
                                     }
@@ -289,70 +276,101 @@ public class TicketDetailActivity extends AppCompatActivity {
         });
     }
 
-    public void getTechs() {
-        userViewModel.getUsers().observe(this, new Observer<List<UsuarioDummy>>() {
-            @Override
-            public void onChanged(List<UsuarioDummy> usuarios) {
-                if (usuarios != null || !usuarios.isEmpty()) {
-                    listTechs(usuarios);
-                    setAssigns();
-                    setTechButton();
-                    initComponent();
+    public void setButtons() {
+        if (currentUser.getRole().equals("user")) {
+            techLayout.setVisibility(View.GONE);
+        } else {
+            techLayout.setVisibility(View.VISIBLE);
+        }
 
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: GESTIONAR ANOTACIONES
+            }
+        });
+
+        if (!currentUser.getRole().equals("user")) editTitle.setText("Editar estado");
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!currentUser.getRole().equals("user")) {
+                    List<String> statesNames = new ArrayList<>();
+                    for (Estado e : Estado.values()) {
+                        statesNames.add(e.getDescription());
+                    }
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(TicketDetailActivity.this);
+                    dialog.setTitle("Seleccione el estado de la incidencia");
+
+                    String[] namesStates = new String[statesNames.size()];
+                    for (int i = 0; i < namesStates.length; i++) {
+                        namesStates[i] = statesNames.get(i);
+                    }
+
+                    dialog.setItems(namesStates, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String currentState = Estado.getEstadoByDescription(statesNames.get(which)).getName();
+                            TicketUpdateStateRequest request = new TicketUpdateStateRequest(currentState);
+                            ticketsViewModel.updateState(ticket.getId(), request).observe(TicketDetailActivity.this, new Observer<Ticket>() {
+                                @Override
+                                public void onChanged(Ticket ticket2) {
+                                    getCurrentUser();
+                                }
+
+                            });
+                        }
+                    });
+
+                    dialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    AlertDialog alert = dialog.create();
+                    alert.show();
+                } else {
+                    FragmentManager fm = getFragmentManager();
+                    DialogFragment dialogFragment = new TicketEditDialog(ticket.getId(), ticketsViewModel, TicketDetailActivity.this);
+                    dialogFragment.show(getSupportFragmentManager(), "TicketDetailDialog");
 
                 }
             }
         });
-    }
 
-    public void getTicket() {
-        idTicket = getIntent().getStringExtra("ticketID");
-
-        ticketsViewModel.getTicket(idTicket).observe(this, new Observer<Ticket>() {
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(Ticket data) {
-                if (data != null) {
-                    ticket = data;
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(TicketDetailActivity.this);
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ticketsViewModel.deleteTicket(ticket.getId());
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                builder.setMessage("¿Estás seguro de que quieres eliminar el ticket " + ticket.getTitulo());
+                builder.setTitle(R.string.app_name);
+                builder.show();
 
-                    getTechs();
-
-                    if (Estado.PENDIENTE_ASIGNACION.toString().equals(ticket.getEstado()))
-                        state.setText(Estado.PENDIENTE_ASIGNACION.getDescription());
-                    else if (Estado.ASIGNADA.toString().equals(ticket.getEstado()))
-                        state.setText(Estado.ASIGNADA.getDescription());
-                    else if (Estado.EN_PROCESO.toString().equals(ticket.getEstado()))
-                        state.setText(Estado.EN_PROCESO.getDescription());
-                    else if (Estado.SOLUCIONADA.toString().equals(ticket.getEstado()))
-                        state.setText(Estado.SOLUCIONADA.getDescription());
-
-                    state.setVisibility(View.VISIBLE);
-                    description.setText(ticket.getDescripcion());
-                    description.setVisibility(View.VISIBLE);
-
-                    if (ticket.getCreado_por().getName() != null)
-                        createdBy.setText(ticket.getCreado_por().getName());
-                    else
-                        createdBy.setText(ticket.getCreado_por().getEmail());
-                    createdBy.setVisibility(View.VISIBLE);
-
-                    LocalDate date = LocalDate.parse(ticket.getFecha_creacion().substring(0, 10));
-                    createdAt.setText(date.toString("dd/MM/yyyy"));
-                    createdAt.setVisibility(View.VISIBLE);
-
-                }
             }
         });
+
     }
+
 
     private void initComponent() {
-
         layout_dots = (LinearLayout) findViewById(R.id.layout_dots);
         viewPager = (ViewPager) findViewById(R.id.pager);
 
         adapter = new ImagesSliderAdapter(this, ticket.getFotos());
         viewPager.setAdapter(adapter);
 
-        // displaying selected image first
         viewPager.setCurrentItem(0);
         addBottomDots(layout_dots, adapter.getCount(), 0);
 
@@ -394,15 +412,5 @@ public class TicketDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void getCurrentUser() {
-        userViewModel.getCurrentUser().observe(this, new Observer<UsuarioDummy>() {
-            @Override
-            public void onChanged(UsuarioDummy usuario) {
-                currentUser = usuario;
-                getTicket();
-                setButtons();
-            }
-        });
-    }
 
 }

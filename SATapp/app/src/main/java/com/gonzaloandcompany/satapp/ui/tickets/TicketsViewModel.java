@@ -10,6 +10,7 @@ import com.gonzaloandcompany.satapp.data.repository.EspeRepository;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
 import com.gonzaloandcompany.satapp.requests.TicketCreateRequest;
+import com.gonzaloandcompany.satapp.requests.TicketUpdateRequest;
 import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 
 import java.util.List;
@@ -51,5 +52,9 @@ public class TicketsViewModel extends AndroidViewModel {
     }
     public LiveData<Ticket> updateState(String id, TicketUpdateStateRequest request) {
         return repository.updateState(id, request);
+    }
+
+    public LiveData<Ticket> update(String id, TicketUpdateRequest request) {
+        return repository.update(id, request);
     }
 }

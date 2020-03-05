@@ -7,7 +7,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.Activity;
+import android.content.ClipData;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,9 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.esafirm.imagepicker.features.ImagePicker;
-import com.esafirm.imagepicker.model.Image;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
@@ -33,7 +31,7 @@ import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -67,11 +65,11 @@ public class TicketCreateActivity extends AppCompatActivity {
     private List<Inventariable> devices;
     private List<Part> photos;
     private TicketsViewModel viewModel;
-    private static final int RESULT_LOAD_IMAGE = 1;
+    private static final int READ_REQUEST_CODE = 42;
     private UserViewModel userViewModel;
     private List<UsuarioDummy> techs;
-    private String techId="";
-    private String deviceId="";
+    private String techId = "";
+    private String deviceId = "";
     private JLuisViewModel jLuisViewModel;
     private UsuarioDummy currentUser;
 
@@ -84,7 +82,7 @@ public class TicketCreateActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         jLuisViewModel = new ViewModelProvider(this).get(JLuisViewModel.class);
-
+        photos = new ArrayList<>();
         getCurrentUser();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -121,13 +119,11 @@ public class TicketCreateActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ImagePicker.create(TicketCreateActivity.this)
-                        .language("es")
-                        .limit(4)
-                        .folderMode(true)
-                        .start(RESULT_LOAD_IMAGE);
-
+                Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                i.addCategory(Intent.CATEGORY_OPENABLE);
+                i.setType("image/*");
+                startActivityForResult(i, READ_REQUEST_CODE);
             }
         });
 
@@ -142,25 +138,28 @@ public class TicketCreateActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE) {
-            if (data != null) {
-                List<Image> images = ImagePicker.getImages(data);
-
-                TicketCreateAdapter adapter = new TicketCreateAdapter(images, TicketCreateActivity.this);
-                preview.setAdapter(adapter);
-                preview.setVisibility(View.VISIBLE);
-
-                photos = new ArrayList<>();
-                for (Image i : images) {
-                    photos.add(createMultipart(i));
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            List<Uri> uris = new ArrayList<>();
+            if (data.getClipData() == null) {
+                uris.add(data.getData());
+            } else {
+                ClipData clipData = data.getClipData();
+                for (int i = 0; i < clipData.getItemCount(); i++) {
+                    uris.add(clipData.getItemAt(i).getUri());
                 }
+
             }
+            uris.forEach(x-> photos.add(createMultipart(x)));
+
+            TicketCreateAdapter adapter = new TicketCreateAdapter(uris, TicketCreateActivity.this);
+            preview.setAdapter(adapter);
+            preview.setVisibility(View.VISIBLE);
         }
     }
 
-    private Part createMultipart(Image image) {
+
+    private Part createMultipart(Uri uri) {
         Part img = null;
-        Uri uri=Uri.fromFile(new File(image.getPath()));
 
         try {
 
@@ -173,20 +172,19 @@ public class TicketCreateActivity extends AppCompatActivity {
             while ((cantBytes = bufferedInputStream.read(buffer, 0, 1024 * 4)) != -1) {
                 baos.write(buffer, 0, cantBytes);
             }
-            if(uri!=null) {
+            if (uri != null) {
 
                 ContentResolver contentResolver = getContentResolver();
 
                 RequestBody filePart =
                         RequestBody.create(
                                 MediaType.parse("multipart/form-data"), baos.toByteArray());
-                img = Part.createFormData("fotos", image.getName(), filePart);
+                img = Part.createFormData("fotos", "photo", filePart);
             }
 
         } catch (IOException exception) {
             Log.d("EXCEPTION UPLOAD", exception.getMessage());
         }
-
         return img;
     }
 
@@ -217,10 +215,10 @@ public class TicketCreateActivity extends AppCompatActivity {
         jLuisViewModel.getAllInventariables().observe(this, new Observer<List<Inventariable>>() {
             @Override
             public void onChanged(List<Inventariable> inventariables) {
-                if(inventariables!=null||!inventariables.isEmpty()){
-                    devices=inventariables;
+                if (inventariables != null || !inventariables.isEmpty()) {
+                    devices = inventariables;
 
-                    if(!devices.isEmpty()){
+                    if (!devices.isEmpty()) {
                         device.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -250,15 +248,13 @@ public class TicketCreateActivity extends AppCompatActivity {
                                 alert.show();
                             }
                         });
-                    }else{
+                    } else {
                         device.setText("No hay ningún dispositivo dado de alta");
                         device.setEnabled(false);
                     }
                 }
             }
         });
-
-
     }
 
     public void getTechs() {
@@ -268,7 +264,7 @@ public class TicketCreateActivity extends AppCompatActivity {
                 if (usuarios != null || !usuarios.isEmpty()) {
                     techs = usuarios.stream().filter(x -> x.getRole().equals("tecnico")).collect(Collectors.toList());
 
-                    if(!techs.isEmpty()){
+                    if (!techs.isEmpty()) {
                         tech.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -297,7 +293,7 @@ public class TicketCreateActivity extends AppCompatActivity {
                                 alert.show();
                             }
                         });
-                    }else{
+                    } else {
                         tech.setText("No hay ningún técnico dado de alta");
                         tech.setEnabled(false);
                     }
@@ -306,23 +302,20 @@ public class TicketCreateActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
-    public void getCurrentUser(){
+    public void getCurrentUser() {
         userViewModel.getCurrentUser().observe(this, new Observer<UsuarioDummy>() {
             @Override
             public void onChanged(UsuarioDummy usuario) {
-                currentUser=usuario;
-                if(currentUser.getRole().equals("user")) {
+                currentUser = usuario;
+                if (currentUser.getRole().equals("user")) {
                     tech.setVisibility(View.GONE);
                     techTitle.setVisibility(View.GONE);
-                }else {
+                } else {
                     tech.setVisibility(View.VISIBLE);
                     techTitle.setVisibility(View.VISIBLE);
                 }
-
             }
         });
     }

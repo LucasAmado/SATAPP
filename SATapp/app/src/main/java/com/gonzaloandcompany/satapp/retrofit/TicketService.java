@@ -2,6 +2,7 @@ package com.gonzaloandcompany.satapp.retrofit;
 
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
+import com.gonzaloandcompany.satapp.requests.TicketUpdateRequest;
 import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 
 import java.util.List;
@@ -49,5 +50,8 @@ public interface TicketService {
 
     @PUT("/ticket/{id}/estado")
     Call<Ticket> updateState(@Path("id") String id, @Body TicketUpdateStateRequest request);
+
+    @PUT("/ticket/{id}")
+    Call<Ticket> updateTicket(@Path("id") String id, @Body TicketUpdateRequest request);
 
 }

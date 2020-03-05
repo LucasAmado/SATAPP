@@ -168,6 +168,7 @@
                             app:rippleColor="@android:color/white" />
 
                         <TextView
+                            android:id="@+id/ticket_detail_edit_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_medium"

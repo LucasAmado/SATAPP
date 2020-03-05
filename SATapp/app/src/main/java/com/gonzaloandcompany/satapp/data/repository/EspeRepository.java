@@ -9,6 +9,7 @@ import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
 import com.gonzaloandcompany.satapp.requests.TicketCreateRequest;
+import com.gonzaloandcompany.satapp.requests.TicketUpdateRequest;
 import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.TicketService;
@@ -190,6 +191,25 @@ public class EspeRepository {
     public LiveData<Ticket> updateState(String id, TicketUpdateStateRequest request) {
         final MutableLiveData<Ticket> data = new MutableLiveData<>();
         Call<Ticket> call = service.updateState(id, request);
+        call.enqueue(new Callback<Ticket>() {
+            @Override
+            public void onResponse(Call<Ticket> call, Response<Ticket> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Ticket> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Ticket> update(String id, TicketUpdateRequest request) {
+        final MutableLiveData<Ticket> data = new MutableLiveData<>();
+        Call<Ticket> call = service.updateTicket(id, request);
         call.enqueue(new Callback<Ticket>() {
             @Override
             public void onResponse(Call<Ticket> call, Response<Ticket> response) {
