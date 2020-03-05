@@ -12,17 +12,19 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 
 public class AsistenteQrActivity extends AppCompatActivity {
     private static final int CODIGO_PERMISOS_CAMARA = 1, CODIGO_INTENT = 2;
     private boolean permisoCamaraConcedido = false, permisoSolicitadoDesdeBoton = false;
-    private TextView tvCodigoLeido;
     String codigo;
 
     @Override
@@ -31,8 +33,6 @@ public class AsistenteQrActivity extends AppCompatActivity {
         setContentView(R.layout.activity_asiente_qr);
 
         Button btnEscanear = findViewById(R.id.btnEscanear);
-        tvCodigoLeido = findViewById(R.id.tvCodigoLeido);
-        tvCodigoLeido.setVisibility(View.INVISIBLE);
 
         btnEscanear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,15 +44,6 @@ public class AsistenteQrActivity extends AppCompatActivity {
                     return;
                 }
                 escanear();
-            }
-        });
-
-        tvCodigoLeido.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse(codigo);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
             }
         });
 
@@ -70,8 +61,10 @@ public class AsistenteQrActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     codigo = data.getStringExtra("codigo");
-                    tvCodigoLeido.setText(codigo);
-                    tvCodigoLeido.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(AsistenteQrActivity.this, InventariableDetailActivity.class);
+                    intent.putExtra(Constants.ID_INVENTARIABLE, codigo);
+                    startActivity(intent);
+                    Log.e("ID", codigo);
                 }
             }
         }
