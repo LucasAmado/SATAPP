@@ -2,6 +2,7 @@ package com.gonzaloandcompany.satapp.ui.home;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.ui.codeqr.AsistenteQrActivity;
 import com.gonzaloandcompany.satapp.ui.home.detail.IInventariableListener;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -100,6 +102,10 @@ public class InventariableFragment extends Fragment implements DialogPassData {
                 dialog.setTargetFragment(this, 0);
                 dialog.show(getFragmentManager(), "MonedasFilterDialogFragment");
 
+                break;
+            case R.id.action_qr:
+                Intent i = new Intent(getActivity(), AsistenteQrActivity.class);
+                startActivity(i);
                 break;
         }
         return super.onOptionsItemSelected(item);
