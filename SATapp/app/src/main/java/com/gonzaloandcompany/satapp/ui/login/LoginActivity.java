@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.R;
-import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.mymodels.Login;
-import com.gonzaloandcompany.satapp.mymodels.Users;
 import com.gonzaloandcompany.satapp.retrofit.LoginService;
 import com.gonzaloandcompany.satapp.retrofit.ServiceGeneratorLogin;
 
@@ -22,7 +19,6 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Credentials;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,13 +52,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String emailUser = email.getText().toString();
                 String passwordUser = password.getText().toString();
 
-                String credentials = Credentials.basic(emailUser, passwordUser);
-                LoginService service = ServiceGeneratorLogin.createService(LoginService.class);
+                LoginService service = ServiceGeneratorLogin.createService(LoginService.class, emailUser, passwordUser);
+                Call<LoginResponse> call = service.loginUser();
+                call.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        if (response.code() != 201) {
+                            Log.d(String.valueOf(response.code()), "respuesta");
+                            Log.e("RequestError", response.message());
+                            Toast.makeText(LoginActivity.this, "No ha podido iniciar sesion", Toast.LENGTH_SHORT).show();
+                        }
+                            else {
+                                LoginResponse loginResponse = null;
+                                loginResponse.setToken(response.body().getToken());
+                                Log.d(loginResponse.getToken(), "token");
+                                Intent i = new Intent(LoginActivity.this , MainActivity.class);
+                                startActivity(i);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Log.e("NetworkFailure", t.getMessage());
+                        Toast.makeText(LoginActivity.this, "Fallo en la llamada a la API", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 break;
             case R.id.buttonRegistro:
-                Intent i = new Intent(LoginActivity.this ,RegisterActivity.class);
-                startActivity(i);
+                startActivity(new Intent(LoginActivity.this ,RegisterActivity.class));
                 break;
         }
     }

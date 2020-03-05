@@ -1,10 +1,9 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
-import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.IOException;
 
-import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -41,7 +40,8 @@ public class ServiceGeneratorLogin {
 
     public static <S> S createService(Class<S> serviceClass, String username, String password) {
         if (!(username.isEmpty() || password.isEmpty())) {
-            String credentials = Credentials.basic(username, password);
+            String credentials = username +":"+ password;
+            Log.d(credentials, "credenciales");
             return createService(serviceClass, credentials, TipoAutenticacion.BASIC);
         }
         return createService(serviceClass, null, TipoAutenticacion.SIN_AUTENTICACION);
@@ -77,6 +77,7 @@ public class ServiceGeneratorLogin {
                     }
                 });
             }
+            retrofit= builder.build();
         }
 
         return retrofit.create(serviceClass);

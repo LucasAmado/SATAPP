@@ -16,6 +16,7 @@ import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements TicketListener, UserListener {
+
     @Override
     public void OnUserClick(String id) {
         Intent goToDetail = new Intent(this, UserDetailActivity.class);
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -46,6 +46,5 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
         startActivity(goToDetail);
 
     }
-
 
 }

@@ -8,14 +8,12 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gonzaloandcompany.satapp.R;
-import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.mymodels.Register;
 import com.gonzaloandcompany.satapp.retrofit.LoginService;
 import com.gonzaloandcompany.satapp.retrofit.ServiceGeneratorLogin;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -45,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Register registro = new Register(fullname, email, password);
 
-                LoginService service = ServiceGeneratorLogin.createService(LoginService.class);
+                LoginService service = ServiceGeneratorLogin.createServiceToken(LoginService.class);
             }
         });
 
