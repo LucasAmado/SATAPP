@@ -8,11 +8,19 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.mymodels.Register;
+import com.gonzaloandcompany.satapp.retrofit.LoginService;
+import com.gonzaloandcompany.satapp.retrofit.ServiceGeneratorLogin;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    @BindView(R.id.editTextNameRegistro)
+    EditText nameRegistro;
 
     @BindView(R.id.editTextEmailRegistro)
     EditText emailRegistro;
@@ -31,7 +39,13 @@ public class RegisterActivity extends AppCompatActivity {
         registrarse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String fullname = nameRegistro.getText().toString().trim();
+                String email = emailRegistro.getText().toString().trim();
+                String password = passwordRegistro.getText().toString().trim();
 
+                Register registro = new Register(fullname, email, password);
+
+                LoginService service = ServiceGeneratorLogin.createService(LoginService.class);
             }
         });
 

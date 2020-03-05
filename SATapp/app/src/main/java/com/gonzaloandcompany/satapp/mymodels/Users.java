@@ -9,6 +9,9 @@ public class Users {
     private String updatedAt;
     private Boolean Validated;
 
+    public Users(String emailUser) {
+    }
+
     public String getId() {
         return id;
     }

@@ -19,6 +19,11 @@ public interface LoginService {
                                 @Part ("password") RequestBody password,
                                 @Query("access_token") String token);
 
+    Call<Register> userRegister(
+                                @Query ("email") RequestBody email,
+                                @Query ("password") RequestBody password,
+                                @Query("access_token") String token);
+
     @POST ("/auth?access_token=")
     Call<Login> loginUser(@Query("user") Users user, @Query("token") String token);
 }
