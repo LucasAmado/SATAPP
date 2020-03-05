@@ -43,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Register registro = new Register(fullname, email, password);
 
-                LoginService service = ServiceGeneratorLogin.createServiceToken(LoginService.class);
+                LoginService service = ServiceGeneratorLogin.createService(LoginService.class);
             }
         });
 

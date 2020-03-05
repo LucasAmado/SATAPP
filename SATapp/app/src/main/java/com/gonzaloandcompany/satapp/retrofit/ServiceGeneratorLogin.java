@@ -35,29 +35,27 @@ public class ServiceGeneratorLogin {
             new OkHttpClient.Builder();
 
     public static <S> S createService(Class<S> serviceClass) {
-        return createService(serviceClass, null, TipoAutenticacion.SIN_AUTENTICACION);
+        return createService(serviceClass, null);
     }
 
     public static <S> S createService(Class<S> serviceClass, String username, String password) {
         if (!(username.isEmpty() || password.isEmpty())) {
             String credentials = username +":"+ password;
             Log.d(credentials, "credenciales");
-            return createService(serviceClass, credentials, TipoAutenticacion.BASIC);
+            return createService(serviceClass, credentials);
         }
-        return createService(serviceClass, null, TipoAutenticacion.SIN_AUTENTICACION);
+        return createService(serviceClass, null);
     }
 
 
-    public static <S> S createService(Class<S> serviceClass, final String authtoken, final TipoAutenticacion tipo) {
+    public static <S> S createService(Class<S> serviceClass, final String authtoken) {
 
-        if (retrofit == null || tipoActual != tipo ) {
+        if (retrofit == null) {
 
             httpClientBuilder.interceptors().clear();
 
             httpClientBuilder.addInterceptor(logging);
 
-            if ( tipo == TipoAutenticacion.BASIC ) {
-                // Añadimos el interceptor de la master key
                 httpClientBuilder.addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
@@ -72,14 +70,11 @@ public class ServiceGeneratorLogin {
                                 .url(url)
                                 .build();
 
-
                         return chain.proceed(request);
                     }
                 });
             }
             retrofit= builder.build();
-        }
-
         return retrofit.create(serviceClass);
     }
 
