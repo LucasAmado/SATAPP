@@ -1,12 +1,15 @@
 package com.gonzaloandcompany.satapp.data.repository;
 
+import android.util.Base64;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.requests.EditUsers;
 import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
+import com.gonzaloandcompany.satapp.requests.Password;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.UserService;
 
@@ -20,7 +23,7 @@ public class UserRepository {
     private UserService service;
     private MutableLiveData<List<UsuarioDummy>> users = new MutableLiveData<>();
     private MutableLiveData<List<UsuarioDummy>> paginables = new MutableLiveData<>();
-
+    private String nombre;
     private MutableLiveData<UsuarioDummy> user = new MutableLiveData<>();
     private MutableLiveData<UsuarioDummy> res = new MutableLiveData<>();
 
@@ -80,6 +83,42 @@ public class UserRepository {
             }
         });
         return user;
+    }
+
+    public void updateUser(String id, EditUsers name) {
+        Call<EditUsers> call = service.updateUser(id, name);
+        call.enqueue(new Callback<EditUsers>() {
+            @Override
+            public void onResponse(Call<EditUsers> call, Response<EditUsers> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Update USER", id + " SUCCESSFUL");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EditUsers> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void updatePassword(String email,String paaswordOld,Password passwordNew,String id) {
+        String base = email + ":" + paaswordOld;
+        String authHeader = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
+        Call<Password> call = service.updatePassword(authHeader ,id, passwordNew);
+        call.enqueue(new Callback<Password>() {
+            @Override
+            public void onResponse(Call<Password> call, Response<Password> response) {
+                if (response.isSuccessful()) {
+                    Log.d("Update PASSWORD", " SUCCESSFUL");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Password> call, Throwable t) {
+                Log.d("Update PASSWORD"," FAILURE");
+            }
+        });
     }
 
     public LiveData<UsuarioDummy> getMyUser() {

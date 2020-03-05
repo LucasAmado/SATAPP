@@ -7,12 +7,10 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.gonzaloandcompany.satapp.data.repository.JLuisRepository;
 import com.gonzaloandcompany.satapp.data.repository.UserRepository;
-import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.requests.EditUsers;
 import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
-
-import java.util.List;
+import com.gonzaloandcompany.satapp.requests.Password;
 
 public class MyUserViewModel extends AndroidViewModel {
     LiveData<UsuarioDummy> user;
@@ -29,4 +27,12 @@ public class MyUserViewModel extends AndroidViewModel {
         return user;
 
     }
+    public void updateMyUser(String id, EditUsers nombre) {
+       repository.updateUser(id,nombre);
+    }
+
+    public  void updatePassword(String email, String passwordOld, Password passwordNew, String id){
+        repository.updatePassword(email,passwordOld,passwordNew,id);
+    }
+
 }
