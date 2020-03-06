@@ -40,4 +40,7 @@ public class UserViewModel extends AndroidViewModel {
     public LiveData<UsuarioDummy>  validate(String id) {
         return repository. validate(id);
     }
+    public LiveData<UsuarioDummy>  getCurrentUser() {
+        return repository.getCurrentUser();
+    }
 }

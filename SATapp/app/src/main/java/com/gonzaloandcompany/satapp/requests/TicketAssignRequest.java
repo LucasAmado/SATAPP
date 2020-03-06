@@ -1,15 +1,12 @@
-package com.gonzaloandcompany.satapp.mymodels;
-
-import org.joda.time.LocalDate;
+package com.gonzaloandcompany.satapp.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Asignacion {
+@Data
+public class TicketAssignRequest {
     private String tecnico_id;
-    private String fecha_asignacion;
 }

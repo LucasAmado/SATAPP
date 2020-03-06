@@ -1,27 +1,21 @@
 package com.gonzaloandcompany.satapp.ui.ticketCreate;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-import com.esafirm.imagepicker.model.Image;
 import com.gonzaloandcompany.satapp.R;
-import com.gonzaloandcompany.satapp.mymodels.Ticket;
-
-
 import java.util.List;
 
 public class TicketCreateAdapter extends RecyclerView.Adapter<TicketCreateAdapter.ViewHolder> {
-    private List<Image> images;
+    private List<Uri> images;
     private Context context;
 
-    public TicketCreateAdapter(List<Image> images, Context context) {
+    public TicketCreateAdapter(List<Uri> images, Context context) {
         this.images = images;
         this.context = context;
     }
@@ -38,7 +32,7 @@ public class TicketCreateAdapter extends RecyclerView.Adapter<TicketCreateAdapte
         String aux;
         if (images != null) {
             holder.image = images.get(position);
-            Glide.with(context).load(holder.image.getPath()).centerCrop().into(holder.img);
+            Glide.with(context).load(holder.image).centerCrop().into(holder.img);
         }
 
     }
@@ -51,13 +45,13 @@ public class TicketCreateAdapter extends RecyclerView.Adapter<TicketCreateAdapte
             return 0;
     }
 
-    public void setData(List<Image> list) {
+    public void setData(List<Uri> list) {
         this.images = list;
         notifyDataSetChanged();
 
     }
 
-    public void addAll(List<Image> list) {
+    public void addAll(List<Uri> list) {
         int lastIndex = images.size() - 1;
         images.addAll(list);
         notifyDataSetChanged();
@@ -65,7 +59,7 @@ public class TicketCreateAdapter extends RecyclerView.Adapter<TicketCreateAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public Image image;
+        public Uri image;
         public ImageView img;
 
 
