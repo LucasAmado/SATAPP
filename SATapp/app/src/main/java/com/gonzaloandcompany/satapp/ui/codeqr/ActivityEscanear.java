@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.gonzaloandcompany.satapp.common.Constants;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -45,14 +46,10 @@ public class ActivityEscanear extends AppCompatActivity implements ZXingScannerV
     @Override
     public void handleResult(Result resultado) {
 
-        // Si quieres que se siga escaneando después de haber leído el código, descomenta lo siguiente:
-        // Si la descomentas no recomiendo que llames a finish
-//        escanerZXing.resumeCameraPreview(this);
-        // Obener código/texto leído
         String codigo = resultado.getText();
         // Preparar un Intent para regresar datos a la actividad que nos llamó
         Intent intentRegreso = new Intent();
-        intentRegreso.putExtra("codigo", codigo);
+        intentRegreso.putExtra(Constants.RESULT_QR, codigo);
         setResult(Activity.RESULT_OK, intentRegreso);
         // Cerrar la actividad. Ahora mira onActivityResult de MainActivity
         finish();

@@ -22,7 +22,6 @@ import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 
 public class AsistenteQrActivity extends AppCompatActivity {
-    private static final int CODIGO_INTENT = 2, PERMISOS_CAMARA = 1;
     String id_inventariable;
 
     @Override
@@ -36,7 +35,7 @@ public class AsistenteQrActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(AsistenteQrActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(AsistenteQrActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISOS_CAMARA);
+                    ActivityCompat.requestPermissions(AsistenteQrActivity.this, new String[]{Manifest.permission.CAMERA}, Constants.PERMISOS_CAMARA);
                 } else {
                     escanear();
                 }
@@ -49,33 +48,30 @@ public class AsistenteQrActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PERMISOS_CAMARA) {
+        if (requestCode == Constants.PERMISOS_CAMARA) {
             if (ContextCompat.checkSelfPermission(AsistenteQrActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                Log.e("PERMISO", "CONCEDIDO");
                 escanear();
             } else {
                 Toast.makeText(this, "Sin los permisos de cámara no podemos escanear Qr", Toast.LENGTH_SHORT).show();
-                Log.e("PERMISO", "DENEGADO");
             }
         }
     }
 
     private void escanear() {
         Intent i = new Intent(AsistenteQrActivity.this, ActivityEscanear.class);
-        startActivityForResult(i, CODIGO_INTENT);
+        startActivityForResult(i, Constants.CODIGO_INTENT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODIGO_INTENT) {
+        if (requestCode == Constants.CODIGO_INTENT) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
-                    id_inventariable = data.getStringExtra("codigo");
+                    id_inventariable = data.getStringExtra(Constants.RESULT_QR);
                     Intent intent = new Intent(AsistenteQrActivity.this, InventariableDetailActivity.class);
                     intent.putExtra(Constants.ID_INVENTARIABLE, id_inventariable);
                     startActivity(intent);
-                    Log.e("ID", id_inventariable);
                 }
             }
         }
