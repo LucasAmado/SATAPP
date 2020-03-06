@@ -108,7 +108,6 @@ public class InventariableDialogFragment extends DialogFragment {
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
-                //typeSelect = (String) parent.getItemAtPosition(position);
             }
         });
 
