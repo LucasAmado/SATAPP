@@ -1,9 +1,13 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
+import android.text.TextUtils;
 import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -24,9 +28,7 @@ public class ServiceGeneratorLogin {
                     .addConverterFactory(GsonConverterFactory.create());
 
     private static Retrofit retrofit = null;
-    private static TipoAutenticacion tipoActual = null;
 
-    // Interceptor que imprime por el Log todas las peticiones y respuestas
     private static HttpLoggingInterceptor logging =
             new HttpLoggingInterceptor()
                     .setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -38,45 +40,49 @@ public class ServiceGeneratorLogin {
         return createService(serviceClass, null);
     }
 
-    public static <S> S createService(Class<S> serviceClass, String username, String password) {
-        if (!(username.isEmpty() || password.isEmpty())) {
-            String credentials = username +":"+ password;
-            Log.d(credentials, "credenciales");
-            return createService(serviceClass, credentials);
+    public static <S> S createService(Class<S> serviceClass, String username, String password){
+        if(!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)){
+            String authToken = Credentials.basic(username, password);
+            return createService(serviceClass, authToken);
         }
+
         return createService(serviceClass, null);
     }
 
 
-    public static <S> S createService(Class<S> serviceClass, final String authtoken) {
+    public static <S> S createService(Class<S> serviceClass, final String authToken){
+        if(!TextUtils.isEmpty(authToken)){
+            InterceptorToken interceptor = new InterceptorToken(authToken);
 
-        if (retrofit == null) {
-
-            httpClientBuilder.interceptors().clear();
-
-            httpClientBuilder.addInterceptor(logging);
-
+            if(!httpClientBuilder.interceptors().contains(interceptor)){
+                OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
                 httpClientBuilder.addInterceptor(new Interceptor() {
+                    @NotNull
                     @Override
-                    public Response intercept(Chain chain) throws IOException {
+                    public Response intercept(@NotNull Chain chain) throws IOException {
                         Request original = chain.request();
-                        HttpUrl originalUrl = original.url();
+                        HttpUrl originalHttpUrl = original.url();
 
-                        HttpUrl url = originalUrl.newBuilder()
+                        HttpUrl url = originalHttpUrl.newBuilder()
                                 .addQueryParameter("access_token", MASTER_KEY)
                                 .build();
 
-                        Request request = original.newBuilder()
-                                .url(url)
-                                .build();
+                        Request.Builder requestBuilder = original.newBuilder()
+                                .url(url);
 
+                        Request request = requestBuilder.build();
                         return chain.proceed(request);
                     }
                 });
+
+                httpClientBuilder.addInterceptor(interceptor);
+                httpClientBuilder.addInterceptor(logging);
+
+                builder.client(httpClientBuilder.build());
+                retrofit = builder.build();
             }
-            retrofit= builder.build();
+        }
+
         return retrofit.create(serviceClass);
     }
-
-
 }

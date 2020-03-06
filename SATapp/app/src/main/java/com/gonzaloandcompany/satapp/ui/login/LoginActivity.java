@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.editTextPassword)
     EditText password;
 
+    String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +64,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(LoginActivity.this, "No ha podido iniciar sesion", Toast.LENGTH_SHORT).show();
                         }
                             else {
-                                LoginResponse loginResponse = null;
-                                loginResponse.setToken(response.body().getToken());
-                                Log.d(loginResponse.getToken(), "token");
                                 Intent i = new Intent(LoginActivity.this , MainActivity.class);
                                 startActivity(i);
                         }
