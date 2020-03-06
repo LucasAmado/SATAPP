@@ -34,11 +34,6 @@ public class LucasViewModel extends AndroidViewModel{
         return stringList;
     }
 
-    public LiveData<List<String>> getAllUbicaciones(){
-        stringList = repository.getUbicaciones();
-        return stringList;
-    }
-
     public LiveData<List<Ticket>> getTicketsInventariable(String id) {
         ticketList = repository.getTicketsInventariable(id);
         return ticketList;

@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,7 +25,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.gonzaloandcompany.satapp.R;
+import com.gonzaloandcompany.satapp.data.viewmodel.AnotacionViewModel;
 import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
+import com.gonzaloandcompany.satapp.mymodels.Anotacion;
 import com.gonzaloandcompany.satapp.mymodels.Asignacion;
 import com.gonzaloandcompany.satapp.mymodels.Estado;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
@@ -34,6 +35,7 @@ import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.requests.TicketAssignRequest;
 import com.gonzaloandcompany.satapp.requests.TicketUpdateStateRequest;
 import com.gonzaloandcompany.satapp.ui.ImagesSliderAdapter;
+import com.gonzaloandcompany.satapp.ui.anotaciones.AnotacionDIalogFragment;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -59,6 +61,8 @@ public class TicketDetailActivity extends AppCompatActivity {
     private List<UsuarioDummy> techs;
     private String techId = "";
     private List<UsuarioDummy> allTechs;
+    private AnotacionViewModel anotacionViewModel;
+    private List<String> anotacionList;
 
     @BindView(R.id.ticket_detail_edit_title)
     TextView editTitle;
@@ -82,6 +86,8 @@ public class TicketDetailActivity extends AppCompatActivity {
     TextView description;
     @BindView(R.id.ticketDetailTech)
     ListView techAssigned;
+    @BindView(R.id.lvAnotaciones)
+    ListView lvAnotaciones;
 
 
     @Override
@@ -91,6 +97,7 @@ public class TicketDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        anotacionViewModel = new ViewModelProvider(this).get(AnotacionViewModel.class);
         getCurrentUser();
 
     }
@@ -116,6 +123,7 @@ public class TicketDetailActivity extends AppCompatActivity {
                     ticket = data;
                     initComponent();
                     getTechs();
+                    loadAnotaciones();
 
                     if (Estado.PENDIENTE_ASIGNACION.toString().equals(ticket.getEstado()))
                         state.setText(Estado.PENDIENTE_ASIGNACION.getDescription());
@@ -140,6 +148,29 @@ public class TicketDetailActivity extends AppCompatActivity {
                     createdAt.setText(date.toString("dd/MM/yyyy"));
                     createdAt.setVisibility(View.VISIBLE);
 
+                }
+            }
+        });
+
+    }
+
+    public void loadAnotaciones(){
+        anotacionViewModel.getAnotacionesByTicket(idTicket).observe(this, new Observer<List<Anotacion>>() {
+            @Override
+            public void onChanged(List<Anotacion> anotacions) {
+                if(!anotacions.isEmpty()){
+                    LocalDate fecha;
+                    for(Anotacion a: anotacions){
+                        fecha = LocalDate.parse(a.getFecha().substring(0, 10));
+                        anotacionList.add(fecha.toString("dd/MM/yyyy"));
+                    }
+
+                    ArrayAdapter adapter = new ArrayAdapter<String>(
+                            TicketDetailActivity.this,
+                            android.R.layout.simple_list_item_1,
+                            anotacionList
+                    );
+                    lvAnotaciones.setAdapter(adapter);
                 }
             }
         });
@@ -287,6 +318,8 @@ public class TicketDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: GESTIONAR ANOTACIONES
+                DialogFragment dialog = new AnotacionDIalogFragment(idTicket, null);
+                dialog.show(getSupportFragmentManager(), "AnotacionDIalogFragment");
             }
         });
 

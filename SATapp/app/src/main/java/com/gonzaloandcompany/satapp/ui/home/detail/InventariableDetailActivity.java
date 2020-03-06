@@ -100,7 +100,7 @@ public class InventariableDetailActivity extends AppCompatActivity implements II
         loadDispositivo();
 
         //TODO descomentar
-        //loadTickets();
+        //loadAnotaciones();
 
 
         icon_delete.setOnClickListener(new View.OnClickListener() {
