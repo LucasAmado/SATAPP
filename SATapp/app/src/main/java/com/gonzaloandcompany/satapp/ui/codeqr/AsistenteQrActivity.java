@@ -37,18 +37,34 @@ public class AsistenteQrActivity extends AppCompatActivity {
         btnEscanear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!permisoCamaraConcedido) {
+                if (ContextCompat.checkSelfPermission(AsistenteQrActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(AsistenteQrActivity.this, "pedir permiso", Toast.LENGTH_SHORT).show();
+                    ActivityCompat.requestPermissions(AsistenteQrActivity.this, new String[]{Manifest.permission.CAMERA}, 0);
+                    if(ContextCompat.checkSelfPermission(AsistenteQrActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED){
+                        escanear();
+                    }else{
+                        Toast.makeText(AsistenteQrActivity.this, "No puedes escanear si no das permiso", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(AsistenteQrActivity.this, "abrir camera", Toast.LENGTH_SHORT).show();
+                    escanear();
+
+                }
+
+
+                /*if (!permisoCamaraConcedido) {
                     Toast.makeText(AsistenteQrActivity.this, "Por favor permite que la app acceda a la cámara", Toast.LENGTH_SHORT).show();
                     permisoSolicitadoDesdeBoton = true;
                     verificarYPedirPermisosDeCamara();
                     return;
                 }
-                escanear();
+                escanear();*/
             }
         });
 
     }
 
+    
     private void escanear() {
         Intent i = new Intent(AsistenteQrActivity.this, ActivityEscanear.class);
         startActivityForResult(i, CODIGO_INTENT);
