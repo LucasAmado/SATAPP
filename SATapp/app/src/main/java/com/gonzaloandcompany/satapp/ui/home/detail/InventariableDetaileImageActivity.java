@@ -107,7 +107,6 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
             }
         });
 
-        //TODO borra el dispositivo, no solo la imagen
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
