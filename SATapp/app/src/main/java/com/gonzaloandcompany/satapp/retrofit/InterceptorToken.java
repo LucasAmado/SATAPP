@@ -26,10 +26,9 @@ public class InterceptorToken implements Interceptor {
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request original = chain.request();
 
-        Request.Builder requestBuilder = original.newBuilder().header("Authorization", "Bearer " + authToken);
+        Request.Builder requestBuilder = original.newBuilder().header("Authorization", authToken);
 
         Request request = requestBuilder.build();
-
         return chain.proceed(request);
     }
 }
