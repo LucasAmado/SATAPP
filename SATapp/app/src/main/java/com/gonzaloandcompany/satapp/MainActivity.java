@@ -1,5 +1,7 @@
 package com.gonzaloandcompany.satapp;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +12,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -29,15 +33,18 @@ import com.gonzaloandcompany.satapp.ui.userdetail.UserDetailActivity;
 import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import static com.gonzaloandcompany.satapp.common.MyApp.CHANNEL;
+
 public class MainActivity extends AppCompatActivity implements TicketListener, UserListener {
     JLuisViewModel jLuisViewModel;
     private UserViewModel userViewModel;
     private UsuarioDummy currentUser;
+    private NotificationManagerCompat notificationManagerCompat;
 
     @Override
     public void OnUserClick(String id) {
         Intent goToDetail = new Intent(this, UserDetailActivity.class);
-        goToDetail.putExtra("userID",id);
+        goToDetail.putExtra("userID", id);
         startActivity(goToDetail);
     }
 
@@ -46,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
         getMenuInflater().inflate(R.menu.top_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -55,19 +63,20 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
+        notificationManagerCompat = NotificationManagerCompat.from(this);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
 
         getCurrentUser(navController);
-        
+
         NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
 
 
@@ -93,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
     @Override
     public void onTicketClick(String id) {
         Intent goToDetail = new Intent(this, TicketDetailActivity.class);
-        goToDetail.putExtra("ticketID",id);
+        goToDetail.putExtra("ticketID", id);
         startActivity(goToDetail);
 
     }
@@ -107,11 +116,12 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
                 BottomNavigationView navAdmin = findViewById(R.id.nav_view);
                 BottomNavigationView navOtherRol = findViewById(R.id.nav_view2);
 
-                if(currentUser.getRole().equals("admin")){
+                if (currentUser.getRole().equals("admin")) {
                     navAdmin.setVisibility(View.VISIBLE);
                     navOtherRol.setVisibility(View.INVISIBLE);
                     NavigationUI.setupWithNavController(navAdmin, navController);
-                }else{
+                    OnChannel();
+                } else {
                     navAdmin.setVisibility(View.INVISIBLE);
                     navOtherRol.setVisibility(View.VISIBLE);
                     NavigationUI.setupWithNavController(navOtherRol, navController);
@@ -119,6 +129,17 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
 
             }
         });
+    }
+
+    public void OnChannel() {
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL)
+                .setSmallIcon(R.drawable.ic_play_icon)
+                .setContentTitle("USUARIOS SIN VALIDAR")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .build();
+        notificationManagerCompat.notify(1,notification);
+
     }
 
 }
