@@ -7,6 +7,18 @@ Por razones técnicas no nos ha dado tiempo subir tanto el login como el registr
 
 La última actualización de esta rama se encuentra en este [commit](https://github.com/LucasAmado/SATAPP-repository/commit/252ea994a65b0e419bcd1151359ae9aa3c09bb3f).
 
+
+Para poder coger el token de autentificación en master se deberá hacer desde Postman o similar y ejecutar la siguiente ruta:
+```
+https://heroku-satapp.herokuapp.com/auth?access_token=grupo1masterkey
+```
+
+Hay que tener en cuenta que es una petición POST que se realiza con Basic Auth. Una vez que devuelva el token deberá copiarlo y pegarlo en la variable TOKEN_PROVISINAL del paquete commons/Constants.
+
+Ahora podrá realizar cualquier petición con ese usuario.
+
+Disculpen las molestias.
+
 ### 1.1 Registro
 Para poder registrarse en la aplicación se deberá incluir su nombre, correo y contraseña. Una vez registrado se redireccionará automáticamente al login.
 
