@@ -58,7 +58,7 @@ public class ServiceGeneratorLogin {
 
     public static <S> S createService(Class<S> serviceClass, final String authToken){
         if(!TextUtils.isEmpty(authToken)){
-            InterceptorToken interceptor = new InterceptorToken(authToken);
+            InterceptorLogIn interceptor = new InterceptorLogIn(authToken);
 
             if(!httpClientBuilder.interceptors().contains(interceptor)){
                 OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();

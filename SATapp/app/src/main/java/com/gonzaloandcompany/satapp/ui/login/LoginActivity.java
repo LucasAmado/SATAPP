@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +29,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.buttonLogin)
     Button btLogin;
 
-    @BindView(R.id.buttonRegistro)
-    Button btRegistro;
+    @BindView(R.id.textViewRegistro)
+    TextView tvRegistro;
 
     @BindView(R.id.editTextEmail)
     EditText email;
@@ -44,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         btLogin.setOnClickListener(this);
+        tvRegistro.setOnClickListener(this);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
 
                 break;
-            case R.id.buttonRegistro:
+            case R.id.textViewRegistro:
                 startActivity(new Intent(LoginActivity.this ,RegisterActivity.class));
                 break;
         }

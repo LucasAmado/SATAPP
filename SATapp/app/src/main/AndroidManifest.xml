@@ -17,6 +17,7 @@
         <activity android:name=".ui.FullSizeImageActivity" />
         <activity android:name=".ui.ticketsdetail.TicketDetailActivity" />
         <activity android:name=".MainActivity"/>
+        <activity android:name=".ui.login.RegisterActivity"/>
         <activity android:name=".ui.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -36,4 +36,5 @@
     <string name="state_user">Estado:</string>
     <string name="fullname">Nombre:</string>
     <string name="email">Email:</string>
+    <string name="allName">Nombre Y Apellidos</string>
 </resources>

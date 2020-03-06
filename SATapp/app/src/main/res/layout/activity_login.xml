@@ -51,12 +51,12 @@
         app:layout_constraintStart_toStartOf="@+id/editTextPassword"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
-    <Button
-        android:id="@+id/buttonRegistro"
-        android:layout_width="124dp"
-        android:layout_height="36dp"
+    <TextView
+        android:id="@+id/textViewRegistro"
+        android:layout_width="106dp"
+        android:layout_height="57dp"
         android:layout_marginTop="13dp"
-        android:text="Registrarse"
+        android:text="Si no estas registrado pulsa aqui"
         app:layout_constraintEnd_toEndOf="@+id/buttonLogin"
         app:layout_constraintStart_toStartOf="@+id/buttonLogin"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
