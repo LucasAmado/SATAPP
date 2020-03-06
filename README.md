@@ -8,7 +8,7 @@ Por razones técnicas no nos ha dado tiempo subir tanto el login como el registr
 La última actualización de esta rama se encuentra en este [commit](https://github.com/LucasAmado/SATAPP-repository/commit/252ea994a65b0e419bcd1151359ae9aa3c09bb3f).
 
 
-Para poder coger el token de autentificación en master se deberá hacer desde Postman o similar y ejecutar la siguiente ruta:
+Para poder coger el token de autenticación en master se deberá hacer desde Postman o similar y ejecutar la siguiente ruta:
 ```
 https://heroku-satapp.herokuapp.com/auth?access_token=grupo1masterkey
 ```
@@ -24,7 +24,7 @@ Para poder registrarse en la aplicación se deberá incluir su nombre, correo y 
 
 ### 1.2 Login
 A la hora de iniciar sesión se debe incluir el correo y la contraseña asociada. Una vez logeado se accederá a la gestión de dispositivos.
-Para tener una mejor experiencia probando la plicación se recomienda hacer uso de los 3 tipos de roles en SATApp: administrador, técnico y usuario. Para probar la app, existen los siguientes usuarios:
+Para tener una mejor experiencia probando la aplicación se recomienda hacer uso de los 3 tipos de roles en SATApp: administrador, técnico y usuario. Para probar la app, existen los siguientes usuarios:
 
 ```
 Administrador:
