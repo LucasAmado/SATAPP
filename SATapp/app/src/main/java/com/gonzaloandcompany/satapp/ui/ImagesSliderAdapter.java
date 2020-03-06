@@ -14,6 +14,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -64,7 +65,8 @@ public class ImagesSliderAdapter extends PagerAdapter {
                         .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                         .build());
         Log.d("GLIDEURL",glideUrl.toString());
-        Glide.with(v.getContext()).load(glideUrl).into(image);
+        Glide.with(v.getContext()).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).into(image);
 
         ((ViewPager) container).addView(v);
         image.setOnClickListener(new View.OnClickListener() {

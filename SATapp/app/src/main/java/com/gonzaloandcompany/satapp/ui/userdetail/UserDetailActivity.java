@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -190,9 +191,11 @@ public class UserDetailActivity extends AppCompatActivity {
                             .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                             .build());
 
-            Glide.with(UserDetailActivity.this).load(glideUrl).centerCrop().into(photo);
+            Glide.with(UserDetailActivity.this).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).centerCrop().into(photo);
         }else{
-            Glide.with(UserDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(photo);
+            Glide.with(UserDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).circleCrop().into(photo);
         }
     }
 
