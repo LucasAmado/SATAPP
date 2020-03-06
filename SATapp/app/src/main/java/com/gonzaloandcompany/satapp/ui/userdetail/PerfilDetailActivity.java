@@ -1,45 +1,35 @@
 package com.gonzaloandcompany.satapp.ui.userdetail;
 
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.data.repository.UserRepository;
 import com.gonzaloandcompany.satapp.data.viewmodel.MyUserViewModel;
-import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
 import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
-import com.gonzaloandcompany.satapp.retrofit.UserService;
-import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
-import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetaileImageActivity;
-import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
-import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PerfilDetailActivity extends AppCompatActivity {
-    //TODO: CAMBIAR MODELO USUARIODUMMY POR EL DE GONZALO
+
 
     @BindView(R.id.user_detail_email)
     TextView email;
@@ -72,7 +62,7 @@ public class PerfilDetailActivity extends AppCompatActivity {
         loadUser();
 
         editar.setOnClickListener(v -> {
-            DialogFragment dialog = new MyUserEditDialogFragment(id);
+            DialogFragment dialog = new MyUserEditDialogFragment(id,this);
             dialog.show(getSupportFragmentManager(), "MyUserEditDialogFragment");
         });
 
@@ -95,14 +85,19 @@ public class PerfilDetailActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        loadUser();
+    }
 
     public void loadUser(){
-
         userViewModel.getMyUser().observe(this, new Observer<UsuarioDummy>() {
             @Override
             public void onChanged(UsuarioDummy usuario) {
                 if(usuario!=null){
                     setData(usuario);
+
                 }else
                     Toast.makeText(PerfilDetailActivity.this, "No se ha podido cargar los datos.\n\nContacte con el servicio técnico", Toast.LENGTH_LONG).show();
             }
@@ -140,9 +135,11 @@ public class PerfilDetailActivity extends AppCompatActivity {
                             .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                             .build());
 
-            Glide.with(PerfilDetailActivity.this).load(glideUrl).into(photo);
+            Glide.with(PerfilDetailActivity.this).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(photo);
         }else{
-            Glide.with(PerfilDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(photo);
+            Glide.with(PerfilDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).into(photo);
         }
     }
 

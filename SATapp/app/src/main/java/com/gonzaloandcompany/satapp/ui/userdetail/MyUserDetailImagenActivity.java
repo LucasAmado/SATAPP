@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
@@ -179,7 +178,7 @@ public class MyUserDetailImagenActivity extends AppCompatActivity {
                         final String fileName = cursor.getString(nameIndex);
 
                         MultipartBody.Part imagen =
-                                MultipartBody.Part.createFormData("imagen", fileName, requestFile);
+                                MultipartBody.Part.createFormData("avatar", fileName, requestFile);
 
                         Call<UsuarioDummy> updateImage = service.updateImageUser(id, imagen);
 

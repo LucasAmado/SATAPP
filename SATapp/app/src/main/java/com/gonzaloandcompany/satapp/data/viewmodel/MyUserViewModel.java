@@ -27,8 +27,9 @@ public class MyUserViewModel extends AndroidViewModel {
         return user;
 
     }
-    public void updateMyUser(String id, EditUsers nombre) {
-       repository.updateUser(id,nombre);
+    public LiveData<UsuarioDummy> updateMyUser(String id, EditUsers nombre) {
+       user = repository.updateUser(id,nombre);
+       return user;
     }
 
     public  void updatePassword(String email, String passwordOld, Password passwordNew, String id){

@@ -42,20 +42,18 @@ public interface UserService {
     Call<UsuarioDummy> getMyUser();
 
     @PUT("/users/{id}")
-    Call<EditUsers> updateUser(@Path("id") String id,@Body EditUsers name);
+    Call<UsuarioDummy> updateUser(@Path("id") String id,@Body EditUsers name);
 
     @PUT("/users/{id}/password")
     Call<Password> updatePassword(@Header("Authorization") String authHeader ,
                                   @Path("id") String id,
                                   @Body Password passwordd);
-<<<<<<< HEAD
+
     @DELETE("/users/{id}/img")
     Call<Void> deleteUserImagen(@Path("id") String id);
 
     @Multipart
     @PUT("/users/{id}/img")
     Call<UsuarioDummy> updateImageUser(@Path("id") String id, @Part MultipartBody.Part avatar);
-=======
-    Call<UsuarioDummy> getCurrentUser();
->>>>>>> abf9f81743683beb330eefcaac8c73afb481f303
+
 }

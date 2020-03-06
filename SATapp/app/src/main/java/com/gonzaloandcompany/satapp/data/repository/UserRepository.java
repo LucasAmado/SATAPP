@@ -91,21 +91,23 @@ public class UserRepository {
         return user;
     }
 
-    public void updateUser(String id, EditUsers name) {
-        Call<EditUsers> call = service.updateUser(id, name);
-        call.enqueue(new Callback<EditUsers>() {
+    public LiveData<UsuarioDummy> updateUser(String id, EditUsers name) {
+        Call<UsuarioDummy> call = service.updateUser(id, name);
+        call.enqueue(new Callback<UsuarioDummy>() {
             @Override
-            public void onResponse(Call<EditUsers> call, Response<EditUsers> response) {
+            public void onResponse(Call<UsuarioDummy> call, Response<UsuarioDummy> response) {
                 if (response.isSuccessful()) {
                     Log.d("Update USER", id + " SUCCESSFUL");
+                    user.setValue(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<EditUsers> call, Throwable t) {
+            public void onFailure(Call<UsuarioDummy> call, Throwable t) {
 
             }
         });
+        return user;
     }
 
     public void updatePassword(String email,String paaswordOld,Password passwordNew,String id) {
