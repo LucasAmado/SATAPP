@@ -20,4 +20,5 @@
     <color name="yellow_600">#FDD835</color>
     <color name="light_green_700">#689F38</color>
 
+    <color name="background_grey">#f8f7f7</color>
 </resources>

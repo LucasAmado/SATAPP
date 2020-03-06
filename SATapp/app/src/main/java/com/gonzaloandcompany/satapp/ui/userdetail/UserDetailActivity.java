@@ -1,10 +1,13 @@
 package com.gonzaloandcompany.satapp.ui.userdetail;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -50,7 +54,10 @@ public class UserDetailActivity extends AppCompatActivity {
     TextView validated;
     @BindView(R.id.validate_layout)
     LinearLayout layout;
+    @BindView(R.id.promote_layout)
+    LinearLayout promoteLayout;
     String id;
+    String nameUser;
 
     private UserViewModel userViewModel;
     @Override
@@ -69,17 +76,28 @@ public class UserDetailActivity extends AppCompatActivity {
                 userViewModel.validate(id).observe(UserDetailActivity.this, new Observer<UsuarioDummy>() {
                     @Override
                     public void onChanged(UsuarioDummy usuario) {
+
                         setData(usuario);
                     }
                 });
+
             }
         });
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userViewModel.deleteUser(id);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailActivity.this);
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id2) {
+                        userViewModel.deleteUser(id);
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                builder.setMessage("¿Estás seguro de que quieres eliminar a "+nameUser+" ?");
+                builder.setTitle(R.string.app_name);
+                builder.show();
             }
         });
 
@@ -89,7 +107,23 @@ public class UserDetailActivity extends AppCompatActivity {
                 userViewModel.promote(id).observe(UserDetailActivity.this, new Observer<UsuarioDummy>() {
                     @Override
                     public void onChanged(UsuarioDummy usuario) {
-                        setData(usuario);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(UserDetailActivity.this);
+                        builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id2) {
+                                userViewModel.validate(id).observe(UserDetailActivity.this, new Observer<UsuarioDummy>() {
+                                    @Override
+                                    public void onChanged(UsuarioDummy usuario) {
+                                        setData(usuario);
+                                    }
+                                });
+                            }
+                        });
+                        builder.setNegativeButton("No", null);
+
+                        builder.setMessage("¿Estás seguro de que quieres promocionar a "+nameUser+" a técnico? ");
+                        builder.setTitle(R.string.app_name);
+                        builder.show();
+
                     }
                 });
             }
@@ -100,13 +134,13 @@ public class UserDetailActivity extends AppCompatActivity {
 
     public void loadUser(){
 
-
         userViewModel.getUser(id).observe(this, new Observer<UsuarioDummy>() {
             @Override
             public void onChanged(UsuarioDummy usuario) {
-                if(usuario!=null)
+                if(usuario!=null){
+                    Log.d("USUARIO",usuario.toString());
                     setData(usuario);
-                else
+                }else
                     Toast.makeText(UserDetailActivity.this, "No se ha podido cargar los datos.\n\nContacte con el servicio técnico", Toast.LENGTH_LONG).show();
 
             }
@@ -114,27 +148,42 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     public void setData(UsuarioDummy user){
-        if(user.getName()!=null)
+
+        if(user.getName()!=null){
+            nameUser=user.getName();
             name.setText(user.getName());
-        else{
+            name.setVisibility(View.VISIBLE);
+        }else{
             titleName.setVisibility(View.GONE);
             name.setVisibility(View.GONE);
+            nameUser=user.getEmail();
         }
 
-        if(rol.equals("tecnico"))
+
+        if(rol.equals("tecnico")) {
             rol.setText("Técnico");
-        else if (rol.equals("user"))
+            promoteLayout.setVisibility(View.GONE);
+        }else if (rol.equals("user"))
             rol.setText("Usuario");
         else
             rol.setText("Administrador");
 
+        rol.setVisibility(View.VISIBLE);
         email.setText(user.getEmail());
+        email.setVisibility(View.VISIBLE);
+
 
         if(user.isValidated()){
             layout.setVisibility(View.GONE);
             validated.setText("Validado");
-        }else
+            promoteLayout.setVisibility(View.VISIBLE);
+        }else{
+            layout.setVisibility(View.VISIBLE);
             validated.setText("Pendiente de validar");
+            promoteLayout.setVisibility(View.GONE);
+        }
+        validated.setVisibility(View.VISIBLE);
+
 
         if(user.getPicture()!=null){
             GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + user.getPicture(),
@@ -142,9 +191,13 @@ public class UserDetailActivity extends AppCompatActivity {
                             .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                             .build());
 
-            Glide.with(UserDetailActivity.this).load(glideUrl).circleCrop().into(photo);
+            Glide.with(UserDetailActivity.this).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).centerCrop().into(photo);
         }else{
-            Glide.with(UserDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(photo);
+            Glide.with(UserDetailActivity.this).load(R.drawable.iconfinder_unknown_403017).diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true).circleCrop().into(photo);
         }
     }
+
+
 }

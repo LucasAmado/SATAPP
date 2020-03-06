@@ -7,7 +7,7 @@
     tools:context=".ui.FullSizeImageActivity">
 
     <ImageView
-        android:id="@+id/fullSizeImg"
+        android:id="@+id/ivFotoInventariable"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@android:color/background_light"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/editTextNombre"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/hint_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/margin_left_form"
+            android:background="@color/background_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <Spinner
+            android:id="@+id/spinnerTipo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextNombre" />
+
+        <EditText
+            android:id="@+id/editTextUbicacion"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/background_grey"
+            android:ems="10"
+            android:hint="Ubicación"
+            android:paddingLeft="@dimen/margin_left_form"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/editTextNombre"
+            app:layout_constraintStart_toStartOf="@+id/spinnerTipo"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerTipo" />
+
+        <TextView
+            android:id="@+id/textViewtImage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/background_grey"
+            android:gravity="center|right"
+            android:hint="img.jpg"
+            android:inputType="textPersonName"
+            android:paddingRight="@dimen/margin_left_form"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewIcon"
+            app:layout_constraintEnd_toEndOf="@+id/editTextNombre"
+            app:layout_constraintStart_toEndOf="@+id/imageViewIcon"
+            app:layout_constraintTop_toTopOf="@+id/imageViewIcon"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/imageViewIcon"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:padding="5dp"
+            app:layout_constraintStart_toStartOf="@+id/editTextDescripcion"
+            app:layout_constraintTop_toBottomOf="@+id/editTextDescripcion"
+            app:srcCompat="@drawable/ic_image2" />
+
+        <EditText
+            android:id="@+id/editTextDescripcion"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/background_grey"
+            android:gravity="start"
+            android:hint="@string/hint_descripcion"
+            android:inputType="textPersonName"
+            android:paddingLeft="@dimen/margin_left_form"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextUbicacion" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

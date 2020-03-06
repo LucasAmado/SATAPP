@@ -4,13 +4,17 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="hint_name">Nombre</string>
+    <string name="hint_descripcion">Descripción</string>
+    <string name="title_activity_inventariable_detail">InventariableDetailActivity</string>
     <string name="long_lorem_ipsum">
         Duis tellus metus, elementum a lectus id, aliquet interdum mauris. Nam bibendum efficitur sollicitudin. Proin eleifend libero velit, nec fringilla dolor finibus quis. nMorbi eu libero pellentesque, rutrum metus quis, blandit est. Fusce bibendum accumsan nisi vulputate feugiat. In fermentum laoreet euismod. Praesent sem nisl, facilisis eget odio at, rhoncus scelerisque ipsum. Nulla orci dui, dignissim a risus ut, lobortis porttitor velit.
         \n\nNulla id lectus metus. Maecenas a lorem in odio auctor facilisis non vitae nunc. Sed malesuada volutpat massa. Praesent sit amet lacinia augue, mollis tempor dolor.
     </string>
     <string name="edit">Editar</string>
     <string name="add">Añadir</string>
-    <string name="delete">Eliminar</string>
     <string name="Description">Descripción</string>
     <string name="Info">Información</string>
     <string name="technicAssigned">Técnico asignado:</string>
@@ -24,6 +28,7 @@
     <string name="selectDevice">Selecciona el dispositivo</string>
     <string name="selectTech">Selecciona un técnico</string>
     <string name="save">Guardar</string>
+    <string name="action_search">search</string>
     <string name="device">Dispositivo</string>
     <string name="tech">Técnico</string>
     <string name="devices">Dispositivos</string>
@@ -37,4 +42,15 @@
     <string name="fullname">Nombre:</string>
     <string name="email">Email:</string>
     <string name="allName">Nombre Y Apellidos</string>
+    <string name="perfil">Perfil</string>
+    <string name="title_activity_escanear">ActivityEscanear</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="create_anotation">Crear anotación</string>
 </resources>

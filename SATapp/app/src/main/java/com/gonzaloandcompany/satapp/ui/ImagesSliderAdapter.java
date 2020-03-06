@@ -3,6 +3,7 @@ package com.gonzaloandcompany.satapp.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -55,15 +57,16 @@ public class ImagesSliderAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) act.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.item_slider_image, container, false);
 
-        ImageView image = v.findViewById(R.id.image);
+        ImageView image = v.findViewById(R.id.imagePerfil);
 
         //TODO:CAMBIAR EL TOKEN DEL HEADER DE GLIDEURL CUANDO GONZALO TERMINE CON EL LOGIN
         GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + o,
                 new LazyHeaders.Builder()
                         .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                         .build());
-
-        Glide.with(v.getContext()).load(glideUrl).into(image);
+        Log.d("GLIDEURL",glideUrl.toString());
+        Glide.with(v.getContext()).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).into(image);
 
         ((ViewPager) container).addView(v);
         image.setOnClickListener(new View.OnClickListener() {

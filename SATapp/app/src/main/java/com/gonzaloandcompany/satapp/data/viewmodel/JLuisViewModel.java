@@ -5,6 +5,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.data.repository.JLuisRepository;
@@ -17,10 +18,12 @@ public class JLuisViewModel  extends AndroidViewModel {
     MutableLiveData<List<Inventariable>> inventariables;
     MutableLiveData<List<String>> ubicaciones;
     JLuisRepository repository;
+    MutableLiveData<String> idIntervariableSelect;
 
     public JLuisViewModel(@NonNull Application application) {
         super(application);
         repository = new JLuisRepository();
+        idIntervariableSelect = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<Inventariable>> getAllInventariables() {
@@ -33,5 +36,13 @@ public class JLuisViewModel  extends AndroidViewModel {
         ubicaciones = repository.getAllUbicaciones();
         return ubicaciones;
 
+    }
+
+    public void setIdInventariable(String idInventariable) {
+        this.idIntervariableSelect.setValue(idInventariable);
+    }
+
+    public LiveData<String> getIdInventariable(){
+        return idIntervariableSelect;
     }
 }

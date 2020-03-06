@@ -2,20 +2,20 @@ package com.gonzaloandcompany.satapp.ui.home;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.ui.codeqr.AsistenteQrActivity;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +41,17 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     private List<Inventariable> byInventariable;
     private DialogPassData dialogPassData;
     private List<String> ubicaciones = new ArrayList<>();
-
+    private FloatingActionButton add;
+    MenuItem searchItem;
     public InventariableFragment() {
     }
+
 
     @Override
     public void filterByUbicacion(String ubicacion) {
         byInventariable = new ArrayList<>();
         for (Inventariable i : inventariableList) {
-            if(i.getUbicacion()!=null) {
+            if (i.getUbicacion() != null) {
                 if (i.getUbicacion().equals(ubicacion)) {
                     byInventariable.add(i);
                 }
@@ -66,6 +71,21 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filtro, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -75,7 +95,10 @@ public class InventariableFragment extends Fragment implements DialogPassData {
                 DialogFragment dialog = new FilterDialogFragment(dialogPassData, ubicaciones);
                 dialog.setTargetFragment(this, 0);
                 dialog.show(getFragmentManager(), "MonedasFilterDialogFragment");
-
+                break;
+            case R.id.action_qr:
+                Intent i = new Intent(getActivity(), AsistenteQrActivity.class);
+                startActivity(i);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -92,23 +115,28 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_inventariable_list, container, false);
+        add = view.findViewById(R.id.add_inventariable);
 
-        if (view instanceof RecyclerView) {
-            context = view.getContext();
-            recyclerView = (RecyclerView) view;
+        add.setOnClickListener(v -> {
+            DialogFragment dialog = new InventariableDialogFragment(null);
+            dialog.show(getFragmentManager(), "InventariableDialogFragment");
+        });
 
-            recyclerView.setLayoutManager(new GridLayoutManager(context, 1));
+        context = view.getContext();
+        recyclerView = view.findViewById(R.id.list);
 
-            adapter = new MyInventariableRecyclerViewAdapter(
-                    getActivity(),
-                    inventariableList,
-                    jLuisViewModel
-            );
-            recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 1));
 
-            loadInventariables();
-            loadUbicaciones();
-        }
+        adapter = new MyInventariableRecyclerViewAdapter(
+                getActivity(),
+                inventariableList,
+                jLuisViewModel
+        );
+        recyclerView.setAdapter(adapter);
+
+        loadInventariables();
+        loadUbicaciones();
+
         return view;
 
     }
@@ -129,6 +157,4 @@ public class InventariableFragment extends Fragment implements DialogPassData {
         super.onDetach();
         dialogPassData = null;
     }
-
-
 }

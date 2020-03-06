@@ -2,20 +2,37 @@ package com.gonzaloandcompany.satapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
+import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
+import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketListener;
 import com.gonzaloandcompany.satapp.ui.ticketsdetail.TicketDetailActivity;
+import com.gonzaloandcompany.satapp.ui.userdetail.PerfilDetailActivity;
 import com.gonzaloandcompany.satapp.ui.userdetail.UserDetailActivity;
 import com.gonzaloandcompany.satapp.ui.users.UserListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity implements TicketListener, UserListener {
+    JLuisViewModel jLuisViewModel;
+    private UserViewModel userViewModel;
+    private UsuarioDummy currentUser;
 
     @Override
     public void OnUserClick(String id) {
@@ -25,18 +42,52 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.top_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.perfilIcon) {
+            Intent perfil = new Intent(this, PerfilDetailActivity.class);
+            startActivity(perfil);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment);
+
+        getCurrentUser(navController);
+        
+        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+
+
+        jLuisViewModel = new ViewModelProvider(MainActivity.this).get(JLuisViewModel.class);
+
+        jLuisViewModel.getIdInventariable().observe(MainActivity.this, new Observer<String>() {
+            @Override
+            public void onChanged(String idInventariable) {
+                if (idInventariable != null) {
+                    Intent i = new Intent(MainActivity.this, InventariableDetailActivity.class);
+                    i.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
+                    startActivity(i);
+                }
+            }
+        });
+
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+
+
     }
 
     @Override
@@ -47,4 +98,30 @@ public class MainActivity extends AppCompatActivity implements TicketListener, U
 
     }
 
+<<<<<<< HEAD
+=======
+    public void getCurrentUser(NavController navController) {
+        userViewModel.getCurrentUser().observe(this, new Observer<UsuarioDummy>() {
+            @Override
+            public void onChanged(UsuarioDummy usuario) {
+                currentUser = usuario;
+
+                BottomNavigationView navAdmin = findViewById(R.id.nav_view);
+                BottomNavigationView navOtherRol = findViewById(R.id.nav_view2);
+
+                if(currentUser.getRole().equals("admin")){
+                    navAdmin.setVisibility(View.VISIBLE);
+                    navOtherRol.setVisibility(View.INVISIBLE);
+                    NavigationUI.setupWithNavController(navAdmin, navController);
+                }else{
+                    navAdmin.setVisibility(View.INVISIBLE);
+                    navOtherRol.setVisibility(View.VISIBLE);
+                    NavigationUI.setupWithNavController(navOtherRol, navController);
+                }
+
+            }
+        });
+    }
+
+>>>>>>> e9ffcfbc93d21a6b027d7759f680577fbbe29671
 }

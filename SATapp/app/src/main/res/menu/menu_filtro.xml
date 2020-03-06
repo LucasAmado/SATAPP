@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/filter_icon"
         android:icon="@drawable/ic_filter_list_white_24dp"
@@ -12,5 +12,18 @@
                 android:title="Ubicación" />
         </menu>
     </item>
+    <item
+        android:id="@+id/action_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/action_search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_qr"
+        android:icon="@drawable/ic_codigo_qr"
+        android:title="Code Qr"
+        app:showAsAction="ifRoom" />
+
+
 
 </menu>
