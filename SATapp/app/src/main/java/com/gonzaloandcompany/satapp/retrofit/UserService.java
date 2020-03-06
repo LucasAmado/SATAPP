@@ -48,10 +48,14 @@ public interface UserService {
     Call<Password> updatePassword(@Header("Authorization") String authHeader ,
                                   @Path("id") String id,
                                   @Body Password passwordd);
+<<<<<<< HEAD
     @DELETE("/users/{id}/img")
     Call<Void> deleteUserImagen(@Path("id") String id);
 
     @Multipart
     @PUT("/users/{id}/img")
     Call<UsuarioDummy> updateImageUser(@Path("id") String id, @Part MultipartBody.Part avatar);
+=======
+    Call<UsuarioDummy> getCurrentUser();
+>>>>>>> abf9f81743683beb330eefcaac8c73afb481f303
 }
