@@ -44,4 +44,5 @@ public interface UserService {
     Call<Password> updatePassword(@Header("Authorization") String authHeader ,
                                   @Path("id") String id,
                                   @Body Password passwordd);
+    Call<UsuarioDummy> getCurrentUser();
 }

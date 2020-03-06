@@ -206,4 +206,23 @@ public class UserRepository {
         });
         return data;
     }
+
+    public LiveData<UsuarioDummy> getCurrentUser() {
+        final MutableLiveData<UsuarioDummy> data = new MutableLiveData<>();
+        Call<UsuarioDummy> call = service.getCurrentUser();
+        call.enqueue(new Callback<UsuarioDummy>() {
+            @Override
+            public void onResponse(Call<UsuarioDummy> call, Response<UsuarioDummy> response) {
+                if (response.isSuccessful()) {
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsuarioDummy> call, Throwable t) {
+
+            }
+        });
+        return data;
+    }
 }
