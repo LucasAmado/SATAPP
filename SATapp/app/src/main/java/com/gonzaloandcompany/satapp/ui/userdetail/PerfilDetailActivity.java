@@ -49,7 +49,7 @@ public class PerfilDetailActivity extends AppCompatActivity {
     @BindView(R.id.user_detail_photo)
     ImageView photo;
     @BindView(R.id.userDetailDelete)
-    FloatingActionButton misTickest;
+    FloatingActionButton cambiarfoto;
     @BindView(R.id.userDetailPromoteToTech)
     FloatingActionButton editar;
     @BindView(R.id.buttonContraseña)
@@ -78,6 +78,13 @@ public class PerfilDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DialogFragment dialog = new PasswordDialogFragment(id);
                 dialog.show(getSupportFragmentManager(), "PasswordDialogFragment");
+            }
+        });
+
+        cambiarfoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

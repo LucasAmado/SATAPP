@@ -41,5 +41,7 @@ public interface UserService {
     Call<EditUsers> updateUser(@Path("id") String id,@Body EditUsers name);
 
     @PUT("/users/{id}/password")
-    Call<Password> updatePassword(@Header("Authorization") String authHeader , @Path("id") String id, @Body Password passwordd);
+    Call<Password> updatePassword(@Header("Authorization") String authHeader ,
+                                  @Path("id") String id,
+                                  @Body Password passwordd);
 }

@@ -129,7 +129,7 @@
                             android:layout_height="wrap_content"
                             android:clickable="true"
 
-                            android:src="@drawable/ic_priority_high_black_24dp"
+                            android:src="@drawable/ic_image2"
                             android:tint="@android:color/white"
                             app:backgroundTint="@color/grey_90"
                             app:elevation="0dp"
@@ -140,7 +140,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_medium"
-                            android:text="Mis tickest"
+                            android:text="Cambiar Imagen"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Caption"
                             android:textColor="@color/grey_40" />
 

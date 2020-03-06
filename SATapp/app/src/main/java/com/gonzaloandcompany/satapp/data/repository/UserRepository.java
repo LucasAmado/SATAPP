@@ -1,16 +1,20 @@
 package com.gonzaloandcompany.satapp.data.repository;
 
+import android.app.Application;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.common.Constants;
+import com.gonzaloandcompany.satapp.common.MyApp;
 import com.gonzaloandcompany.satapp.requests.EditUsers;
 import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.requests.Password;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
+import com.gonzaloandcompany.satapp.retrofit.LoginServiceGenerator;
 import com.gonzaloandcompany.satapp.retrofit.UserService;
 
 import java.util.List;
@@ -21,6 +25,7 @@ import retrofit2.Response;
 
 public class UserRepository {
     private UserService service;
+    private UserService loginServise;
     private MutableLiveData<List<UsuarioDummy>> users = new MutableLiveData<>();
     private MutableLiveData<List<UsuarioDummy>> paginables = new MutableLiveData<>();
     private String nombre;
@@ -29,6 +34,7 @@ public class UserRepository {
 
     public UserRepository() {
         this.service = ApiSAT.createServicePeticiones(UserService.class, Constants.TOKEN_PROVISIONAL);
+        this.loginServise = LoginServiceGenerator.createService(UserService.class);
     }
 
     public LiveData<List<UsuarioDummy>> getUsers() {
@@ -105,18 +111,23 @@ public class UserRepository {
     public void updatePassword(String email,String paaswordOld,Password passwordNew,String id) {
         String base = email + ":" + paaswordOld;
         String authHeader = "Basic " + Base64.encodeToString(base.getBytes(), Base64.NO_WRAP);
-        Call<Password> call = service.updatePassword(authHeader ,id, passwordNew);
+        Call<Password> call = loginServise.updatePassword(authHeader ,id, passwordNew);
         call.enqueue(new Callback<Password>() {
             @Override
             public void onResponse(Call<Password> call, Response<Password> response) {
                 if (response.isSuccessful()) {
                     Log.d("Update PASSWORD", " SUCCESSFUL");
+                    Toast.makeText(MyApp.getContext(), "Contraseña cambiada correctamente", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(MyApp.getContext(), "Error al cambiar contraseña", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Password> call, Throwable t) {
                 Log.d("Update PASSWORD"," FAILURE");
+                Toast.makeText(MyApp.getContext(), "Error al cambiar contraseña", Toast.LENGTH_LONG).show();
             }
         });
     }
