@@ -3,6 +3,9 @@ Aplicación destinada a facilitar la gestión de los equipos informáticos del c
 
 ## 1. LOGIN Y REGISTRO
 --------------------
+Por razones técnicas no nos ha dado tiempo subir tanto el login como el registro a master. No obstante toda la información referente a estas dos opciones se podrá encontrar en la rama "loginAndRegister".
+
+La última actualización de esta rama se encuentra en este [commit](https://github.com/LucasAmado/SATAPP-repository/commit/252ea994a65b0e419bcd1151359ae9aa3c09bb3f).
 
 ### 1.1 Registro
 Para poder registrarse en la aplicación se deberá incluir su nombre, correo y contraseña. Una vez registrado se redireccionará automáticamente al login.
@@ -11,21 +14,19 @@ Para poder registrarse en la aplicación se deberá incluir su nombre, correo y 
 A la hora de iniciar sesión se debe incluir el correo y la contraseña asociada. Una vez logeado se accederá a la gestión de dispositivos.
 Para tener una mejor experiencia probando la plicación se recomienda hacer uso de los 3 tipos de roles en SATApp: administrador, técnico y usuario. Para probar la app, existen los siguientes usuarios:
 
-    ``
-    Administrador:
-    admin@administrador.com
-    12345678
-    ```
-    ```
-        Usuario:
-        luismi.lopez@salesianos.edu
-        12345678
-    ```
-    ```
-        Técnico:
-        amadolucas99@gmail.com
-        123456
-    ```
+```
+Administrador:
+admin@administrador.com
+12345678
+
+Usuario:
+luismi.lopez@salesianos.edu
+12345678
+
+Técnico:
+amadolucas99@gmail.com
+123456
+```
 
 
 ## 2. GESTIÓN DE USUARIOS
