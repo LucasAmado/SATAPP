@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.MainActivity;
@@ -72,6 +73,7 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
         call.enqueue(new Callback<Inventariable>() {
             @Override
             public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
+
                 if (response.isSuccessful()) {
                     select = response.body();
 
@@ -82,6 +84,8 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
 
                     Glide.with(InventariableDetaileImageActivity.this)
                             .load(glideUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .centerCrop()
                             .into(ivFoto);
 
@@ -232,10 +236,14 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, resultData);
         if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-
             Uri uri = null;
             if (resultData != null) {
+
                 uri = resultData.getData();
+                Glide.with(InventariableDetaileImageActivity.this)
+                        .load(uri)
+                        .centerCrop()
+                        .into(ivFoto);
                 uriSelected = uri;
                 save.setVisibility(View.VISIBLE);
             }

@@ -4,20 +4,20 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.common.MyApp;
+import com.gonzaloandcompany.satapp.mymodels.Anotacion;
+import com.gonzaloandcompany.satapp.requests.CreateAnotacion;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
+import com.gonzaloandcompany.satapp.retrofit.AnotacionService;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
 
-import java.time.format.ResolverStyle;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,9 +27,11 @@ import retrofit2.Response;
 public class LucasRepository {
 
     private ServicePeticiones service;
+    private AnotacionService anotacionService;
 
     public LucasRepository() {
         service = ApiSAT.createServicePeticiones(ServicePeticiones.class, Constants.TOKEN_PROVISIONAL);
+        anotacionService = ApiSAT.createServicePeticiones(AnotacionService.class, Constants.TOKEN_PROVISIONAL);
     }
 
     public MutableLiveData<Inventariable> getInventariableById(String id_inventariable) {
@@ -133,5 +135,113 @@ public class LucasRepository {
                 Toast.makeText(MyApp.getContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    
+    //ANOTACIONES
+
+    public MutableLiveData<Anotacion> getAnotacion(String idAnotacion){
+        final MutableLiveData<Anotacion> data = new MutableLiveData<>();
+        Call<Anotacion> callAnotacion = anotacionService.getAnotacion(idAnotacion);
+        callAnotacion.enqueue(new Callback<Anotacion>() {
+            @Override
+            public void onResponse(Call<Anotacion> call, Response<Anotacion> response) {
+                if (response.isSuccessful()){
+                    data.setValue(response.body());
+                }
+                Log.e("GET ANOTACION", ""+response);
+            }
+
+            @Override
+            public void onFailure(Call<Anotacion> call, Throwable t) {
+                Log.e("Failure", t.getMessage());
+            }
+        });
+        return data;
+    }
+
+
+    public MutableLiveData<List<Anotacion>> getAnotacionesByTicket(String idTicket){
+        final MutableLiveData<List<Anotacion>> data = new MutableLiveData<>();
+        Call<List<Anotacion>> call = anotacionService.getAnotacionesTicket(idTicket);
+        call.enqueue(new Callback<List<Anotacion>>() {
+            @Override
+            public void onResponse(Call<List<Anotacion>> call, Response<List<Anotacion>> response) {
+                if(response.isSuccessful()){
+                    Log.e("ANOTACIONES", "GUARADAS");
+                    data.setValue(response.body());
+                }
+                Log.e("GET ANOTACIONES", ""+response);
+            }
+
+            @Override
+            public void onFailure(Call<List<Anotacion>> call, Throwable t) {
+                Log.e("Failure", t.getMessage());
+            }
+        });
+
+        return data;
+    }
+
+    public MutableLiveData<Anotacion> createAnotacion(CreateAnotacion createAnotacion){
+        final MutableLiveData<Anotacion> data = new MutableLiveData<>();
+        Call<Anotacion> createAnotacionCall = anotacionService.createAnotacion(createAnotacion);
+        createAnotacionCall.enqueue(new Callback<Anotacion>() {
+            @Override
+            public void onResponse(Call<Anotacion> call, Response<Anotacion> response) {
+                if(response.isSuccessful()){
+                    Log.e("Nueva", "anotacion");
+                    data.setValue(response.body());
+                }
+                Log.e("CREATE ANOTACION", ""+response);
+            }
+
+            @Override
+            public void onFailure(Call<Anotacion> call, Throwable t) {
+                Log.e("failure", ""+t.getMessage());
+            }
+        });
+        return data;
+    }
+
+    public void deleteAnotacion(String idAnotacion) {
+        Call<Void> call = anotacionService.deleteAnotacion(idAnotacion);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.e("ANOTACION", "BORRADA");
+                }
+
+                Log.e("DELETE ANOTACION", ""+response);
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("failure", ""+t.getMessage());
+            }
+        });
+    }
+
+    public MutableLiveData<Anotacion> updateAnotacion(String idAnotacion, CreateAnotacion anotacion){
+        final MutableLiveData<Anotacion> data = new MutableLiveData<>();
+        Call<Anotacion> call = anotacionService.updateAnotacion(idAnotacion, anotacion);
+        call.enqueue(new Callback<Anotacion>() {
+            @Override
+            public void onResponse(Call<Anotacion> call, Response<Anotacion> response) {
+                if(response.isSuccessful()){
+                    Log.e("ANOTACION", "MODIFICADA");
+                    data.setValue(response.body());
+                }
+
+                Log.e("UPDATE ANOTACION", ""+response);
+            }
+
+            @Override
+            public void onFailure(Call<Anotacion> call, Throwable t) {
+                Log.e("failure", ""+t.getMessage());
+            }
+        });
+        return data;
     }
 }

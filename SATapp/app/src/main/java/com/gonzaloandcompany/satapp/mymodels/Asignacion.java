@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Asignacion {
     private String tecnico_id;
-    private LocalDate fecha_asignacion;
+    private String fecha_asignacion;
 }

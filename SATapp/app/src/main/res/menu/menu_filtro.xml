@@ -18,6 +18,11 @@
         android:title="@string/action_search"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_qr"
+        android:icon="@drawable/ic_codigo_qr"
+        android:title="Code Qr"
+        app:showAsAction="ifRoom" />
 
 
 </menu>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -74,9 +75,11 @@ public class UsersRecyclerViewAdapter  extends RecyclerView.Adapter<UsersRecycle
                                 .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                                 .build());
 
-                Glide.with(context).load(glideUrl).circleCrop().into(holder.img);
+                Glide.with(context).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).circleCrop().into(holder.img);
             }else{
-                Glide.with(context).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(holder.img);
+                Glide.with(context).load(R.drawable.iconfinder_unknown_403017).diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true).circleCrop().into(holder.img);
             }
 
 
