@@ -60,6 +60,7 @@ public class TicketsFragment extends Fragment {
     private Estado selected;
     private MenuItem assigns;
     private boolean isFirstClick;
+    private MenuItem filter;
 
     public TicketsFragment() {
     }
@@ -69,7 +70,7 @@ public class TicketsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        isFirstClick=true;
+        isFirstClick = true;
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -164,13 +165,13 @@ public class TicketsFragment extends Fragment {
 
 
         } else {
-            currentPage=0;
-            if(isFirstClick) {
-                isFirstClick=false;
+            currentPage = 0;
+            if (isFirstClick) {
+                isFirstClick = false;
                 loadAssigns(true);
                 assigns.setIcon(R.drawable.ic_undo_white_24dp);
-            }else{
-                isFirstClick=true;
+            } else {
+                isFirstClick = true;
                 loadTickets(true);
                 assigns.setIcon(R.drawable.ic_assignment);
             }
@@ -182,9 +183,12 @@ public class TicketsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.tickets_filter_menu, menu);
-        assigns = menu.getItem(0);
-        Log.d("BOTON FILTRAR ASIGNACIONES",menu.getItem(0).toString());
+
+        assigns = menu.findItem(R.id.filter_assign);
+        filter = menu.findItem(R.id.filter_icon);
+        Log.d("BOTON FILTRAR ASIGNACIONES", menu.getItem(0).toString());
         assigns.setVisible(false);
+        filter.setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -209,31 +213,31 @@ public class TicketsFragment extends Fragment {
         isLoading = true;
         currentPage++;
 
-            ticketsViewModel.getTicketsAssigned(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
-                @Override
-                public void onChanged(List<Ticket> data) {
-                    if (data != null) {
-                        tickets.setResults(data);
-                    } else {
-                        progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "No hay más tickets que cargar", Toast.LENGTH_LONG).show();
-                    }
-
-                    if (tickets.getResults().isEmpty())
-                        Toast.makeText(getContext(), "No tienes ningún ticket asignado", Toast.LENGTH_LONG).show();
-
-                    if (!isFirstPage) {
-                        adapter.addAll(tickets.getResults());
-                    } else {
-                        adapter.setData(tickets.getResults());
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
-
-                    isLoading = false;
-                    isLastPage = currentPage == tickets.getResults().size();
+        ticketsViewModel.getTicketsAssigned(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
+            @Override
+            public void onChanged(List<Ticket> data) {
+                if (data != null) {
+                    tickets.setResults(data);
+                } else {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "No hay más tickets que cargar", Toast.LENGTH_LONG).show();
                 }
-            });
+
+                if (tickets.getResults().isEmpty())
+                    Toast.makeText(getContext(), "No tienes ningún ticket asignado", Toast.LENGTH_LONG).show();
+
+                if (!isFirstPage) {
+                    adapter.addAll(tickets.getResults());
+                } else {
+                    adapter.setData(tickets.getResults());
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+
+                isLoading = false;
+                isLastPage = currentPage == tickets.getResults().size();
+            }
+        });
 
     }
 
@@ -243,12 +247,17 @@ public class TicketsFragment extends Fragment {
 
         Log.d("ROL USER", currentUser.getRole());
 
-        if(currentUser.getRole().equals("tecnico")){
-            Log.d("ERES TÉCNICO","DEBERIAS VER UN FILTOR");
+        if (currentUser.getRole().equals("tecnico")) {
+            Log.d("ERES TÉCNICO", "DEBERIAS VER UN FILTOR");
             assigns.setVisible(true);
+            filter.setVisible(true);
         }
 
-       if (currentUser.getRole().equals("user")||currentUser.getRole().equals("tecnico")) {
+        if (currentUser.getRole().equals("tecnico") || currentUser.getRole().equals("admin"))
+            filter.setVisible(true);
+
+
+        if (currentUser.getRole().equals("user") || currentUser.getRole().equals("tecnico")) {
             ticketsViewModel.getTicketsCreated(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
                 @Override
                 public void onChanged(List<Ticket> data) {
