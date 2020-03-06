@@ -3,13 +3,39 @@ package com.gonzaloandcompany.satapp.mymodels;
 public class Users {
     private String id;
     private String email;
+    private String name;
     private String role;
     private String picture;
+    private String password;
     private String createdAt;
     private String updatedAt;
+    private String avatar;
     private Boolean Validated;
 
     public Users(String emailUser) {
+    }
+
+    public Users(String avatar, String email, String name, String password) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.avatar = avatar;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getId() {
@@ -66,5 +92,13 @@ public class Users {
 
     public void setValidated(Boolean validated) {
         Validated = validated;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

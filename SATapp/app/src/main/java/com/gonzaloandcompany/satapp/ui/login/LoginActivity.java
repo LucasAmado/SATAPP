@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @BindView(R.id.editTextPassword)
     EditText password;
 
-    String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +60,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (response.code() != 201) {
-                            Log.d(String.valueOf(response.code()), "respuesta");
-                            Log.e("RequestError", response.message());
                             Toast.makeText(LoginActivity.this, "No ha podido iniciar sesion", Toast.LENGTH_SHORT).show();
                         }
                             else {
