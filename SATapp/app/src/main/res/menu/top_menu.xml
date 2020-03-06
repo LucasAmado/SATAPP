@@ -5,6 +5,5 @@
     <item
         android:id="@+id/perfilIcon"
         android:icon="@drawable/ic_person_black_24dp"
-        android:title="@string/perfil"
-        app:showAsAction="ifRoom" />
+        android:title="@string/perfil" />
 </menu>

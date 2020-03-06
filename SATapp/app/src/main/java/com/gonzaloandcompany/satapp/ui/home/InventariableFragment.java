@@ -42,7 +42,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     private DialogPassData dialogPassData;
     private List<String> ubicaciones = new ArrayList<>();
     private FloatingActionButton add;
-
+    MenuItem searchItem;
     public InventariableFragment() {
     }
 
@@ -71,8 +71,7 @@ public class InventariableFragment extends Fragment implements DialogPassData {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_filtro, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -96,7 +95,6 @@ public class InventariableFragment extends Fragment implements DialogPassData {
                 DialogFragment dialog = new FilterDialogFragment(dialogPassData, ubicaciones);
                 dialog.setTargetFragment(this, 0);
                 dialog.show(getFragmentManager(), "MonedasFilterDialogFragment");
-
                 break;
             case R.id.action_qr:
                 Intent i = new Intent(getActivity(), AsistenteQrActivity.class);
