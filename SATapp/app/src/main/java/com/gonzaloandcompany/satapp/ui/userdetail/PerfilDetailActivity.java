@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.gonzaloandcompany.satapp.data.viewmodel.MyUserViewModel;
 import com.gonzaloandcompany.satapp.data.viewmodel.UserViewModel;
 import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.retrofit.UserService;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetailActivity;
+import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDetaileImageActivity;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
 import com.gonzaloandcompany.satapp.ui.tickets.TicketsViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -84,10 +87,11 @@ public class PerfilDetailActivity extends AppCompatActivity {
         cambiarfoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent i = new Intent(PerfilDetailActivity.this, MyUserDetailImagenActivity.class);
+                i.putExtra("id", id);
+                startActivity(i);
             }
         });
-
 
 
     }

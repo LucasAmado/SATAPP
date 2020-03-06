@@ -1,5 +1,6 @@
 package com.gonzaloandcompany.satapp.ui.tickets;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,7 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
     }
 
     public void setData(List<Ticket> list) {
+        Log.d("SET DATA ADAPTER",list.toString());
         this.tickets = list;
         notifyDataSetChanged();
 

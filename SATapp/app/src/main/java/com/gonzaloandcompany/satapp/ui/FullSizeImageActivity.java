@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.R;
@@ -29,7 +30,8 @@ public class FullSizeImageActivity extends AppCompatActivity {
                         .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
                         .build());
 
-        Glide.with(this).load(glideUrl).into(img);
+        Glide.with(this).load(glideUrl).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true).into(img);
 
 
     }

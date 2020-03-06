@@ -1,10 +1,11 @@
-package com.gonzaloandcompany.satapp.ui.home.detail;
+package com.gonzaloandcompany.satapp.ui.userdetail;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Bundle;
+
+
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,17 +16,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.gonzaloandcompany.satapp.MainActivity;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.common.Constants;
-import com.gonzaloandcompany.satapp.mymodels.Inventariable;
+import com.gonzaloandcompany.satapp.mymodels.UsuarioDummy;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
-import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
-
+import com.gonzaloandcompany.satapp.retrofit.UserService;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +42,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class InventariableDetaileImageActivity extends AppCompatActivity {
+public class MyUserDetailImagenActivity extends AppCompatActivity {
     @BindView(R.id.ivCancel)
     ImageView cancel;
     @BindView(R.id.ivSave)
@@ -52,10 +53,10 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
     ImageView ivFoto;
     @BindView(R.id.ivDelete)
     ImageView delete;
-    ServicePeticiones service;
+    UserService service;
     private static final int READ_REQUEST_CODE = 42;
     Uri uriSelected;
-    Inventariable select;
+    UsuarioDummy select;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,79 +64,78 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventariable_detaile_image);
         ButterKnife.bind(this);
 
-        String idInventariable =  getIntent().getExtras().getString(Constants.ID_INVENTARIABLE);
+        String id = getIntent().getExtras().getString("id");
         save.setVisibility(View.INVISIBLE);
 
-        service = ApiSAT.createServicePeticiones(ServicePeticiones.class, Constants.TOKEN_PROVISIONAL);
+        service = ApiSAT.createServicePeticiones(UserService.class, Constants.TOKEN_PROVISIONAL);
 
-
-        Call<Inventariable> call = service.getInventariableById(idInventariable);
-        call.enqueue(new Callback<Inventariable>() {
+        Call<UsuarioDummy> call = service.getMyUser();
+        call.enqueue(new Callback<UsuarioDummy>() {
             @Override
-            public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
+            public void onResponse(Call<UsuarioDummy> call, Response<UsuarioDummy> response) {
 
                 if (response.isSuccessful()) {
                     select = response.body();
+                    if(select.getPicture()!=null) {
+                        GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + select.getPicture(),
+                                new LazyHeaders.Builder()
+                                        .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
+                                        .build());
 
-                    GlideUrl glideUrl = new GlideUrl(Constants.BASE_URL + select.getImagen(),
-                            new LazyHeaders.Builder()
-                                    .addHeader("Authorization", "Bearer " + Constants.TOKEN_PROVISIONAL)
-                                    .build());
+                        Glide.with(MyUserDetailImagenActivity.this)
+                                .load(glideUrl)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(ivFoto);
 
-                    Glide.with(InventariableDetaileImageActivity.this)
-                            .load(glideUrl)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .centerCrop()
-                            .into(ivFoto);
+                        uriSelected = Uri.parse(select.getPicture());
 
-                    uriSelected = Uri.parse(select.getImagen());
+                    }else{
+                        Glide.with(MyUserDetailImagenActivity.this).load(R.drawable.iconfinder_unknown_403017).circleCrop().into(ivFoto);
 
+                    }
                 } else {
-                    Toast.makeText(InventariableDetaileImageActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyUserDetailImagenActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Inventariable> call, Throwable t) {
-                Toast.makeText(InventariableDetaileImageActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<UsuarioDummy> call, Throwable t) {
+                Toast.makeText(MyUserDetailImagenActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
-                i.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
+                Intent i = new Intent(MyUserDetailImagenActivity.this, PerfilDetailActivity.class);
                 startActivity(i);
             }
         });
 
-        //TODO hacer pruebas
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(InventariableDetaileImageActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyUserDetailImagenActivity.this);
                 builder.setIcon(R.drawable.ic_warning);
                 builder.setTitle("¿Está seguro de querer borrar la imagen de este dispositivo?");
                 builder.setPositiveButton(R.string.delete, (dialogInterface, i) -> {
-                    Call<Void> call1 = service.deleteImageInventariable(idInventariable);
+                    Call<Void> call1 = service.deleteUserImagen(id);
                     call1.enqueue(new Callback<Void>() {
                         @Override
                         public void onResponse(Call<Void> call1, Response<Void> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(InventariableDetaileImageActivity.this, "Imagen eliminada", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyUserDetailImagenActivity.this, "Imagen eliminada", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(InventariableDetaileImageActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyUserDetailImagenActivity.this, "Algo ha salido mal", Toast.LENGTH_SHORT).show();
                             }
-                            Intent intent = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
-                            intent.putExtra(Constants.ID_INVENTARIABLE, idInventariable);
+                            Intent intent = new Intent(MyUserDetailImagenActivity.this, PerfilDetailActivity.class);
                             startActivity(intent);
                         }
 
                         @Override
                         public void onFailure(Call<Void> call1, Throwable t) {
-                            Toast.makeText(InventariableDetaileImageActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyUserDetailImagenActivity.this, "Error de conexión", Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
@@ -143,7 +143,6 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
         change_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +157,6 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
 
                 if (uriSelected != null) {
                     try {
-
                         InputStream inputStream = getContentResolver().openInputStream(uriSelected);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
@@ -183,25 +181,25 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
                         MultipartBody.Part imagen =
                                 MultipartBody.Part.createFormData("imagen", fileName, requestFile);
 
-                        Call<Inventariable> updateImage = service.updateImageInventariable(idInventariable, imagen);
+                        Call<UsuarioDummy> updateImage = service.updateImageUser(id, imagen);
 
-                        updateImage.enqueue(new Callback<Inventariable>() {
+                        updateImage.enqueue(new Callback<UsuarioDummy>() {
                             @Override
-                            public void onResponse(Call<Inventariable> call, Response<Inventariable> response) {
+                            public void onResponse(Call<UsuarioDummy> call, Response<UsuarioDummy> response) {
                                 if (response.isSuccessful()) {
-                                    Toast.makeText(InventariableDetaileImageActivity.this, "Imagen modificada", Toast.LENGTH_LONG).show();
-                                    Intent i = new Intent(InventariableDetaileImageActivity.this, InventariableDetailActivity.class);
+                                    Toast.makeText(MyUserDetailImagenActivity.this, "Imagen modificada", Toast.LENGTH_LONG).show();
+                                    Intent i = new Intent(MyUserDetailImagenActivity.this, PerfilDetailActivity.class);
                                     startActivity(i);
                                 } else {
-                                    Toast.makeText(InventariableDetaileImageActivity.this, "Error al modificar la imagen", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MyUserDetailImagenActivity.this, "Error al modificar la imagen", Toast.LENGTH_LONG).show();
                                 }
 
                                 Log.d("RESPONSE UPDATE IMAGEN", ""+response);
                             }
 
                             @Override
-                            public void onFailure(Call<Inventariable> call, Throwable t) {
-                                Toast.makeText(InventariableDetaileImageActivity.this, "Error de upload", Toast.LENGTH_LONG).show();
+                            public void onFailure(Call<UsuarioDummy> call, Throwable t) {
+                                Toast.makeText(MyUserDetailImagenActivity.this, "Error de upload", Toast.LENGTH_LONG).show();
                             }
                         });
 
@@ -236,7 +234,7 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
             if (resultData != null) {
 
                 uri = resultData.getData();
-                Glide.with(InventariableDetaileImageActivity.this)
+                Glide.with(MyUserDetailImagenActivity.this)
                         .load(uri)
                         .centerCrop()
                         .into(ivFoto);
@@ -246,3 +244,6 @@ public class InventariableDetaileImageActivity extends AppCompatActivity {
         }
     }
 }
+
+
+

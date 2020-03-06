@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.gonzaloandcompany.satapp.MainActivity;
@@ -157,7 +158,7 @@ public class InventariableDetailActivity extends AppCompatActivity implements II
             public void onChanged(Inventariable select) {
                 LocalDate fechaCreacion = LocalDate.parse(select.getCreatedAt().substring(0, 10));
                 LocalDate fechaCambio = LocalDate.parse(select.getUpdatedAt().substring(0, 10));
-
+                Log.d("INVENTARIABLE", select.toString());
                 tvNombre.setText(select.getNombre());
                 tvCodigo.setText(select.getCodigo());
                 tvTipo.setText(select.getTipo());
@@ -173,6 +174,8 @@ public class InventariableDetailActivity extends AppCompatActivity implements II
 
                 Glide.with(InventariableDetailActivity.this)
                         .load(glideUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .centerCrop()
                         .into(ivFoto);
             }
