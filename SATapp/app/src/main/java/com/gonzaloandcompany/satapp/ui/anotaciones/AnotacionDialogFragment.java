@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,15 +18,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.AnotacionViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Anotacion;
-import com.gonzaloandcompany.satapp.mymodels.CreateAnotacion;
+import com.gonzaloandcompany.satapp.requests.CreateAnotacion;
 
-public class AnotacionDIalogFragment extends DialogFragment {
+public class AnotacionDialogFragment extends DialogFragment {
     private View v;
     String idTicket, idAnotacion;
     EditText etCuerpo;
     AnotacionViewModel anotacionViewModel;
 
-    public AnotacionDIalogFragment(String idTicket, String idAnotacion){
+    public AnotacionDialogFragment(String idTicket, String idAnotacion){
         this.idTicket = idTicket;
         this.idAnotacion = idAnotacion;
     }
@@ -33,13 +34,12 @@ public class AnotacionDIalogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_anotaciones, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         etCuerpo = v.findViewById(R.id.editTextCuerpo);
 
         anotacionViewModel = new ViewModelProvider(getActivity()).get(AnotacionViewModel.class);
-
-        v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_anotaciones, null);
 
         if(idAnotacion==null){
             builder.setTitle("Nueva anotación");
@@ -65,20 +65,23 @@ public class AnotacionDIalogFragment extends DialogFragment {
 
                 if(idAnotacion==null){
                     CreateAnotacion new_anotacion = new CreateAnotacion(idTicket, etCuerpo.getText().toString());
-                    anotacionViewModel.createAnotacion(new_anotacion).observe(getActivity(), new Observer<CreateAnotacion>() {
+                    anotacionViewModel.createAnotacion(new_anotacion).observe(getActivity(), new Observer<Anotacion>() {
                         @Override
-                        public void onChanged(CreateAnotacion createAnotacion) {
-                            if(createAnotacion!=null){
+                        public void onChanged(Anotacion anotacion) {
+                            if(anotacion!=null){
+                                Log.d("ANOTACION CREADA",anotacion.toString());
                                 dialog.dismiss();
                             }
                         }
                     });
                 }else{
+
                     CreateAnotacion anotacion_edit = new CreateAnotacion(etCuerpo.getText().toString());
-                    anotacionViewModel.updateAnotacion(idAnotacion, anotacion_edit).observe(getActivity(), new Observer<CreateAnotacion>() {
+                    anotacionViewModel.updateAnotacion(idAnotacion, anotacion_edit).observe(getActivity(), new Observer<Anotacion>() {
                         @Override
-                        public void onChanged(CreateAnotacion edit) {
+                        public void onChanged(Anotacion edit) {
                             if(edit!=null){
+                                Log.d("ANOTACION CREADA",edit.toString());
                                 dialog.dismiss();
                             }
                         }

@@ -1,7 +1,7 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
 import com.gonzaloandcompany.satapp.mymodels.Anotacion;
-import com.gonzaloandcompany.satapp.mymodels.CreateAnotacion;
+import com.gonzaloandcompany.satapp.requests.CreateAnotacion;
 
 import java.util.List;
 
@@ -16,19 +16,19 @@ import retrofit2.http.Path;
 public interface AnotacionService {
 
     @POST("/anotacion")
-    Call<CreateAnotacion> createAnotacion(@Body CreateAnotacion createAnotacion);
+    Call<Anotacion> createAnotacion(@Body CreateAnotacion createAnotacion);
 
     //TODO revisar
-    @GET("/anotaciones/ticket/{id_ticket}")
-    Call<List<Anotacion>> getAnotacionesTicket(@Path("id_ticket") String id_ticket);
+    @GET("/anotacion/ticket/{id}")
+    Call<List<Anotacion>> getAnotacionesTicket(@Path("id") String id);
 
     //TODO solo se pasa el cuerpo, o al menos solo debería ser así
-    @PUT("/anotaciones/{id_anotacion}")
-    Call<CreateAnotacion> updateAnotacion(@Path("id_anotacion") String id_anotacion, @Body CreateAnotacion anotacion);
+    @PUT("/anotacion/{id_anotacion}")
+    Call<Anotacion> updateAnotacion(@Path("id_anotacion") String id_anotacion, @Body CreateAnotacion anotacion);
 
-    @DELETE("/anotaciones/{id_anotacion}")
+    @DELETE("/anotacion/{id_anotacion}")
     Call<Void> deleteAnotacion(@Path("id_anotacion") String id_anotacion);
 
-    @GET("/anotaciones/{id_anotacion}")
+    @GET("/anotacion/{id_anotacion}")
     Call<Anotacion> getAnotacion(@Path("id_anotacion") String id_anotacion);
 }

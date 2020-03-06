@@ -1,8 +1,6 @@
 package com.gonzaloandcompany.satapp.retrofit;
 
 
-import com.gonzaloandcompany.satapp.mymodels.Anotacion;
-import com.gonzaloandcompany.satapp.mymodels.CreateAnotacion;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 

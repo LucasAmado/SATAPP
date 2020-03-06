@@ -3,21 +3,18 @@ package com.gonzaloandcompany.satapp.data.repository;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.gonzaloandcompany.satapp.common.Constants;
 import com.gonzaloandcompany.satapp.common.MyApp;
 import com.gonzaloandcompany.satapp.mymodels.Anotacion;
-import com.gonzaloandcompany.satapp.mymodels.CreateAnotacion;
+import com.gonzaloandcompany.satapp.requests.CreateAnotacion;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.mymodels.Ticket;
 import com.gonzaloandcompany.satapp.retrofit.AnotacionService;
 import com.gonzaloandcompany.satapp.retrofit.ApiSAT;
 import com.gonzaloandcompany.satapp.retrofit.ServicePeticiones;
 
-import java.time.format.ResolverStyle;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -167,12 +164,12 @@ public class LucasRepository {
         return data;
     }
 
-    public MutableLiveData<CreateAnotacion> createAnotacion(CreateAnotacion createAnotacion){
-        final MutableLiveData<CreateAnotacion> data = new MutableLiveData<>();
-        Call<CreateAnotacion> createAnotacionCall = anotacionService.createAnotacion(createAnotacion);
-        createAnotacionCall.enqueue(new Callback<CreateAnotacion>() {
+    public MutableLiveData<Anotacion> createAnotacion(CreateAnotacion createAnotacion){
+        final MutableLiveData<Anotacion> data = new MutableLiveData<>();
+        Call<Anotacion> createAnotacionCall = anotacionService.createAnotacion(createAnotacion);
+        createAnotacionCall.enqueue(new Callback<Anotacion>() {
             @Override
-            public void onResponse(Call<CreateAnotacion> call, Response<CreateAnotacion> response) {
+            public void onResponse(Call<Anotacion> call, Response<Anotacion> response) {
                 if(response.isSuccessful()){
                     Log.e("Nueva", "anotacion");
                     data.setValue(response.body());
@@ -181,7 +178,7 @@ public class LucasRepository {
             }
 
             @Override
-            public void onFailure(Call<CreateAnotacion> call, Throwable t) {
+            public void onFailure(Call<Anotacion> call, Throwable t) {
                 Log.e("failure", ""+t.getMessage());
             }
         });
@@ -207,12 +204,12 @@ public class LucasRepository {
         });
     }
 
-    public MutableLiveData<CreateAnotacion> updateAnotacion(String idAnotacion, CreateAnotacion anotacion){
-        final MutableLiveData<CreateAnotacion> data = new MutableLiveData<>();
-        Call<CreateAnotacion> call = anotacionService.updateAnotacion(idAnotacion, anotacion);
-        call.enqueue(new Callback<CreateAnotacion>() {
+    public MutableLiveData<Anotacion> updateAnotacion(String idAnotacion, CreateAnotacion anotacion){
+        final MutableLiveData<Anotacion> data = new MutableLiveData<>();
+        Call<Anotacion> call = anotacionService.updateAnotacion(idAnotacion, anotacion);
+        call.enqueue(new Callback<Anotacion>() {
             @Override
-            public void onResponse(Call<CreateAnotacion> call, Response<CreateAnotacion> response) {
+            public void onResponse(Call<Anotacion> call, Response<Anotacion> response) {
                 if(response.isSuccessful()){
                     Log.e("ANOTACION", "MODIFICADA");
                     data.setValue(response.body());
@@ -222,7 +219,7 @@ public class LucasRepository {
             }
 
             @Override
-            public void onFailure(Call<CreateAnotacion> call, Throwable t) {
+            public void onFailure(Call<Anotacion> call, Throwable t) {
                 Log.e("failure", ""+t.getMessage());
             }
         });

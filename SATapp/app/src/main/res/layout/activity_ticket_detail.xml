@@ -397,15 +397,14 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <ListView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/lvAnotaciones"
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView6"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/textView6"
-                        app:layout_constraintTop_toTopOf="@+id/textView6" />
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

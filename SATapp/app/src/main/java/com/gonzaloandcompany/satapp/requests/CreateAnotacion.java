@@ -1,4 +1,4 @@
-package com.gonzaloandcompany.satapp.mymodels;
+package com.gonzaloandcompany.satapp.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
