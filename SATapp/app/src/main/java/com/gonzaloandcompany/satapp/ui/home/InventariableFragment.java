@@ -24,7 +24,6 @@ import com.gonzaloandcompany.satapp.R;
 import com.gonzaloandcompany.satapp.data.viewmodel.JLuisViewModel;
 import com.gonzaloandcompany.satapp.mymodels.Inventariable;
 import com.gonzaloandcompany.satapp.ui.codeqr.AsistenteQrActivity;
-import com.gonzaloandcompany.satapp.ui.home.detail.IInventariableListener;
 import com.gonzaloandcompany.satapp.ui.home.detail.InventariableDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

@@ -34,7 +34,6 @@ public class LucasViewModel extends AndroidViewModel{
     }
 
     public LiveData<List<Ticket>> getTicketsInventariable(String id) {
-        ticketList = repository.getTicketsInventariable(id);
-        return ticketList;
+        return  repository.getTicketsInventariable(id);
     }
 }
