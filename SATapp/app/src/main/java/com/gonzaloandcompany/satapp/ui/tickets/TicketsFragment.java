@@ -58,6 +58,8 @@ public class TicketsFragment extends Fragment {
     private UserViewModel userViewModel;
     private UsuarioDummy currentUser;
     private Estado selected;
+    private MenuItem assigns;
+    private boolean isFirstClick;
 
     public TicketsFragment() {
     }
@@ -67,7 +69,7 @@ public class TicketsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ticketsViewModel = new ViewModelProvider(this).get(TicketsViewModel.class);
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
+        isFirstClick=true;
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -137,17 +139,17 @@ public class TicketsFragment extends Fragment {
                 statesDescription[i] = Estado.values()[i].getDescription();
             }
             statesDescription[Estado.values().length] = "Restablecer filtro";
-            Log.d("ARRAY ESTADOS",statesDescription.toString());
+            Log.d("ARRAY ESTADOS", statesDescription.toString());
             dialog.setItems(statesDescription, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String stateSelected = statesDescription[which];
-                    Log.d("DESCRIPCION SELECCIONADA",stateSelected.toString());
+                    Log.d("DESCRIPCION SELECCIONADA", stateSelected.toString());
                     selected = null;
                     for (Estado e : Estado.values()) {
                         if (e.getDescription().equals(stateSelected)) {
                             selected = e;
-                            Log.d("ESTADO SELECCIONADO",selected.toString());
+                            Log.d("ESTADO SELECCIONADO", selected.toString());
                         }
                     }
                     if (selected != null)
@@ -161,6 +163,18 @@ public class TicketsFragment extends Fragment {
             alert.show();
 
 
+        } else {
+            currentPage=0;
+            if(isFirstClick) {
+                isFirstClick=false;
+                loadAssigns(true);
+                assigns.setIcon(R.drawable.ic_undo_white_24dp);
+            }else{
+                isFirstClick=true;
+                loadTickets(true);
+                assigns.setIcon(R.drawable.ic_assignment);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -168,6 +182,9 @@ public class TicketsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.tickets_filter_menu, menu);
+        assigns = menu.getItem(0);
+        Log.d("BOTON FILTRAR ASIGNACIONES",menu.getItem(0).toString());
+        assigns.setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -188,13 +205,10 @@ public class TicketsFragment extends Fragment {
         listener = null;
     }
 
-    public void loadTickets(final boolean isFirstPage) {
+    public void loadAssigns(final boolean isFirstPage) {
         isLoading = true;
         currentPage++;
 
-        Log.d("ROL USER", currentUser.getRole());
-
-        if (currentUser.getRole().equals("tecnico")) {
             ticketsViewModel.getTicketsAssigned(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
                 @Override
                 public void onChanged(List<Ticket> data) {
@@ -220,7 +234,21 @@ public class TicketsFragment extends Fragment {
                     isLastPage = currentPage == tickets.getResults().size();
                 }
             });
-        } else if (currentUser.getRole().equals("user")) {
+
+    }
+
+    public void loadTickets(final boolean isFirstPage) {
+        isLoading = true;
+        currentPage++;
+
+        Log.d("ROL USER", currentUser.getRole());
+
+        if(currentUser.getRole().equals("tecnico")){
+            Log.d("ERES TÉCNICO","DEBERIAS VER UN FILTOR");
+            assigns.setVisible(true);
+        }
+
+       if (currentUser.getRole().equals("user")||currentUser.getRole().equals("tecnico")) {
             ticketsViewModel.getTicketsCreated(currentPage, pageSize).observe(getActivity(), new Observer<List<Ticket>>() {
                 @Override
                 public void onChanged(List<Ticket> data) {

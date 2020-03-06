@@ -35,8 +35,6 @@ public interface ServicePeticiones {
     @GET("/inventariable/tipos")
     Call<List<String>> getTiposInventariable();
 
-    @GET("/inventariable/ubicaciones")
-    Call<List<String>> getUbicaciones();
 
     @GET("/inventariable/{id_inventariable}")
     Call<Inventariable> getInventariableById(@Path("id_inventariable") String id_inventariable);

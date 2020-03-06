@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".common.MyApp"
@@ -16,6 +17,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.userdetail.MyUserDetailImagenActivity"></activity>
         <activity android:name=".ui.userdetail.PerfilDetailActivity" />
+        <activity
+            android:name=".ui.codeqr.ActivityEscanear"
+            android:label="@string/title_activity_escanear"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ui.codeqr.AsistenteQrActivity" />
         <activity android:name=".ui.home.detail.InventariableDetaileImageActivity" />
         <activity
             android:name=".ui.home.detail.InventariableDetailActivity"
